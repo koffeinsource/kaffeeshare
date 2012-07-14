@@ -17,7 +17,6 @@ import de.kaffeeshare.server.plugins.DefaultPlugin;
 import de.kaffeeshare.server.plugins.Dilbert;
 import de.kaffeeshare.server.plugins.Garfield;
 import de.kaffeeshare.server.plugins.Vimeo;
-import de.kaffeeshare.server.plugins.XKCD;
 import de.kaffeeshare.server.plugins.Youtube;
 
 /**

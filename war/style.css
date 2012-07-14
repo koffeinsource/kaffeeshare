@@ -1,0 +1,137 @@
+body {
+	background-color: #BBB;
+	color: #444;
+	font-family: arial, sans-serif;
+	text-align: center;
+}
+
+body,table,input,textarea,button {
+	font-size: 12px;
+}
+
+body,table,tr,td,div {
+	margin: 0px;
+	padding: 0px;
+}
+
+a {
+	text-decoration: none;
+	color: #8C9CFB;
+}
+
+#allWrap {
+	margin-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	overflow-x: visible;
+	width: 500px;
+}
+
+#view {
+	margin: auto;
+	text-align: left;
+}
+
+input,textarea {
+	padding: 2px;
+	border: 1px solid #ddd;
+	float: left;
+	border-top-left-radius: 2px 2px;
+	-moz-border-radius-topleft: 2px;
+	-webkit-border-top-left-radius: 2px 2px;
+	border-top-right-radius: 2px 2px;
+	-moz-border-radius-topright: 2px;
+	-webkit-border-top-right-radius: 2px 2px;
+	border-bottom-left-radius: 2px 2px;
+	-moz-border-radius-bottomleft: 2px;
+	-webkit-border-bottom-left-radius: 2px 2px;
+	border-bottom-right-radius: 2px 2px;
+	-moz-border-radius-bottomright: 2px;
+	-webkit-border-bottom-right-radius: 2px 2px;
+	box-shadow: 1px 1px 1px #aaa;
+	-moz-box-shadow: 1px 1px 1px #aaa;
+	-webkit-box-shadow: 1px 1px 1px #aaa;
+}
+
+.field,input {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+textarea {
+	height: 150px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+ul,li {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+img {
+	border: none;
+}
+
+.widget {
+	background-color: white;
+	border-top-left-radius: 5px 5px;
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-top-right-radius: 5px 5px;
+	border-bottom-left-radius: 5px 5px;
+	-moz-border-radius-bottomleft: 5px;
+	-webkit-border-bottom-left-radius: 5px 5px;
+	border-bottom-right-radius: 5px 5px;
+	-moz-border-radius-bottomright: 5px;
+	-webkit-border-bottom-right-radius: 5px 5px;
+	box-shadow: 5px 5px 5px #888;
+	-moz-box-shadow: 5px 5px 5px #888;
+	-webkit-box-shadow: 5px 5px 5px #888;
+	padding: 0;
+	margin-bottom: 20px;
+	overflow: hidden;
+	width: 500px;
+}
+
+.siteTitle {
+	border-bottom: 1px dotted #CCC;
+	font-weight: bold;
+	margin-bottom: 10px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	text-shadow: #CCC 2px 2px 2px;
+}
+
+.siteTitleText {
+	font-size: 20px;
+	color: #000;
+}
+
+.links {
+	padding: 10px;
+}
+
+.avatar {
+	float: right;
+	margin: 0;
+	padding: 0;
+}
+
+.metaText {
+	margin-left: 10px;
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+	margin-bottom: 80px;
+}
+
+.clear {
+	clear: both;
+}

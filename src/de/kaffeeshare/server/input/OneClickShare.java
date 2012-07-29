@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import de.kaffeeshare.server.UrlImporter;
 import de.kaffeeshare.server.datastore.Datastore;
+import de.kaffeeshare.server.datastore.Namespace;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
 /**
@@ -34,7 +35,7 @@ public class OneClickShare extends HttpServlet {
 		resp.setContentType("text; charset=UTF-8");
 		if (url != null) {
 			try {
-				setNameSpace(req);
+				Namespace.setNamespace(req.getParameter(PARAM_NAMESPACE));
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				throw new SystemErrorException();
@@ -53,8 +54,4 @@ public class OneClickShare extends HttpServlet {
 		}
 	}
 
-	private void setNameSpace(HttpServletRequest req) {
-		String ns = req.getParameter(PARAM_NAMESPACE);
-		UrlImporter.setNamespace(ns);
-	}
 }

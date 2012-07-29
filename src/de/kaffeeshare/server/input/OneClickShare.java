@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import de.kaffeeshare.server.UrlImporter;
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Namespace;
-import de.kaffeeshare.server.exception.SystemErrorException;
+import de.kaffeeshare.server.exception.ReservedNamespaceException;
 
 /**
  * Called by the browser extension-
@@ -36,9 +36,9 @@ public class OneClickShare extends HttpServlet {
 		if (url != null) {
 			try {
 				Namespace.setNamespace(req.getParameter(PARAM_NAMESPACE));
-			} catch (Exception e1) {
-				e1.printStackTrace();
-				throw new SystemErrorException();
+			} catch (ReservedNamespaceException e) {
+				resp.getWriter().append("1"); // TODO maybe return a special return code
+				return;
 			}
 			try {
 				log.info("Try to add url " + url + " to DB");

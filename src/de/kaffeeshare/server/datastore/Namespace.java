@@ -13,8 +13,15 @@ public class Namespace {
 	
 	private static final Logger log = Logger.getLogger(Namespace.class.getName());
 
+	/**
+	 * A list of namespaces we want to reserver for special use
+	 */
 	private static List<String> reservedNamespaces = Arrays.asList("public", "private", "kaffee");
 	
+	/**
+	 * Checks and sets namespace
+	 * @param ns the namespace to be set
+	 */
 	static public void setNamespace(String ns) {
 		validateNamespace(ns);
 		
@@ -22,6 +29,10 @@ public class Namespace {
 		NamespaceManager.set(ns);
 	}
 	
+	/**
+	 * Validates a namespace. An exception if thrown in case it is not valid
+	 * @param ns the namespace to be validated
+	 */
 	static public void validateNamespace(String ns) {
 		try {
 			NamespaceManager.validateNamespace(ns);
@@ -36,6 +47,11 @@ public class Namespace {
 		}
 	}
 	
+	/**
+	 * Checks if a namespace is valid
+	 * @param ns the namespace to be validated
+	 * @return true if namespace is valid, false otherwise
+	 */
 	static public boolean isValide(String ns)  {
 		try {
 			validateNamespace(ns);

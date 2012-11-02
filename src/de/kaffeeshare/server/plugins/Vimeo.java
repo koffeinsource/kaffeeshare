@@ -13,7 +13,8 @@ public class Vimeo extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		return url.toString().contains("http://vimeo.com/");
+		String str = url.toString();
+		return (str.startsWith("http://vimeo.com/") || str.startsWith("https://vimeo.com/"));
 	}
 
 	@Override

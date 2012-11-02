@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import de.kaffeeshare.server.UrlImporter;
 import de.kaffeeshare.server.datastore.Datastore;
-import de.kaffeeshare.server.exception.SystemErrorException;
+import de.kaffeeshare.server.datastore.Namespace;
+import de.kaffeeshare.server.exception.ReservedNamespaceException;
 
 /**
  * Called by the browser extension-
@@ -34,10 +35,10 @@ public class OneClickShare extends HttpServlet {
 		resp.setContentType("text; charset=UTF-8");
 		if (url != null) {
 			try {
-				setNameSpace(req);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-				throw new SystemErrorException();
+				Namespace.setNamespace(req.getParameter(PARAM_NAMESPACE));
+			} catch (ReservedNamespaceException e) {
+				resp.getWriter().append("1"); // TODO return a different error code
+				return;
 			}
 			try {
 				log.info("Try to add url " + url + " to DB");
@@ -53,8 +54,4 @@ public class OneClickShare extends HttpServlet {
 		}
 	}
 
-	private void setNameSpace(HttpServletRequest req) {
-		String ns = req.getParameter(PARAM_NAMESPACE);
-		UrlImporter.setNamespace(ns);
-	}
 }

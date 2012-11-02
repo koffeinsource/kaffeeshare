@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.xmpp.JID;
 import com.google.appengine.api.xmpp.Message;
 import com.google.appengine.api.xmpp.MessageBuilder;
 import com.google.appengine.api.xmpp.SendResponse;
@@ -14,6 +15,7 @@ import com.google.appengine.api.xmpp.XMPPService;
 import com.google.appengine.api.xmpp.XMPPServiceFactory;
 
 import de.kaffeeshare.server.UrlImporter;
+import de.kaffeeshare.server.datastore.Namespace;
 
 /**
  * Servlet to handle incomming jabber / xmpp messages.
@@ -48,14 +50,16 @@ public class Jabber extends HttpServlet {
 	private void importUrl(Message message) {
 		String replyMessageBody = null;
 
-		String receiverID = message.getRecipientJids()[0].getId();
+		// TODO will break if there are multiple recipients of that message
+		JID recieverID = message.getRecipientJids()[0];
+		String recieverIDStr =recieverID.getId();
 		// is message sent to <AppID>@appspot.com              <- namespace: default
 		// or is it   sent to anything@<AppID>.appspotchat.com <- namespace: anything
-		if (!receiverID.contains("@appspot.com") ) {
-			receiverID = receiverID.split("@")[0];
-			//UrlImporter.setNamespace(receiverID);
+		if (!recieverIDStr.contains("@appspot.com") ) {
+			recieverIDStr = recieverIDStr.split("@")[0];
+			Namespace.setNamespace(recieverIDStr);
 		} else {
-			//UrlImporter.setNamespace(null);
+			Namespace.setNamespace(null);
 		}
 
 		try {
@@ -72,6 +76,7 @@ public class Jabber extends HttpServlet {
 		}
 
 		Message msg = new MessageBuilder()
+		                  .withFromJid(recieverID)
 		                  .withRecipientJids(message.getFromJid())
 		                  .withBody(replyMessageBody).build();
 

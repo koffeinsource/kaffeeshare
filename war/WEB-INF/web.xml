@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
   <servlet>
-    <servlet-name>de.kaffeeshare.server.Feed</servlet-name>
-    <servlet-class>de.kaffeeshare.server.Feed</servlet-class>
+    <servlet-name>de.kaffeeshare.server.output.Feed</servlet-name>
+    <servlet-class>de.kaffeeshare.server.output.Feed</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>de.kaffeeshare.server.Feed</servlet-name>
+    <servlet-name>de.kaffeeshare.server.output.Feed</servlet-name>
     <url-pattern>/feed</url-pattern>
   </servlet-mapping>
   <servlet>
@@ -111,4 +111,3 @@
   <url-pattern>/_ah/spi/*</url-pattern>
  </servlet-mapping>
 </web-app>
-

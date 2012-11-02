@@ -7,8 +7,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.appengine.api.NamespaceManager;
-
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.InputErrorException;
@@ -69,8 +67,7 @@ public class UrlImporter {
 	 */
 	public static Item fetchUrl(String urlString) {
 		try {
-			if (urlString.startsWith("http://")
-					|| urlString.startsWith("https://")) {
+			if (urlString.startsWith("http://") || urlString.startsWith("https://")) {
 			} else {
 				urlString = "http://" + urlString;
 			}
@@ -94,7 +91,6 @@ public class UrlImporter {
 			plugins.add(new Youtube());
 			plugins.add(new Vimeo());
 			plugins.add(new Dilbert());
-			//plugins.add(new XKCD());
 		}
 		return plugins;
 	}
@@ -166,13 +162,4 @@ public class UrlImporter {
 		return null;
 	}
 
-	static public void setNamespace(String ns) {
-		if (ns == null) {
-			log.info("Keep default namespace");
-			return;
-		}
-
-		log.info("Namespace set to " + ns);
-		NamespaceManager.set(ns);
-	}
 }

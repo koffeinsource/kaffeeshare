@@ -1,4 +1,4 @@
-package de.kaffeeshare.server;
+package de.kaffeeshare.server.output;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,8 +19,10 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.SyndFeedOutput;
 
+import de.kaffeeshare.server.Config;
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Item;
+import de.kaffeeshare.server.datastore.Namespace;
 
 /**
  * This servlet generates a rss feed with the latest news.
@@ -29,8 +31,10 @@ public class Feed extends HttpServlet {
 
 	private static final long serialVersionUID = -5819674729148390595L;
 
+	private static String PARAM_NAMESPACE = "ns";
+	
 	private Logger log = Logger.getLogger(Feed.class.getName());
-
+	
 	/**
 	 * Called when the feed url is requested.
 	 */
@@ -39,6 +43,13 @@ public class Feed extends HttpServlet {
 		try {
 			resp.setContentType("text; charset=UTF-8");
 			String feedType = "rss_2.0";
+
+			try {
+				Namespace.setNamespace(req.getParameter(PARAM_NAMESPACE));
+			} catch (Exception e) {
+				// return an empty page if something isn't ok
+				return;
+			}
 
 			SyndFeed feed = new SyndFeedImpl();
 			feed.setFeedType(feedType);

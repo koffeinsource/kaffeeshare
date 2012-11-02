@@ -14,6 +14,7 @@ import de.kaffeeshare.server.plugins.BasePlugin;
 import de.kaffeeshare.server.plugins.DefaultPlugin;
 import de.kaffeeshare.server.plugins.Dilbert;
 import de.kaffeeshare.server.plugins.Garfield;
+import de.kaffeeshare.server.plugins.Image;
 import de.kaffeeshare.server.plugins.Vimeo;
 import de.kaffeeshare.server.plugins.Youtube;
 
@@ -87,6 +88,7 @@ public class UrlImporter {
 	private synchronized static Vector<BasePlugin> getPlugins() {
 		if (plugins == null) {
 			plugins = new Vector<BasePlugin>();
+			plugins.add(new Image());
 			plugins.add(new Garfield());
 			plugins.add(new Youtube());
 			plugins.add(new Vimeo());

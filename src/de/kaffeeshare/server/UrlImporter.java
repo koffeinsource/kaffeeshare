@@ -67,8 +67,7 @@ public class UrlImporter {
 	 */
 	public static Item fetchUrl(String urlString) {
 		try {
-			if (urlString.startsWith("http://")
-					|| urlString.startsWith("https://")) {
+			if (urlString.startsWith("http://") || urlString.startsWith("https://")) {
 			} else {
 				urlString = "http://" + urlString;
 			}
@@ -92,7 +91,6 @@ public class UrlImporter {
 			plugins.add(new Youtube());
 			plugins.add(new Vimeo());
 			plugins.add(new Dilbert());
-			//plugins.add(new XKCD());
 		}
 		return plugins;
 	}

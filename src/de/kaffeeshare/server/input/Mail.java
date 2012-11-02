@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import de.kaffeeshare.server.UrlImporter;
+import de.kaffeeshare.server.datastore.Namespace;
 import de.kaffeeshare.server.exception.InputErrorException;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
@@ -48,7 +49,9 @@ public class Mail extends HttpServlet {
 			for (String to : toAddresses) {
 			
 				to = to.split("@")[0];
-				//UrlImporter.setNamespace(to);
+				//kaffeeshare@kaffeeshare.appspotmail.com
+				if (!to.equals("kaffeeshare")) //TODO remove when namespaces go live
+					Namespace.setNamespace(to);
 				
 				// first lets see if there is plain text with url
 				if (UrlImporter.importFromText(getText(message)) != null) continue;

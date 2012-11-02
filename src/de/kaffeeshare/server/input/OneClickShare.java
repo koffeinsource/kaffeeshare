@@ -37,7 +37,7 @@ public class OneClickShare extends HttpServlet {
 			try {
 				Namespace.setNamespace(req.getParameter(PARAM_NAMESPACE));
 			} catch (ReservedNamespaceException e) {
-				resp.getWriter().append("1"); // TODO maybe return a special return code
+				resp.getWriter().append("1"); // TODO return a different error code
 				return;
 			}
 			try {

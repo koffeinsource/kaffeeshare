@@ -49,9 +49,7 @@ public class Mail extends HttpServlet {
 			for (String to : toAddresses) {
 			
 				to = to.split("@")[0];
-				//kaffeeshare@kaffeeshare.appspotmail.com
-				if (!to.equals("kaffeeshare")) //TODO remove when namespaces go live
-					Namespace.setNamespace(to);
+				Namespace.setNamespace(to);
 				
 				// first lets see if there is plain text with url
 				if (UrlImporter.importFromText(getText(message)) != null) continue;

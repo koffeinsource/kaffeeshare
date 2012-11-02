@@ -23,7 +23,6 @@ public class Namespace {
 	 * @param ns the namespace to be set
 	 */
 	static public void setNamespace(String ns) {
-		if (ns == null) return; //remove if namespaces go live just for testing
 		validateNamespace(ns);
 		
 		log.info("Namespace set to " + ns);

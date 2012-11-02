@@ -27,6 +27,17 @@ public class Datastore {
 		return item;
 	}
 
+	/**
+	 * Stores a list of items in the DB.
+	 */
+	public static void storeItems(List<Item> items) {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (Item item : items) {
+			entities.add(item.toEntity());
+		}
+		datastore.put(entities);
+	}
+	
 	@SuppressWarnings("unused")
 	/**
 	 * Deletes an item in DB, currently not used and only kept for reference.

@@ -15,7 +15,8 @@ public class Garfield extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		return url.toString().contains("http://www.gocomics.com//garfield");
+		String str = url.toString();
+		return (str.startsWith("http://www.gocomics.com//garfield") || str.startsWith("https://www.gocomics.com//garfield"));
 	}
 
 	@Override

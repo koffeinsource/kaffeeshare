@@ -43,9 +43,11 @@ public class Feed extends HttpServlet {
 		try {
 			resp.setContentType("text; charset=UTF-8");
 			String feedType = "rss_2.0";
+			String ns = null;
 
 			try {
-				Namespace.setNamespace(req.getParameter(PARAM_NAMESPACE));
+				ns = req.getParameter(PARAM_NAMESPACE);
+				Namespace.setNamespace(ns);
 			} catch (Exception e) {
 				// return an empty page if something isn't ok
 				return;
@@ -54,7 +56,7 @@ public class Feed extends HttpServlet {
 			SyndFeed feed = new SyndFeedImpl();
 			feed.setFeedType(feedType);
 
-			feed.setTitle(Config.Name);
+			feed.setTitle(Config.Name + " - " + ns);
 			feed.setLink("http://"+req.getServerName());
 			feed.setDescription(Config.Phrase);
 

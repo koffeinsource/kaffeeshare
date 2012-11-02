@@ -34,16 +34,15 @@ public class Namespace {
 	 * @param ns the namespace to be validated
 	 */
 	static public void validateNamespace(String ns) {
+		if (ns == null || reservedNamespaces.contains(ns)) {
+			log.info("Trying to use a reserved namespace");
+			throw new ReservedNamespaceException();
+		}
 		try {
 			NamespaceManager.validateNamespace(ns);
 		} catch (IllegalArgumentException e) {
 			log.info("Trying to use an illegal namespace: " + ns);
 			throw new IllegalNamespaceException();
-		}
-		
-		if (reservedNamespaces.contains(ns) || ns == null) {
-			log.info("Trying to use a reserved namespace: " + ns);
-			throw new ReservedNamespaceException();
 		}
 	}
 	

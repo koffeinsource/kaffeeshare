@@ -17,7 +17,8 @@ public class Dilbert extends BasePlugin {
 	@Override
 	public boolean match(URL url) {
 		String str = url.toString();
-		return (str.startsWith("http://dilbert.com/strips/") || str.startsWith("https://dilbert.com/strips/"));
+		return (str.startsWith("https://feed.dilbert.com/")) || (str.startsWith("http://feed.dilbert.com/"))
+				|| (str.startsWith("http://dilbert.com/strips/") || str.startsWith("https://dilbert.com/strips/"));
 	}
 
 	@Override

@@ -45,6 +45,6 @@ public class Image extends BasePlugin {
 
 		String imageUrl = "";
 		return new Item(caption, urlString, description, imageUrl);
-		}
+	}
 
 }

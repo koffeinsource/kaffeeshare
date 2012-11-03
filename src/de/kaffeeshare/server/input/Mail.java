@@ -48,6 +48,16 @@ public class Mail extends HttpServlet {
 			
 			for (String to : toAddresses) {
 			
+				// check if to is name <address@domain.tld>
+				if (to.contains("<")) {
+					int start = to.indexOf("<");
+					int end = to.indexOf(">");
+					if (start == -1 || end == -1) throw new InputErrorException();
+					++start;
+					--end;
+					to = to.substring(start, end);
+				}
+				
 				to = to.split("@")[0];
 				Namespace.setNamespace(to);
 				

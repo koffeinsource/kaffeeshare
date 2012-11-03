@@ -39,12 +39,12 @@ public class Image extends BasePlugin {
 	public Item createItem(URL url) {
 		log.info("Running Image plugin!");
 
-		String caption = url.getFile();
+		String caption = url.getFile().substring(1); // .getFile() returns "/<name>"
 		String urlString = url.toString();
 		String description = "<img src='" +url.toString()+ "'>";
 
 		String imageUrl = "";
 		return new Item(caption, urlString, description, imageUrl);
-		}
+	}
 
 }

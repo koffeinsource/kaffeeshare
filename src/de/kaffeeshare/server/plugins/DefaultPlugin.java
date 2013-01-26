@@ -26,6 +26,7 @@ public class DefaultPlugin extends BasePlugin {
 		try {
 			doc = Jsoup.parse(url, 10000);
 		} catch (IOException e1) {
+			log.warning(e1.getLocalizedMessage());
 			throw new SystemErrorException();
 		}
 		
@@ -67,6 +68,11 @@ public class DefaultPlugin extends BasePlugin {
 		try {
 			imageUrl = getProperty(doc, "og:image");
 			imageUrl.replace(" ", "");
+			
+			// check if URL is a legit URL as og:url is broken on some sites 
+			// throws an exception if URL is not ok
+			URL u = new URL(imageUrl);
+			u.toURI(); 			
 		} catch (Exception e) {
 			imageUrl = "";
 		}
@@ -75,6 +81,11 @@ public class DefaultPlugin extends BasePlugin {
 		String urlString = null;
 		try {
 			urlString = getProperty(doc, "og:url");
+			
+			// check if URL is a legit URL as og:url is broken on some sites 
+			// throws an exception if URL is not ok
+			URL u = new URL(urlString);
+			u.toURI(); 
 		} catch (Exception e) {
 			urlString = url.toString();
 		}

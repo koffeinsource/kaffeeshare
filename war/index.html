@@ -222,6 +222,8 @@ function parseResult(value) {
 }
 
 $('#randomizer').click(function(e) {
+	resetInput();
+	
 	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_";
 
 	var text = possible.charAt(Math.floor(Math.random() * (possible.length-3)));

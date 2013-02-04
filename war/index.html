@@ -1,0 +1,377 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Kaffeeshare</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+	<link rel="stylesheet" href="css/bootstrap-responsive.min.css" media="screen">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/spin.min.js"></script>
+
+	<script type="text/javascript">
+		var spinnerOpts = {
+			lines: 13, // The number of lines to draw
+			length: 4, // The length of each line
+			width: 2, // The line thickness
+			radius: 4, // The radius of the inner circle
+			corners: 1, // Corner roundness (0..1)
+			rotate: 0, // The rotation offset
+			color: '#000', // #rgb or #rrggbb
+			speed: 1, // Rounds per second
+			trail: 60, // Afterglow percentage
+			shadow: false, // Whether to render a shadow
+			hwaccel: true, // Whether to use hardware acceleration
+			className: 'spinner', // The CSS class to assign to the spinner
+			zIndex: 2e9, // The z-index (defaults to 2000000000)
+			top: 'auto', // Top position relative to parent in px
+			left: 'auto' // Left position relative to parent in px
+		};
+	</script>
+
+	<style>
+		a.name {
+			position: relative;
+			top: 50px;
+			margin: 0;
+			padding: 0;
+			float: left;
+		}
+	</style>
+</head>
+ 
+<body style="padding-top: 45px">
+
+<div class="navbar navbar-fixed-top" bs-navbar>
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="brand" href="#">Kaffeeshare</a>
+			<ul class="nav">
+				<li class="divider-vertical"></li>
+				<li><a href="#namespace">Get your Namespace</a></li>
+				<li><a href="#extension">Get your Browser Extensions</a></li>
+				<li><a href="#configuration">Howto Use It / Configuration</a></li>
+			</ul>      
+			<ul class="nav pull-right">
+				<li><a href="https://github.com/koffeinsource">Developers</a></li>
+			</ul>      
+		</div>
+	</div>
+</div>
+
+
+
+
+<div class="container">
+	<div class="hero-unit">
+		<h1>Open Source Sharing</h1>
+		<div id="myCarousel" class="carousel slide" style="height: 200px; margin: 0 auto">
+		<!-- Carousel items -->
+		<div class="carousel-inner">
+			<div class="active item">
+				<div class="container" style="padding: 40px; height: 80px">
+					<div class="row">
+						<div class="span4" align="center" valign="middle">
+							<img src="img/icon.png" />
+						</div>
+						<div class="span8">
+							<h2>Easy to use!</h2>
+							<ul>
+								<li>Just one click to share a link with your friends.</li>
+								<li>Just one email/jabber message to share a link your friends.</li>
+								<li>Read the shared items with any RSS reader.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="container" style="padding: 40px; height: 80px">
+					<div class="row">
+						<div class="span4" align="center" valign="middle">
+							<img src="img/icon.png" />
+						</div>
+						<div class="span8">
+							<h2>A less cluttered and faster web!</h2>
+							<ul>
+								<li>You can block all like/+1/... buttons and still share.</li>
+								<li>No need to search the share button.</li>
+								<li>No additional account required.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="container" style="padding: 40px; height: 80px">
+					<div class="row">
+						<div class="span4" align="center" valign="middle">
+							<img src="img/icon.png" />
+						</div>
+						<div class="span8">
+							<h2>Better privacy!</h2>
+							<ul>
+								<li>We don't track you!</li>
+								<li>Check our source code to be sure!</li>
+								<li>Don't trust our server? Run your own!</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Carousel nav -->
+		<a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+		<a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container">
+	<a name="namespace" class="name"></a>
+	<h2>Check your namespace</h2>
+	<p>Everybody who knows the namespace can read and post to it. Want to keep it private? Create a random one!</p>
+	<div id="namespace-control" class="control-group">
+	<form id="namespace-form" class="form-search">
+		<div class="controls">
+			<div class="input-prepend">
+				<button type="btn" id="randomizer" class="btn">Randomize Namespace</button>
+				<input type="text" id="namespace" class="search-query span6" placeholder="Check your namespace">
+			</div>
+			<span id="namespace-status" class="help-inline" style="margin-left: 10px"></span>
+		</div>
+	</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+// use a timeout so we don't make the ajax call every keypress.
+$('#namespace')
+	.data('timeout', null)
+	.keyup(function(){
+		resetInput();
+		clearTimeout(jQuery(this).data('timeout'));
+		jQuery(this).data('timeout', setTimeout(checkNamespace, 300));
+	});
+
+// global variables to store the request and the spinner
+// this is done so we can cancel the request and delete the spinner
+// TODO move it into jquery data attribute?
+var request;
+var spinner;
+
+// called to process #namespace
+function checkNamespace() {
+	if(request && request.readyState != 4){
+		request.abort();
+	}
+	
+	if( !$('#namespace').val() ) {
+		resetNamespace();
+		return;
+	}
+	
+	var namespace = $('#namespace').val();
+
+	// TODO use regex to check for invalid namespaces
+	if( namespace == "error" ) {
+		errorNamespace(namespace);
+		return;
+	}
+
+	var target = document.getElementById('namespace-status');
+	spinner = new Spinner(spinnerOpts).spin(target);
+
+	request = $.ajax({
+		type: "POST",
+		url: "namespacecheck",
+		data: { ns: namespace },
+		dataType: 'json',
+	}).done(function( msg ) {
+		parseResult(msg);
+	}).fail(function(jqXHR, textStatus) {
+		// also called if request is aborted
+	}).always(function( msg ) {
+		spinner.stop();
+	});
+};
+
+// parse the return message of namespacecheck
+function parseResult(value) {
+	var namespace = $('#namespace').val();
+	
+	if( value.status == "error" ) {
+		errorNamespace(namespace);
+		return;
+	}
+	
+	if( value.status == "use" ) {
+		inuseNamespace(namespace);
+		return;
+	}
+	
+	if( value.status == "success" ) {
+		successNamespace(namespace);
+		return;
+	}
+	
+	alert ("Should never happen! Please report the bug!")
+}
+
+$('#randomizer').click(function(e) {
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_";
+
+	var text = possible.charAt(Math.floor(Math.random() * (possible.length-3)));
+	for( var i=1; i < 64; i++ )
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	
+	$('#namespace').val(text);
+	checkNamespace();
+
+	e.preventDefault();
+});
+
+// ignore return
+$('#namespace').keydown(function(event) {
+	if (event.which == 13) {
+		event.preventDefault();
+	}
+});
+
+function resetNamespace() {
+	message = "<div class='alert alert-error'>Please choose a namespace.</div>";
+	$('#namespace-message').html(message);
+	$('#namespace-control').removeClass( 'error' );
+	$('#namespace-control').removeClass( 'info' );
+	$('#namespace-control').removeClass( 'success' );
+	$('#namespace-status').html("");
+}
+
+function resetInput() {
+	$('#namespace-control').removeClass( 'error' );
+	$('#namespace-control').removeClass( 'info' );
+	$('#namespace-control').removeClass( 'success' );
+	$('#namespace-status').html("");
+}
+
+
+function generateNamespaceMessage(namespace) {
+	console.log (namespace);
+	message  = "<h4>Browser Extension</h4>";
+	message += "<div class='row'>";
+	message += "<div class='span2 offset1'>Server:</div>";
+	message += "<div class='span8'>"+location.hostname+"</div>";
+	message += "<div class='span2 offset1'>Namespace:</div>";
+	message += "<div class='span8'>" + namespace + "</div>";
+	message += "<div class='span11'><p>Put this information in your browser extension preferences dialog and click the share button.</p></div>";
+	message += "</div>";
+	message += "<h4>Email</h4>";
+	message += "<div class='row'>";
+	message += "<div class='span2 offset1'>Address:</div>";
+	message += "<div class='span8'>" + namespace + "@kaffeeshare.appspotmail.com</div>";
+	message += "<div class='span11'><p>Just sent a link to the email address and it will be shared.</p></div>";
+	message += "</div>";
+	message += "<h4>Jabber</h4>";
+	message += "<div class='row'>";
+	message += "<div class='span2 offset1'>Address:</div>";
+	message += "<div class='span8'>" + namespace + "@kaffeeshare.appspotchat.com</div>";
+	message += "<div class='span11'><p>Just sent a message to our jabber bot and it will be shared.</p></div>";
+	message += "</div>";
+	message += "<h4>RSS Feed</h4>";
+	message += "<div class='row'>";
+	
+	var RSSFeedURL = "https://kaffeeshare.appspot.com/feed?ns=" + encodeURIComponent(namespace);
+	
+	message += "<div class='span2 offset1'>Address:</div>";
+	message += "<div class='span8'>" + RSSFeedURL + "</div>";
+	message += "<div class='span2 offset1'>Add to Google Reader:</div>";
+	message += "<div class='span8'><a href=http://fusion.google.com/add?source=atgs&feedurl=" + encodeURIComponent(RSSFeedURL) + "><img src='http://buttons.googlesyndication.com/fusion/add.gif' alt='Add to Google'></a></div>";
+	message += "<div class='span11'><p>This feed will contain all your shared items. Share it with.</p></div>";
+	message += "</div>";
+	
+	return message;
+}
+
+function successNamespace(namespace) {
+	message = generateNamespaceMessage(namespace);
+
+	message += "<div class='alert alert-info'>Reserve your namespace now by sharing your first item!</div>";
+	$('#namespace-control').removeClass( 'error' );
+	$('#namespace-control').removeClass( 'info' );
+	$('#namespace-control').addClass( 'success' );
+	$('#namespace-status').html("This namespace is free. Feel free to use it!");
+
+	$('#namespace-message').html(message);
+}
+
+function errorNamespace(namespace) {
+	$('#namespace-control').removeClass( 'info' );
+	$('#namespace-control').removeClass( 'success' );
+	$('#namespace-control').addClass( 'error' );
+	$('#namespace-status').html("Invalid namespace. Please choose a different one!");
+	message ="<div class='alert alert-error'>Please enter a valid namespace.</div>";
+
+	$('#namespace-message').html(message);
+}
+
+function inuseNamespace(namespace) {
+	message = generateNamespaceMessage(namespace);
+
+	$('#namespace-control').removeClass( 'error' );
+	$('#namespace-control').removeClass( 'success' );
+	$('#namespace-control').addClass( 'info' );
+	$('#namespace-status').html("This namespace is already in use by someone else.");
+
+	$('#namespace-message').html(message);
+}
+
+</script>
+
+<div class="container">
+	<a name="extension" class="name"></a>
+	<h2>Get your Browser extension</h2>
+	<div class="row-fluid">
+		<ul class="thumbnails">
+		<li class="span4 offset1">
+			<div class="thumbnail">
+				<img data-src="holder.js/300x200" alt="">
+				<div class="caption">
+					<h3>Chrome</h3>
+					<p>Our extension is currently not available in the Chrome store, so you have to download it and install it manually. Sorry about that!</p>
+					<p>
+					<a href="https://github.com/koffeinsource/kaffeeshare-browser-extensions/blob/master/chrome/KaffeeShare.crx?raw=true" class="btn btn-primary">Download</a>
+					<a href="https://support.google.com/chrome_webstore/bin/answer.py?hl=en&answer=2664769" class="btn">Howto install</a></p>
+				</div>
+			</div>
+		</li>
+		<li class="span4 offset1">
+			<div class="thumbnail">
+				<img data-src="holder.js/300x200" alt="">
+				<div class="caption">
+					<h3>Firefox</h3>
+					<p>Just click the install link and the extension will be installed.</p>
+					<p><a href="https://github.com/koffeinsource/kaffeeshare-browser-extensions/blob/master/firefox/kaffeeshare.xpi?raw=true" class="btn btn-primary">Install</a>
+				</div>
+			</div>
+			</li>
+		</li>
+		</ul>
+	</div>
+          
+</div>
+
+<div class="container">
+	<a name="configuration" class="name"></a>
+	<h2>Howto Use It / Configuration</h3>
+	<div id="namespace-message" class="well">
+		<div class="alert alert-error">Please choose a namespace.</div>
+	</div>
+	
+</div>
+
+
+</body>
+</html>

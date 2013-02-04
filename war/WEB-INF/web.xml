@@ -8,20 +8,20 @@
     <url-pattern>/feed</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>de.kaffeeshare.server.Page</servlet-name>
-    <servlet-class>de.kaffeeshare.server.Page</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>de.kaffeeshare.server.Page</servlet-name>
-    <url-pattern>/page</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>de.kaffeeshare.server.input.OneClickShare</servlet-name>
     <servlet-class>de.kaffeeshare.server.input.OneClickShare</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>de.kaffeeshare.server.input.OneClickShare</servlet-name>
     <url-pattern>/oneclickshare</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>de.kaffeeshare.server.NamespaceCheck</servlet-name>
+    <servlet-class>de.kaffeeshare.server.NamespaceCheck</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>de.kaffeeshare.server.NamespaceCheck</servlet-name>
+    <url-pattern>/namespacecheck</url-pattern>
   </servlet-mapping>
   <security-constraint>
     <web-resource-collection>
@@ -96,7 +96,7 @@
     </auth-constraint>
   </security-constraint>
   <welcome-file-list>
-    <welcome-file>page</welcome-file>
+    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
  <servlet>
   <servlet-name>SystemServiceServlet</servlet-name>

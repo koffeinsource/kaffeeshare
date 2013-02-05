@@ -198,7 +198,7 @@ function checkNamespace() {
 		type: "POST",
 		url: "namespacecheck",
 		data: { ns: namespace },
-		dataType: 'json',
+		dataType: 'json'
 	}).done(function( msg ) {
 		parseResult(msg);
 	}).fail(function(jqXHR, textStatus) {

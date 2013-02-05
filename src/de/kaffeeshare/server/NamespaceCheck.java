@@ -35,6 +35,7 @@ public class NamespaceCheck extends HttpServlet {
 			// TODO check if email and jabber address are valid!
 			
 			// check if namespace is empty
+			// TODO do this with a datastore small op
 			if (Datastore.getItems(1).size() > 0) {
 				resp.getWriter().append("{\"status\": \"use\"}");
 				return;

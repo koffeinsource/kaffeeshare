@@ -38,7 +38,7 @@
 	<style>
 		a.name {
 			position: relative;
-			top: 50px;
+			top: -50px;
 			margin: 0;
 			padding: 0;
 			float: left;
@@ -152,7 +152,6 @@
 </div>
 
 <script type="text/javascript">
-
 // use a timeout so we don't make the ajax call every keypress.
 $('#namespace')
 	.data('timeout', null)
@@ -338,7 +337,6 @@ function inuseNamespace(namespace) {
 
 	$('#namespace-message').html(message);
 }
-
 </script>
 
 <div class="container">
@@ -370,10 +368,10 @@ function inuseNamespace(namespace) {
 		</li>
 		</ul>
 	</div>
-          
 </div>
 
 <script type="application/javascript">
+// firefox extension install script
 function install (aEvent) {
 	var params = {
 		"Kaffeeshare": { URL: aEvent.target.href,
@@ -393,7 +391,6 @@ function install (aEvent) {
 	<div id="namespace-message" class="well">
 		<div class="alert alert-error">Please choose a namespace.</div>
 	</div>
-	
 </div>
 
 

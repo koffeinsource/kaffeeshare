@@ -54,7 +54,7 @@
 			<a class="brand" href="#">Kaffeeshare</a>
 			<ul class="nav">
 				<li class="divider-vertical"></li>
-				<li><a href="#namespace">Get your Namespace</a></li>
+				<li><a href="#ns">Get your Namespace</a></li>
 				<li><a href="#extension">Get your Browser Extensions</a></li>
 				<li><a href="#configuration">Howto Use It / Configuration</a></li>
 			</ul>      
@@ -77,8 +77,8 @@
 			<div class="active item">
 				<div class="container" style="padding: 40px; height: 80px">
 					<div class="row">
-						<div class="span4" align="center" valign="middle">
-							<img src="img/icon.png" />
+						<div class="span4" style="text-align: center;">
+							<img src="img/icon.png" alt=""/>
 						</div>
 						<div class="span8">
 							<h2>Easy to use!</h2>
@@ -94,8 +94,8 @@
 			<div class="item">
 				<div class="container" style="padding: 40px; height: 80px">
 					<div class="row">
-						<div class="span4" align="center" valign="middle">
-							<img src="img/icon.png" />
+						<div class="span4" style="text-align: center;">
+							<img src="img/icon.png" alt=""/>
 						</div>
 						<div class="span8">
 							<h2>A less cluttered and faster web!</h2>
@@ -111,8 +111,8 @@
 			<div class="item">
 				<div class="container" style="padding: 40px; height: 80px">
 					<div class="row">
-						<div class="span4" align="center" valign="middle">
-							<img src="img/icon.png" />
+						<div class="span4" style="text-align: center;">
+							<img src="img/icon.png" alt=""/>
 						</div>
 						<div class="span8">
 							<h2>Better privacy!</h2>
@@ -135,7 +135,7 @@
 
 
 <div class="container">
-	<a name="namespace" class="name"></a>
+	<a id="ns" class="name"></a>
 	<h2>Check your namespace</h2>
 	<p>Everybody who knows the namespace can read and post to it. Want to keep it private? Create a random one!</p>
 	<div id="namespace-control" class="control-group">
@@ -283,7 +283,7 @@ function generateNamespaceMessage(namespace) {
 	message += "<div class='row'>";
 	message += "<div class='span2 offset1'>Address:</div>";
 	message += "<div class='span8'>" + namespace + "@kaffeeshare.appspotmail.com</div>";
-	message += "<div class='span11'><p>Just sent a link to the email address and it will be shared.</p></div>";
+	message += "<div class='span11'><p>Just sent a link to the email address and it will be shared. Note: this email address is case sensetive!</p></div>";
 	message += "</div>";
 	message += "<h4>Jabber</h4>";
 	message += "<div class='row'>";
@@ -342,32 +342,31 @@ function inuseNamespace(namespace) {
 </script>
 
 <div class="container">
-	<a name="extension" class="name"></a>
+	<a id="extension" class="name"></a>
 	<h2>Get your Browser extension</h2>
 	<div class="row-fluid">
 		<ul class="thumbnails">
 		<li class="span4 offset1">
 			<div class="thumbnail">
-				<img data-src="holder.js/300x200" alt="">
+				<img src="img/trans.gif" data-src="holder.js/300x200" alt="">
 				<div class="caption">
 					<h3>Chrome</h3>
 					<p>Our extension is currently not available in the Chrome store, so you have to download it and install it manually. Sorry about that!</p>
 					<p>
 					<a href="https://github.com/koffeinsource/kaffeeshare-browser-extensions/blob/master/chrome/KaffeeShare.crx?raw=true" class="btn btn-primary">Download</a>
-					<a href="https://support.google.com/chrome_webstore/bin/answer.py?hl=en&answer=2664769" class="btn">Howto install</a></p>
+					<a href="https://support.google.com/chrome_webstore/bin/answer.py?hl=en&amp;answer=2664769" class="btn">Howto install</a></p>
 				</div>
 			</div>
 		</li>
 		<li class="span4 offset1">
 			<div class="thumbnail">
-				<img data-src="holder.js/300x200" alt="">
+				<img src="img/trans.gif" data-src="holder.js/300x200" alt="">
 				<div class="caption">
 					<h3>Firefox</h3>
 					<p>Just click the install link and the extension will be installed.</p>
-					<p><a onclick="return install(event);" href="https://github.com/koffeinsource/kaffeeshare-browser-extensions/blob/master/firefox/kaffeeshare.xpi?raw=true" class="btn btn-primary">Install</a>
+					<p><a onclick="return install(event);" href="https://github.com/koffeinsource/kaffeeshare-browser-extensions/blob/master/firefox/kaffeeshare.xpi?raw=true" class="btn btn-primary">Install</a></p>
 				</div>
 			</div>
-			</li>
 		</li>
 		</ul>
 	</div>
@@ -389,8 +388,8 @@ function install (aEvent) {
 
 
 <div class="container">
-	<a name="configuration" class="name"></a>
-	<h2>Howto Use It / Configuration</h3>
+	<a id="configuration" class="name"></a>
+	<h2>Howto Use It / Configuration</h2>
 	<div id="namespace-message" class="well">
 		<div class="alert alert-error">Please choose a namespace.</div>
 	</div>

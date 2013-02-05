@@ -21,7 +21,9 @@ public class NamespaceCheck extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String namespace = req.getParameter(PARAM_NAMESPACE);
 		resp.setContentType("text; charset=UTF-8");
-				
+		
+		
+		// TODO By convention, all namespaces starting with "_" (underscore) are reserved for system use. 
 		if (namespace != null) {
 			log.info("Check status of namespace: " + namespace);
 			// check if namespace is valid 

@@ -244,6 +244,13 @@ $('#randomizer').click(function(e) {
 	e.preventDefault();
 });
 
+function lowcasenamespace() {
+	resetInput();
+	
+	$('#namespace').val( $('#namespace').val().toLowerCase() );
+	checkNamespace();
+}
+
 // ignore return
 $('#namespace').keydown(function(event) {
 	if (event.which == 13) {
@@ -284,10 +291,15 @@ function generateNamespaceMessage(namespace) {
 	message += "<div class='span11'><p>Just sent a link to the email address and it will be shared. Note: this email address is case sensetive!</p></div>";
 	message += "</div>";
 	message += "<h4>Jabber</h4>";
+	// jabber only works fine for low cased namespaces
 	message += "<div class='row'>";
-	message += "<div class='span2 offset1'>Address:</div>";
-	message += "<div class='span8'>" + namespace + "@kaffeeshare.appspotchat.com</div>";
-	message += "<div class='span11'><p>Just sent a message to our jabber bot and it will be shared.</p></div>";
+	if (namespace == namespace.toLowerCase()) {
+		message += "<div class='span2 offset1'>Address:</div>";
+		message += "<div class='span8'>" + namespace + "@kaffeeshare.appspotchat.com</div>";
+		message += "<div class='span11'><p>Just sent a message to our jabber bot and it will be shared.</p></div>";
+	} else {
+		message += "<div class='span11 alert alert-info'>Jabber input is only possible if your namespace consists only of lower cases. <button onclick='lowcasenamespace()' type='btn' class='btn'>Turn namespace into lower cases</button></div>";
+	}
 	message += "</div>";
 	message += "<h4>RSS Feed</h4>";
 	message += "<div class='row'>";

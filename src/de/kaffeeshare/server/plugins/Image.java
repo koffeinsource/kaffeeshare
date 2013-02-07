@@ -30,6 +30,8 @@ public class Image extends BasePlugin {
 			return false;
 		}
 		
+		if (contentType == null) return false;
+		
 		log.info("Found content type: " + contentType + " for " + url.toString());
 		
 		return contentType.startsWith("image/");

@@ -38,6 +38,16 @@ public class Datastore {
 		datastore.put(entities);
 	}
 	
+	/**
+	 * Check if current namespace is unused
+	 */
+	public static boolean isEmpty() {	
+		PreparedQuery pq = datastore.prepare(Item.isEmpty());
+		if (pq.asList(FetchOptions.Builder.withLimit(1)).size() > 0) return false;
+
+		return true;
+	}
+	
 	@SuppressWarnings("unused")
 	/**
 	 * Deletes an item in DB, currently not used and only kept for reference.

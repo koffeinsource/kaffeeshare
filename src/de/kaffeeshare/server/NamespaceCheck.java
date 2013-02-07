@@ -3,6 +3,8 @@ package de.kaffeeshare.server;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,9 +23,15 @@ public class NamespaceCheck extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String namespace = req.getParameter(PARAM_NAMESPACE);
 		resp.setContentType("text; charset=UTF-8");
-				
+		
 		if (namespace != null) {
 			log.info("Check status of namespace: " + namespace);
+			
+			// By convention, all namespaces starting with "_" (underscore) are reserved for system use.
+			if (namespace.charAt(0) == '_') {
+				resp.getWriter().append("{\"status\": \"error\"}");
+				return;
+			}
 			// check if namespace is valid 
 			try {
 				Namespace.setNamespace(namespace);
@@ -32,11 +40,21 @@ public class NamespaceCheck extends HttpServlet {
 				return;
 			}
 			
-			// TODO check if email and jabber address are valid!
+			// check if email and jabber address are valid!
+			// I think a valid email address also a valid jabber address
+			// so I only check for valid email address
+			try {
+				InternetAddress emailAddr = new InternetAddress(namespace+"@abc.com");
+				emailAddr.validate();
+			} catch (AddressException ex) {
+				resp.getWriter().append("{\"status\": \"error\"}");
+				return;
+			}
+			
+			
 			
 			// check if namespace is empty
-			// TODO do this with a datastore small op
-			if (Datastore.getItems(1).size() > 0) {
+			if (!Datastore.isEmpty()) {
 				resp.getWriter().append("{\"status\": \"use\"}");
 				return;
 			}

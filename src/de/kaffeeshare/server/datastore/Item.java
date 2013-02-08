@@ -85,6 +85,15 @@ public class Item {
 		return query;
 	}
 	
+	/**
+	 * Creates a DB query returning items ordered by creation date.
+	 */
+	static public Query isEmpty() {
+		Query query = new Query(DB_KIND_ITEM, null);
+		query.setKeysOnly();
+		return query;
+	}
+
 	public String getCaption() {
 		return caption;
 	}

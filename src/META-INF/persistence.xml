@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	
+	
+  <persistence-unit name="transactions-optional">
+    <provider>org.datanucleus.api.jpa.PersistenceProviderImpl</provider>
+    <class>de.kaffeeshare.server.datastore.Item</class>
+    <class>de.kaffeeshare.server.datastore.jpa.JPAItem</class>
+    <properties>
+      <property name="datanucleus.NontransactionalRead" value="true"/>
+      <property name="datanucleus.NontransactionalWrite" value="true"/>
+      <property name="datanucleus.ConnectionURL" value="appengine"/>
+      <property name="datanucleus.singletonEMFForName" value="true"/>
+      <property name="datanucleus.autoCreateSchema" value="true"/>
+      <property name="datanucleus.allowAttachOfTransient" value="true"/> 
+    </properties>
+  </persistence-unit>
+  
+</persistence>

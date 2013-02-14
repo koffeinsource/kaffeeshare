@@ -15,7 +15,7 @@ import com.google.appengine.api.xmpp.XMPPService;
 import com.google.appengine.api.xmpp.XMPPServiceFactory;
 
 import de.kaffeeshare.server.UrlImporter;
-import de.kaffeeshare.server.datastore.Namespace;
+import de.kaffeeshare.server.datastore.DatastoreManager;
 
 /**
  * Servlet to handle incomming jabber / xmpp messages.
@@ -57,9 +57,9 @@ public class Jabber extends HttpServlet {
 		// or is it   sent to anything@<AppID>.appspotchat.com <- namespace: anything
 		if (!recieverIDStr.contains("@appspot.com") ) {
 			recieverIDStr = recieverIDStr.split("@")[0];
-			Namespace.setNamespace(recieverIDStr);
+			DatastoreManager.setNamespace(recieverIDStr);
 		} else {
-			Namespace.setNamespace(null);
+			DatastoreManager.setNamespace(null);
 		}
 
 		try {

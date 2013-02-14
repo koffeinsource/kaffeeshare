@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 
 public class Image extends BasePlugin {
@@ -44,7 +45,7 @@ public class Image extends BasePlugin {
 		String description = "<img src='" +url.toString()+ "'>";
 
 		String imageUrl = "";
-		return new Item(caption, urlString, description, imageUrl);
+		return DatastoreManager.getDatastore().createItem(caption,urlString, description, imageUrl);
 	}
 
 }

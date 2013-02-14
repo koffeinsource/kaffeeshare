@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.kaffeeshare.server.datastore.Datastore;
+import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.InputErrorException;
 import de.kaffeeshare.server.plugins.BasePlugin;
@@ -26,7 +26,7 @@ public class UrlImporter {
 
 	private static final Logger log = Logger.getLogger(UrlImporter.class.getName());
 	private static Vector<BasePlugin> plugins;
-
+	
 	/**
 	 * Adds the first URL of a String to the DB
 	 * 
@@ -39,7 +39,7 @@ public class UrlImporter {
 
 		if (url != null) {
 			log.info("Try to add url " + url + " to DB");
-			Datastore.storeItem(fetchUrl(url));
+			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
 		}
 
 		return url;
@@ -57,7 +57,7 @@ public class UrlImporter {
 
 		if (url != null) {
 			log.info("Try to add url " + url + " to DB");
-			Datastore.storeItem(fetchUrl(url));
+			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
 		}
 
 		return url;

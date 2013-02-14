@@ -20,9 +20,9 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.SyndFeedOutput;
 
 import de.kaffeeshare.server.Config;
-import de.kaffeeshare.server.datastore.Datastore;
+import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
-import de.kaffeeshare.server.datastore.Namespace;
+import de.kaffeeshare.server.datastore.UrlValidator;
 
 /**
  * This servlet generates a rss feed with the latest news.
@@ -47,7 +47,7 @@ public class Feed extends HttpServlet {
 
 			try {
 				ns = req.getParameter(PARAM_NAMESPACE);
-				Namespace.setNamespace(ns);
+				DatastoreManager.setNamespace(ns);
 			} catch (Exception e) {
 				// return an empty page if something isn't ok
 				return;
@@ -61,7 +61,7 @@ public class Feed extends HttpServlet {
 			feed.setDescription(Config.Phrase);
 
 			List<SyndEntry> feedEntries = new ArrayList<SyndEntry>();
-			List<Item> items = Datastore.getItems(20);
+			List<Item> items = DatastoreManager.getDatastore().getItems(20);
 			for (Item item : items) {
 				SyndEntry feedEntry;
 				SyndContent feedContent;
@@ -74,7 +74,7 @@ public class Feed extends HttpServlet {
 				feedContent.setType("html");
 				String content = "";
 				String imageUrl = item.getImageUrl();
-				if (Item.isUrl(imageUrl)) {
+				if (UrlValidator.isValide(imageUrl)) {
 					content += "<div style=\"float:left; margin-right:16px; margin-bottom:16px;\"><img width=\"200\" src=\""
 							+ imageUrl + "\" alt=\"\"/></div>";
 				}

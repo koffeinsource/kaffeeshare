@@ -9,8 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import de.kaffeeshare.server.UrlImporter;
-import de.kaffeeshare.server.datastore.Datastore;
-import de.kaffeeshare.server.datastore.Namespace;
+import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.exception.ReservedNamespaceException;
 
 /**
@@ -35,14 +34,14 @@ public class OneClickShare extends HttpServlet {
 		resp.setContentType("text; charset=UTF-8");
 		if (url != null) {
 			try {
-				Namespace.setNamespace(req.getParameter(PARAM_NAMESPACE));
+				DatastoreManager.setNamespace(req.getParameter(PARAM_NAMESPACE));
 			} catch (ReservedNamespaceException e) {
 				resp.getWriter().append("1"); // TODO return a different error code
 				return;
 			}
 			try {
 				log.info("Try to add url " + url + " to DB");
-				Datastore.storeItem(UrlImporter.fetchUrl(url));
+				DatastoreManager.getDatastore().storeItem(UrlImporter.fetchUrl(url));
 				resp.getWriter().append("0");
 			} catch (Exception e) {
 				log.warning("exeption during import of url: " + e);

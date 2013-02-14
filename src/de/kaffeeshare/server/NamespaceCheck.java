@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.kaffeeshare.server.datastore.Datastore;
-import de.kaffeeshare.server.datastore.Namespace;
+import de.kaffeeshare.server.datastore.DatastoreManager;
 
 public class NamespaceCheck extends HttpServlet {
 
@@ -34,7 +33,7 @@ public class NamespaceCheck extends HttpServlet {
 			}
 			// check if namespace is valid 
 			try {
-				Namespace.setNamespace(namespace);
+				DatastoreManager.setNamespace(namespace);
 			} catch (Exception e) {
 				resp.getWriter().append("{\"status\": \"error\"}");
 				return;
@@ -54,7 +53,7 @@ public class NamespaceCheck extends HttpServlet {
 			
 			
 			// check if namespace is empty
-			if (!Datastore.isEmpty()) {
+			if (!DatastoreManager.getDatastore().isEmpty()) {
 				resp.getWriter().append("{\"status\": \"use\"}");
 				return;
 			}

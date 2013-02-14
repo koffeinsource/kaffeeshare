@@ -20,7 +20,6 @@ public class Item {
 
 	private static final String DB_KIND_ITEM = "Item";
 	private static final String DB_ITEM_CAPTION = "Caption";
-	private static final String DB_ITEM_URL = "URL";
 	private static final String DB_ITEM_DESCRIPTION = "Description";
 	private static final String DB_ITEM_CREATEDAT = "CreatedAt";
 	private static final String DB_ITEM_IMAGEURL = "imageUrl";
@@ -47,7 +46,7 @@ public class Item {
 	 */
 	public Item(Entity e) {
 		this ((String) e.getProperty(DB_ITEM_CAPTION),
-		      (String) e.getProperty(DB_ITEM_URL),
+		      (String) e.getKey().getName(),
 		      ((Text) e.getProperty(DB_ITEM_DESCRIPTION)).getValue(),
 		      (String) e.getProperty(DB_ITEM_IMAGEURL)
 		     );
@@ -61,7 +60,6 @@ public class Item {
 	public Entity toEntity() {
 		Entity entity = new Entity(getDBKey());
 		entity.setUnindexedProperty(DB_ITEM_CAPTION, getCaption());
-		entity.setProperty(DB_ITEM_URL, getUrl());
 		entity.setUnindexedProperty(DB_ITEM_DESCRIPTION, new Text(getDescription()));
 		entity.setUnindexedProperty(DB_ITEM_IMAGEURL, getImageUrl());
 		entity.setProperty(DB_ITEM_CREATEDAT, createdAt.getTime());

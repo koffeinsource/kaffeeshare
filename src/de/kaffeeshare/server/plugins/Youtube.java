@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
@@ -94,7 +95,7 @@ public class Youtube extends BasePlugin {
 			urlString = url.toString();
 		}
 
-		return new Item(caption, urlString, description, imageUrl);
+		return DatastoreManager.getDatastore().createItem(caption,urlString, description, imageUrl);
 	}
 
 }

@@ -1,99 +1,48 @@
 package de.kaffeeshare.server.datastore;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Date;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.Text;
-
+import javax.persistence.MappedSuperclass;
 
 /**
  * A news item.
  */
+@MappedSuperclass
 public class Item {
-
-	private static final String DB_KIND_ITEM = "Item";
-	private static final String DB_ITEM_CAPTION = "Caption";
-	private static final String DB_ITEM_URL = "URL";
-	private static final String DB_ITEM_DESCRIPTION = "Description";
-	private static final String DB_ITEM_CREATEDAT = "CreatedAt";
-	private static final String DB_ITEM_IMAGEURL = "imageUrl";
 	
-	private String caption;
-	private String url;
-	private String imageUrl;
-	private String description;
-	private Date createdAt;
+	protected String caption = null;
+	protected String url = null;
+	protected String imageUrl = null;
+	protected String description = null;
+	protected Date createdAt = null;
 
+	/**
+	 * Creates a new item.
+	 * This constructor is important for JPA
+	 */
+	public Item() {
+	}
+	
 	/**
 	 * Creates a new item.
 	 */
 	public Item(String caption, String url, String description, String imageUrl) {
 		this.caption = caption;
-		setUrl(url);
+		this.url = url;
 		this.description = description;
 		this.createdAt = new Date();
 		this.imageUrl = imageUrl;
 	}
 	
 	/**
-	 * Creates an item from a DB entity.
+	 * Creates a new item with defined creation date.
 	 */
-	public Item(Entity e) {
-		this ((String) e.getProperty(DB_ITEM_CAPTION),
-		      (String) e.getProperty(DB_ITEM_URL),
-		      ((Text) e.getProperty(DB_ITEM_DESCRIPTION)).getValue(),
-		      (String) e.getProperty(DB_ITEM_IMAGEURL)
-		     );
-		
-		this.createdAt = new Date((Long)e.getProperty(DB_ITEM_CREATEDAT));
-	}
-	
-	/**
-	 * Returns a DB entity for the current item.
-	 */
-	public Entity toEntity() {
-		Entity entity = new Entity(getDBKey());
-		entity.setUnindexedProperty(DB_ITEM_CAPTION, getCaption());
-		entity.setProperty(DB_ITEM_URL, getUrl());
-		entity.setUnindexedProperty(DB_ITEM_DESCRIPTION, new Text(getDescription()));
-		entity.setUnindexedProperty(DB_ITEM_IMAGEURL, getImageUrl());
-		entity.setProperty(DB_ITEM_CREATEDAT, createdAt.getTime());
-		
-		return entity;
-	}
-	
-	/**
-	 * The DB key of the current item.
-	 */
-	public Key getDBKey() {
-		return KeyFactory.createKey(DB_KIND_ITEM, url);
-	}
-	
-	/**
-	 * Creates a DB query returning items ordered by creation date.
-	 */
-	static public Query getDBQuery() {
-		Query query = new Query(DB_KIND_ITEM, null);
-		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
-		return query;
-	}
-	
-	/**
-	 * Creates a DB query returning items ordered by creation date.
-	 */
-	static public Query isEmpty() {
-		Query query = new Query(DB_KIND_ITEM, null);
-		query.setKeysOnly();
-		return query;
+	public Item(String caption, String url, String description, String imageUrl, Date createdAt) {
+		this(caption, url, description, imageUrl);
+		this.createdAt = createdAt;
 	}
 
+	
 	public String getCaption() {
 		return caption;
 	}
@@ -105,35 +54,13 @@ public class Item {
 	public String getUrl() {
 		return url;
 	}
-
+	
 	public boolean hasUrl() {
-		return isUrl(url);
-	}
-
-	// TODO too generic, put somewhere else
-	public static boolean isUrl(String url) {
-		try {
-			URL temp = new URL(url);
-			temp.toURI();
-			
-			return true;
-		} catch (MalformedURLException e) {
-			return false;
-		} catch (URISyntaxException e) {
-			return false;
-		}
+		return url != null;
 	}
 
 	public void setUrl(String url) {
-		if (isUrl(url)) {
-			if (url.startsWith("http://") || url.startsWith("https://")) {
-			} else {
-				url = "http://" + url;
-			}
-			this.url = url;
-		} else {
-			this.url = null;
-		}
+		this.url = url;
 	}
 
 	public String getDescription() {

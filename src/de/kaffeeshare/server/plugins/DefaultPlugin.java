@@ -6,6 +6,7 @@ import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
@@ -90,7 +91,7 @@ public class DefaultPlugin extends BasePlugin {
 			urlString = url.toString();
 		}
 		
-		return new Item(caption, urlString, description, imageUrl);
+		return DatastoreManager.getDatastore().createItem(caption,urlString, description, imageUrl);
 	}
 
 }

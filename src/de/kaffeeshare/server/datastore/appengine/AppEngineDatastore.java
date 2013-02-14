@@ -161,4 +161,19 @@ public class AppEngineDatastore implements Datastore {
 		return query;
 	}
 	
+	/**
+	 * Check if current namespace is unused.
+	 * @return true, if namespace is unused
+	 */
+	public boolean isEmpty() {
+		
+		Query query = new Query(DB_KIND_ITEM, null);
+		query.setKeysOnly();
+		
+		PreparedQuery pq = datastore.prepare(query);
+		if (pq.asList(FetchOptions.Builder.withLimit(1)).size() > 0) return false;
+
+		return true;
+	}
+	
 }

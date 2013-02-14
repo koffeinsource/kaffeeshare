@@ -149,4 +149,18 @@ public class JPADatastore implements Datastore {
 		this.namespace = ns;
 	}
 
+	/**
+	 * Check if current namespace is unused.
+	 * @return true, if namespace is unused
+	 */
+	public boolean isEmpty() {
+
+		List<Item> items = getItems(1);
+		if(items == null || items.isEmpty()) {
+			return true;
+		}
+
+		return false;
+	}
+
 }

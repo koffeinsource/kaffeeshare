@@ -16,4 +16,6 @@ public interface Datastore {
 	public List<Item> getItems(int maxNumber);
 	
 	public void setNamespace(String ns);
+	
+	public boolean isEmpty();
 }

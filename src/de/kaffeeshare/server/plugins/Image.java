@@ -16,7 +16,7 @@ public class Image extends BasePlugin {
 		try {
 			try {
 				// lets try HTTP HEAD
-				HttpURLConnection connection = (HttpURLConnection)  url.openConnection();
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 				connection.setRequestMethod("HEAD");
 				connection.connect();
 				contentType = connection.getContentType();
@@ -30,6 +30,8 @@ public class Image extends BasePlugin {
 			log.warning("Got IOException when calling getContent on " + url.toString());
 			return false;
 		}
+		
+		if (contentType == null) return false;
 		
 		log.info("Found content type: " + contentType + " for " + url.toString());
 		

@@ -22,7 +22,7 @@ import com.sun.syndication.io.SyndFeedOutput;
 import de.kaffeeshare.server.Config;
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
-import de.kaffeeshare.server.datastore.UrlValidator;
+import de.kaffeeshare.server.utils.UrlValidator;
 
 /**
  * This servlet generates a rss feed with the latest news.

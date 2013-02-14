@@ -19,7 +19,6 @@ import com.google.appengine.api.datastore.Text;
 
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Item;
-import de.kaffeeshare.server.datastore.UrlValidator;
 
 /**
  * Datastore helper class for googles app engine.
@@ -44,7 +43,7 @@ public class AppEngineDatastore implements Datastore {
 	 * @return Item
 	 */
 	public Item createItem(String caption, String url, String description, String imageUrl) {
-		return new Item(caption, UrlValidator.encodeUrl(url), description, imageUrl);
+		return new Item(caption, url, description, imageUrl);
 	}
 	
 	/**

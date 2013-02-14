@@ -9,7 +9,6 @@ import javax.persistence.Query;
 
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Item;
-import de.kaffeeshare.server.datastore.UrlValidator;
 
 /**
  * Datastore helper class for googles app engine.
@@ -35,7 +34,7 @@ public class JPADatastore implements Datastore {
 	 * @return Item
 	 */
 	public Item createItem(String caption, String url, String description, String imageUrl) {
-		return new JPAItem(caption, UrlValidator.encodeUrl(url), namespace, description, imageUrl);
+		return new JPAItem(caption, url, namespace, description, imageUrl);
 	}
 	
 	/**

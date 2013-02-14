@@ -1,4 +1,4 @@
-package de.kaffeeshare.server.datastore;
+package de.kaffeeshare.server.utils;
 
 import java.util.Arrays;
 import java.util.List;

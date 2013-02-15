@@ -184,10 +184,6 @@ function checkNamespace() {
 	var namespace = $('#namespace').val();
 
 	// TODO use regex to check for invalid namespaces
-	if( namespace == "error" ) {
-		errorNamespace(namespace);
-		return;
-	}
 
 	// start the spinner
 	var target = document.getElementById('namespace-status');
@@ -365,7 +361,7 @@ function inuseNamespace(namespace) {
 					<h3>Chrome</h3>
 					<p>Just install our extension from the Chrome Store!</p>
 					<p>
-					<a target="_blank" href="https://chrome.google.com/webstore/detail/kaffeeshare/bandplnfdmdhhbnahljgnkdhgailfeod" class="btn btn-primary">Chrome Store</a>
+					<a target="_blank" href="https://chrome.google.com/webstore/detail/kaffeeshare/bandplnfdmdhhbnahljgnkdhgailfeod" class="btn btn-primary">Add to Chrome</a>
 				</div>
 			</div>
 		</li>

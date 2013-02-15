@@ -27,7 +27,6 @@ public class AppEngineDatastore implements Datastore {
 
 	private static final String DB_KIND_ITEM = "Item";
 	private static final String DB_ITEM_CAPTION = "Caption";
-	private static final String DB_ITEM_URL = "URL";
 	private static final String DB_ITEM_DESCRIPTION = "Description";
 	private static final String DB_ITEM_CREATEDAT = "CreatedAt";
 	private static final String DB_ITEM_IMAGEURL = "imageUrl";
@@ -119,7 +118,7 @@ public class AppEngineDatastore implements Datastore {
 	private Item fromEntity(Entity e) {
 		
 		return new Item((String) e.getProperty(DB_ITEM_CAPTION),
-						(String) e.getProperty(DB_ITEM_URL),
+						(String) e.getKey().getName(),
 						((Text) e.getProperty(DB_ITEM_DESCRIPTION)).getValue(),
 						(String) e.getProperty(DB_ITEM_IMAGEURL),
 						new Date((Long)e.getProperty(DB_ITEM_CREATEDAT))
@@ -134,7 +133,6 @@ public class AppEngineDatastore implements Datastore {
 	private Entity toEntity(Item item) {
 		Entity entity = new Entity(getDBKey(item));
 		entity.setUnindexedProperty(DB_ITEM_CAPTION, item.getCaption());
-		entity.setProperty(DB_ITEM_URL, item.getUrl());
 		entity.setUnindexedProperty(DB_ITEM_DESCRIPTION, new Text(item.getDescription()));
 		entity.setUnindexedProperty(DB_ITEM_IMAGEURL, item.getImageUrl());
 		entity.setProperty(DB_ITEM_CREATEDAT, item.getCreatedAt().getTime());

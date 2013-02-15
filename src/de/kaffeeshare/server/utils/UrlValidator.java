@@ -29,6 +29,8 @@ public class UrlValidator {
 	 * @return true if url is valid, false otherwise
 	 */
 	public static boolean isValide(String url)  {
+		if (url == null) return false;
+		
 		try {
 			validate(url);
 		} catch (Exception e) {

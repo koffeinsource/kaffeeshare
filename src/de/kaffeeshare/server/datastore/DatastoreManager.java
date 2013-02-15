@@ -29,13 +29,13 @@ public class DatastoreManager {
 	public static Datastore getDatastore() {
 		
 		if(datastoreConfig.equals(APPENGINE)) {
-			log.info("Use AppEngine datastore interface.");
 			if (datastore.get() == null) {
+				log.info("Use AppEngine datastore interface.");
 				datastore.set(new AppEngineDatastore());
 			}
 		} else if(datastoreConfig.equals(JPA)) {
-			log.info("Use JPA datastore interface.");
 			if (datastore.get() == null) {
+				log.info("Use JPA datastore interface.");
 				datastore.set(new JPADatastore());
 			}
 		} else {

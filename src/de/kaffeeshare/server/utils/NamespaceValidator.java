@@ -25,12 +25,13 @@ public class NamespaceValidator {
 	 * Validates a namespace. An exception if thrown in case it is not valid
 	 * @param ns the namespace to be validated
 	 */
-	private static void validate(String ns) {
+	public static void validate(String ns) {
 		if (ns == null || reservedNamespaces.contains(ns)) {
 			log.info("Trying to use a reserved namespace");
 			throw new ReservedNamespaceException();
 		}
 		try {
+			// TODO this will only work on the Google App Engine
 			NamespaceManager.validateNamespace(ns);
 		} catch (IllegalArgumentException e) {
 			log.info("Trying to use an illegal namespace: " + ns);

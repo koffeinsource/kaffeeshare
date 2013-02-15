@@ -31,6 +31,7 @@ public class NamespaceCheck extends HttpServlet {
 				resp.getWriter().append("{\"status\": \"error\"}");
 				return;
 			}
+			
 			// check if namespace is valid 
 			try {
 				DatastoreManager.setNamespace(namespace);
@@ -49,8 +50,6 @@ public class NamespaceCheck extends HttpServlet {
 				resp.getWriter().append("{\"status\": \"error\"}");
 				return;
 			}
-			
-			
 			
 			// check if namespace is empty
 			if (!DatastoreManager.getDatastore().isEmpty()) {

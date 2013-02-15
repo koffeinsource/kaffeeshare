@@ -1,0 +1,7 @@
+<backends>
+	<backend name="db-cleanup">
+		<options>
+			<dynamic>true</dynamic>
+		</options>
+	</backend>
+</backends>

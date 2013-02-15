@@ -122,7 +122,6 @@ public class JPADatastore implements Datastore {
 
 			Query q = entityManager.createNamedQuery("findNsItems");
 			q.setParameter("ns", namespace);
-			q.setParameter("maxNumber", maxNumber);
 			
 			q.setMaxResults(maxNumber);
 			

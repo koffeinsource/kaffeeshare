@@ -51,11 +51,10 @@ public class DatastoreManager {
 	 * @param ns the namespace to be set
 	 */
 	public static void setNamespace(String ns) {
+		NamespaceValidator.validate(ns);
 		
-		if(NamespaceValidator.isValide(ns)) {
-			log.info("Namespace set to " + ns);
-			getDatastore().setNamespace(ns);
-		}
+		log.info("Namespace set to " + ns);
+		getDatastore().setNamespace(ns);
 	}
 
 }

@@ -13,7 +13,7 @@ import de.kaffeeshare.server.utils.NamespaceValidator;
  */
 public class DatastoreManager {
 	
-	private static final String datastoreConfig = ResourceBundle.getBundle("de.kaffeeshare.server.datastore.config").getString("datastore");
+	private static final String datastoreConfig = ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("datastore");
 	
 	private static final String APPENGINE = "AppEngine";
 	private static final String JPA = "JPA";

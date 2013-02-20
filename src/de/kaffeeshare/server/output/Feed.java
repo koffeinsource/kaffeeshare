@@ -3,6 +3,7 @@ package de.kaffeeshare.server.output;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +20,6 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.SyndFeedOutput;
 
-import de.kaffeeshare.server.Config;
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.utils.UrlValidator;
@@ -56,10 +56,9 @@ public class Feed extends HttpServlet {
 			SyndFeed feed = new SyndFeedImpl();
 			feed.setFeedType(feedType);
 
-			feed.setTitle(Config.Name + " - " + ns);
+			feed.setTitle(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("name") + " - " + ns);
 			feed.setLink("http://"+req.getServerName());
-			feed.setDescription(Config.Phrase);
-
+			feed.setDescription(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("phrase"));
 			List<SyndEntry> feedEntries = new ArrayList<SyndEntry>();
 			List<Item> items = DatastoreManager.getDatastore().getItems(20);
 			for (Item item : items) {

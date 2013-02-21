@@ -21,12 +21,15 @@ public class OneClickShare extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(OneClickShare.class.getName());
 
-	private static String PARAM_URL = "url";
-	private static String PARAM_NAMESPACE = "ns";
+	private static final String PARAM_URL = "url";
+	private static final String PARAM_NAMESPACE = "ns";
+	
+	private static final String OK = "0";
+	private static final String ERROR = "1";
 	
 	/**
 	 * imports url given by url parameter
-	 * reponse is "0" on success and "1" on failure 
+	 * reponse is OK on success and ERROR on failure 
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -36,20 +39,20 @@ public class OneClickShare extends HttpServlet {
 			try {
 				DatastoreManager.setNamespace(req.getParameter(PARAM_NAMESPACE));
 			} catch (ReservedNamespaceException e) {
-				resp.getWriter().append("1"); // TODO return a different error code
+				resp.getWriter().append(ERROR); // TODO return a different error code
 				return;
 			}
 			try {
-				log.info("Try to add url " + url + " to DB");
+				log.info(Messages.getString("OneClickShare.url_add") + url);
 				DatastoreManager.getDatastore().storeItem(UrlImporter.fetchUrl(url));
-				resp.getWriter().append("0");
+				resp.getWriter().append(OK);
 			} catch (Exception e) {
-				log.warning("exeption during import of url: " + e);
-				resp.getWriter().append("1");
+				log.warning(Messages.getString("OneClickShare.url_exception") + e);
+				resp.getWriter().append(ERROR);
 			}
 		} else {
-			log.warning("no url provided!");
-			resp.getWriter().append("1");
+			log.warning(Messages.getString("OneClickShare.no_url"));
+			resp.getWriter().append(ERROR); 
 		}
 	}
 

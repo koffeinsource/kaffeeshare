@@ -24,7 +24,7 @@ public class Dilbert extends BasePlugin {
 
 	@Override
 	public Item createItem(URL url) {
-		log.info("Running Dilbert plugin!");
+		log.info(Messages.getString("Dilbert.running"));
 
 		Document doc;
 		try {
@@ -54,7 +54,7 @@ public class Dilbert extends BasePlugin {
 			}
 		}
 
-		log.info("caption: " + caption);
+		log.info(Messages.getString("DefaultPlugin.caption") + caption);
 
 		String description = "";
 
@@ -74,7 +74,7 @@ public class Dilbert extends BasePlugin {
 		} catch (Exception e) {
 			throw new InputErrorException();
 		}
-		log.info("description: " + description);
+		log.info(Messages.getString("DefaultPlugin.desc") + description);
 
 		String urlString = null;
 		try {

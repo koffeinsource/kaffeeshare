@@ -20,7 +20,7 @@ public class Vimeo extends BasePlugin {
 
 	@Override
 	public Item createItem(URL url) {
-		log.info("Running Vimeo plugin!");
+		log.info(Messages.getString("Vimeo.running"));
 
 		Document doc;
 		try {
@@ -51,7 +51,7 @@ public class Vimeo extends BasePlugin {
 			}
 		}
 
-		log.info("caption: " + caption);
+		log.info(Messages.getString("DefaultPlugin.caption") + caption);
 
 		String description = null;
 
@@ -76,7 +76,7 @@ public class Vimeo extends BasePlugin {
 					+ "?title=0&amp;byline=0&amp;portrait=0\" width=\"400\" height=\"225\" frameborder=\"0\" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
 		}
 
-		log.info("desc: " + description);
+		log.info(Messages.getString("DefaultPlugin.desc") + description);
 
 		String imageUrl = "";
 

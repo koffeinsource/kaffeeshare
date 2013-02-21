@@ -41,8 +41,8 @@ public class Jabber extends HttpServlet {
 			return;
 		}
 
-		log.info("got XMPP message from: " + message.getFromJid());
-		log.info("Message body: " + message.getBody());
+		log.info(Messages.getString("Jabber.msg_xmpp") + message.getFromJid());
+		log.info(Messages.getString("Jabber.msg_body") + message.getBody());
 
 		importUrl(message);
 	}
@@ -66,13 +66,13 @@ public class Jabber extends HttpServlet {
 			String url = UrlImporter.importFromText(message.getBody());
 
 			if (url != null)
-				replyMessageBody = "URL " + url + " added to DB.";
+				replyMessageBody =  Messages.getString("Jabber.url_added" + url);
 			else
-				replyMessageBody = "No URL found!";
+				replyMessageBody = Messages.getString("Jabber.url_not_found");
 
 		} catch (Exception e) {
 			// server error
-			replyMessageBody = "Server error, should not happen!";
+			replyMessageBody = Messages.getString("Jabber.server_error");
 		}
 
 		Message msg = new MessageBuilder()
@@ -84,6 +84,6 @@ public class Jabber extends HttpServlet {
 		boolean messageSent = (status.getStatusMap().get(message.getFromJid()) == SendResponse.Status.SUCCESS);
 
 		if (!messageSent)
-			log.warning("Reply message could not be sent, this should not happen(?)");
+			log.warning(Messages.getString("Jabber.send_error"));
 	}
 }

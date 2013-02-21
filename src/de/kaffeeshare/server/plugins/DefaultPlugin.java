@@ -45,7 +45,7 @@ public class DefaultPlugin extends BasePlugin {
 			}
 		}
 		
-		log.info("caption: " + caption);
+		log.info(Messages.getString("DefaultPlugin.caption") + caption);
 
 		String description = null;
 		
@@ -63,7 +63,7 @@ public class DefaultPlugin extends BasePlugin {
 			}
 		}
 		
-		log.info("desc: " + description);
+		log.info(Messages.getString("DefaultPlugin.desc") + description);
 
 		String imageUrl = "";
 		try {
@@ -77,7 +77,7 @@ public class DefaultPlugin extends BasePlugin {
 		} catch (Exception e) {
 			imageUrl = "";
 		}
-		log.info("imageUrl: " + imageUrl);
+		log.info(Messages.getString("DefaultPlugin.img_url") + imageUrl);
 		
 		String urlString = null;
 		try {

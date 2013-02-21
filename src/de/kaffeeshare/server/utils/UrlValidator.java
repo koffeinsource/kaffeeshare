@@ -32,7 +32,7 @@ public class UrlValidator {
 		try {
 			validate(url);
 		} catch (Exception e) {
-			log.info("Trying to use an illegal url: " + url);
+			log.info(Messages.getString("UrlValidator.illegal_url_error") + url);
 			return false;
 		}
 		

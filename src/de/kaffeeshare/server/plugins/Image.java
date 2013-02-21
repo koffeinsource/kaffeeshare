@@ -20,27 +20,27 @@ public class Image extends BasePlugin {
 				connection.setRequestMethod("HEAD");
 				connection.connect();
 				contentType = connection.getContentType();
-				log.info("HTTP GET for " + url.toString() + " successfull");
+				log.info(Messages.getString("Image.http_get_successfull") + url.toString());
 			} catch (ProtocolException e) {
 				// ok, HTTP HEAD was not working, lets try a GET
-				log.info("Fallback to HTTP GET for " + url.toString());
+				log.info(Messages.getString("Image.http_get_fallback") + url.toString());
 				contentType = url.openConnection().getContentType();
 			}
 		} catch (IOException e) {
-			log.warning("Got IOException when calling getContent on " + url.toString());
+			log.warning(Messages.getString("Image.io_exception") + url.toString());
 			return false;
 		}
 		
 		if (contentType == null) return false;
 		
-		log.info("Found content type: " + contentType + " for " + url.toString());
+		log.info(Messages.getString("Image.content_type_found") + contentType + ": " + url.toString());
 		
 		return contentType.startsWith("image/");
 	}
 
 	@Override
 	public Item createItem(URL url) {
-		log.info("Running Image plugin!");
+		log.info(Messages.getString("Image.running"));
 
 		String caption = url.getFile().substring(1); // .getFile() returns "/<name>"
 		String urlString = url.toString();

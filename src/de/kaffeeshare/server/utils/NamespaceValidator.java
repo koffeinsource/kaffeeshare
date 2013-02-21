@@ -27,13 +27,13 @@ public class NamespaceValidator {
 	 */
 	private static void validate(String ns) {
 		if (ns == null || reservedNamespaces.contains(ns)) {
-			log.info("Trying to use a reserved namespace");
+			log.info(Messages.getString("NamespaceValidator.reserved_ns_error"));
 			throw new ReservedNamespaceException();
 		}
 		try {
 			NamespaceManager.validateNamespace(ns);
 		} catch (IllegalArgumentException e) {
-			log.info("Trying to use an illegal namespace: " + ns);
+			log.info(Messages.getString("NamespaceValidator.illegal_ns_error") + ns);
 			throw new IllegalNamespaceException();
 		}
 	}

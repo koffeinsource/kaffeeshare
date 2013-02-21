@@ -38,7 +38,7 @@ public class UrlImporter {
 		String url = getURLPlain(text);
 
 		if (url != null) {
-			log.info("Try to add url " + url + " to DB");
+			log.info(Messages.getString("UrlImporter.url_add") + url);
 			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
 		}
 
@@ -56,7 +56,7 @@ public class UrlImporter {
 		String url = getURLHTML(text);
 
 		if (url != null) {
-			log.info("Try to add url " + url + " to DB");
+			log.info(Messages.getString("UrlImporter.url_add") + url);
 			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
 		}
 
@@ -138,7 +138,7 @@ public class UrlImporter {
 				url = url.substring(1, url.length() - 1);
 			}
 
-			log.info("found url: " + url);
+			log.info(Messages.getString("UrlImporter.url_found") + url);
 			return url;
 		}
 		return null;
@@ -157,7 +157,7 @@ public class UrlImporter {
 		while (m.find()) {
 			String url = m.group();
 
-			log.info("found url: " + url);
+			log.info(Messages.getString("UrlImporter.url_found") + url);
 			return url;
 		}
 

@@ -24,7 +24,7 @@ public class NamespaceCheck extends HttpServlet {
 		resp.setContentType("text; charset=UTF-8");
 		
 		if (namespace != null) {
-			log.info("Check status of namespace: " + namespace);
+			log.info(Messages.getString("NamespaceCheck.check_ns") + namespace);
 			
 			// By convention, all namespaces starting with "_" (underscore) are reserved for system use.
 			if (namespace.charAt(0) == '_') {
@@ -59,7 +59,7 @@ public class NamespaceCheck extends HttpServlet {
 			
 			resp.getWriter().append("{\"status\": \"success\"}");
 		} else {
-			log.warning("no namespace provided!");
+			log.warning(Messages.getString("NamespaceCheck.no_ns"));
 			return;
 		}
 	}

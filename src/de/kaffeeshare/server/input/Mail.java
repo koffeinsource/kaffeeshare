@@ -38,7 +38,7 @@ public class Mail extends HttpServlet {
         try {
             MimeMessage message = new MimeMessage(session, req.getInputStream());			
             
-			log.info("Got email from " + ((InternetAddress)message.getFrom()[0]).getAddress());
+			log.info(Messages.getString("Mail.email_from") + ((InternetAddress)message.getFrom()[0]).getAddress());
 			
 			List<String> toAddresses = new ArrayList<String>();
 			Address[] recipients = message.getRecipients(Message.RecipientType.TO);
@@ -64,7 +64,7 @@ public class Mail extends HttpServlet {
 				// first lets see if there is plain text with url
 				if (UrlImporter.importFromText(getText(message)) != null) continue;
 				
-				log.info("No URLs found in plain text, will look in HTML");
+				log.info(Messages.getString("Mail.no_url_found"));
 				
 				UrlImporter.importFromHTML(getHTML(message));
 			}
@@ -92,7 +92,7 @@ public class Mail extends HttpServlet {
 		try {
 			// ok is p text? yes => return body
 			if (p.isMimeType(mime)) {
-				log.info("Found text in email ("+mime+"):");
+				log.info(Messages.getString("Mail.text_found") + "(" + mime + "):" );
 				log.info((String)p.getContent());
 				return (String)p.getContent();
 			}
@@ -102,7 +102,7 @@ public class Mail extends HttpServlet {
 			// multipart/alternative? so we do have the text multiple times
 			if (p.isMimeType("multipart/alternative")) {
 	
-				log.info("Found multipart/alternative in email:");
+				log.info(Messages.getString("Mail.multipart_found_alternative"));
 				
 				Multipart mp = (Multipart)p.getContent();
 				
@@ -114,7 +114,7 @@ public class Mail extends HttpServlet {
 				}
 				
 			} else if (p.isMimeType("multipart/*")) {
-				log.info("Found multipart/* in email:");
+				log.info(Messages.getString("Mail.multipart_found"));
 				
 				Multipart mp = (Multipart)p.getContent();
 				for (int i = 0; i < mp.getCount(); i++) {

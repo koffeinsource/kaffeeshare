@@ -22,7 +22,7 @@ public class Youtube extends BasePlugin {
 
 	@Override
 	public Item createItem(URL url) {
-		log.info("Running Youtube plugin!");
+		log.info(Messages.getString("Youtube.running"));
 
 		Document doc;
 		try {
@@ -59,7 +59,7 @@ public class Youtube extends BasePlugin {
 			}
 		}
 
-		log.info("caption: " + caption);
+		log.info(Messages.getString("DefaultPlugin.caption") + caption);
 
 		String description = null;
 
@@ -84,7 +84,7 @@ public class Youtube extends BasePlugin {
 					+ "\" frameborder=\"0\" allowfullscreen></iframe>";
 		}
 
-		log.info("desc: " + description);
+		log.info(Messages.getString("DefaultPlugin.desc") + description);
 
 		String imageUrl = "";
 		

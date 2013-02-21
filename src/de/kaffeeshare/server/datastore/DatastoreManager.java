@@ -29,17 +29,17 @@ public class DatastoreManager {
 	public static Datastore getDatastore() {
 		
 		if(datastoreConfig.equals(APPENGINE)) {
-			log.info("Use AppEngine datastore interface.");
+			log.info(Messages.getString("DatastoreManager.use_appengine"));
 			if (datastore.get() == null) {
 				datastore.set(new AppEngineDatastore());
 			}
 		} else if(datastoreConfig.equals(JPA)) {
-			log.info("Use JPA datastore interface.");
+			log.info(Messages.getString("DatastoreManager.use_jpa"));
 			if (datastore.get() == null) {
 				datastore.set(new JPADatastore());
 			}
 		} else {
-			log.severe("No datastore interface defined. (See config.properties)");
+			log.severe(Messages.getString("DatastoreManager.no_datastore_defined"));
 			throw new DatastoreConfigException();
 		}
 		
@@ -53,7 +53,7 @@ public class DatastoreManager {
 	public static void setNamespace(String ns) {
 		
 		if(NamespaceValidator.isValide(ns)) {
-			log.info("Namespace set to " + ns);
+			log.info(Messages.getString("DatastoreManager.set_namespace") + ns);
 			getDatastore().setNamespace(ns);
 		}
 	}

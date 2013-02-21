@@ -15,13 +15,36 @@
  ******************************************************************************/
 package de.kaffeeshare.server;
 
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 /**
- * Config file for the app.
+ * Config file wrapper for the app.
  */
 public class Config {
 	
-	public static String Name = "KaffeeShare";
-	
-	public static String Phrase = "sharing is caring";
+	private static final String BUNDLE_NAME = "de.kaffeeshare.server.config";
+
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+			.getBundle(BUNDLE_NAME);
+
+	/**
+	 * Void constructor
+	 */
+	private Config() {
+	}
+
+	/**
+	 * Get the string for a key.
+	 * @param key Key
+	 * @return String
+	 */
+	public static String getString(String key) {
+		try {
+			return RESOURCE_BUNDLE.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
+		}
+	}
 
 }

@@ -71,9 +71,9 @@ public class Feed extends HttpServlet {
 			SyndFeed feed = new SyndFeedImpl();
 			feed.setFeedType(feedType);
 
-			feed.setTitle(Config.Name + " - " + ns);
+			feed.setTitle(Config.getString("name") + " - " + ns);
 			feed.setLink("http://"+req.getServerName());
-			feed.setDescription(Config.Phrase);
+			feed.setDescription(Config.getString("phrase"));
 
 			List<SyndEntry> feedEntries = new ArrayList<SyndEntry>();
 			List<Item> items = DatastoreManager.getDatastore().getItems(20);

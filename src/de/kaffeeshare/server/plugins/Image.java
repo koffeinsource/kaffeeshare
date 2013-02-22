@@ -23,6 +23,9 @@ import java.net.URL;
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 
+/**
+ * Plugin to handle images.
+ */
 public class Image extends BasePlugin {
 
 	@Override

@@ -22,6 +22,9 @@ public class ReservedNamespaceException extends RuntimeException {
 
 	private static final long serialVersionUID = 2826030527124116551L;
 	
+	/**
+	 * Void constructor.
+	 */
 	public ReservedNamespaceException() {
 		super("Trying to use a reserved namespace!");
 	}

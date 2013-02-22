@@ -43,10 +43,8 @@ public class UrlImporter {
 	private static Vector<BasePlugin> plugins;
 	
 	/**
-	 * Adds the first URL of a String to the DB
-	 * 
-	 * @param text
-	 *            plain text to be parsed
+	 * Adds the first URL of a String to the DB.
+	 * @param text Plain text to be parsed
 	 * @return null if no URL is in the text, otherwise the url
 	 */
 	public static String importFromText(String text) {
@@ -61,10 +59,8 @@ public class UrlImporter {
 	}
 
 	/**
-	 * Adds the first URL of a String to the DB
-	 * 
-	 * @param text
-	 *            html to be parsed
+	 * Adds the first URL of a String to the DB.
+	 * @param text Html to be parsed
 	 * @return null if no URL is in the text, otherwise the url
 	 */
 	public static String importFromHTML(String text) {
@@ -80,8 +76,11 @@ public class UrlImporter {
 
 	/**
 	 * Generates an item from a url.
+	 * @param urlString URL
+	 * @return Item
+	 * @throws InputErrorException
 	 */
-	public static Item fetchUrl(String urlString) {
+	public static Item fetchUrl(String urlString) throws InputErrorException {
 		try {
 			if (urlString.startsWith("http://") || urlString.startsWith("https://")) {
 			} else {
@@ -95,12 +94,12 @@ public class UrlImporter {
 	}
 
 	/**
-	 * lazy init of plugins. use this method to get the plugins. if you create a
-	 * plugin - make sure to make it available here
-	 * 
-	 * @return plugins
+	 * Lazy init of plugins. use this method to get the plugins. If you create a
+	 * plugin - make sure to make it available here.
+	 * @return Plugins
 	 */
 	private synchronized static Vector<BasePlugin> getPlugins() {
+		// TODO Plugins handling over config.properties
 		if (plugins == null) {
 			plugins = new Vector<BasePlugin>();
 			plugins.add(new Image());
@@ -113,9 +112,9 @@ public class UrlImporter {
 	}
 
 	/**
-	 * naive approach on finding the right plugin ;-)
-	 * @param url
-	 * @return plugin 
+	 * Naive approach on finding the right plugin ;-)
+	 * @param url URL
+	 * @return Plugin 
 	 */
 	public static Item callMatchingPlugin(URL url) {
 		for (BasePlugin plugin: getPlugins()) {
@@ -142,7 +141,9 @@ public class UrlImporter {
 					+ "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b");
 
 	/**
-	 * Extracts the first URL from a given Strings
+	 * Extracts the first URL from a given string.
+	 * @param text String
+	 * @return URL
 	 */
 	static private String getURLPlain(String text) {
 		Matcher m = urlPatternPlain.matcher(text);
@@ -160,11 +161,16 @@ public class UrlImporter {
 
 	}
 
+	/**
+	 * URL pattern, html.
+	 */
 	static private Pattern urlPatternHTML = Pattern
 			.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))");
 
 	/**
-	 * Extracts the first URL from given HTML code
+	 * Extracts the first URL from given HTML code.
+	 * @param html Html string
+	 * @return URL
 	 */
 	static private String getURLHTML(String html) {
 		Matcher m = urlPatternHTML.matcher(html);

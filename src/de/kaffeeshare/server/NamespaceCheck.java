@@ -27,13 +27,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import de.kaffeeshare.server.datastore.DatastoreManager;
 
+/**
+ * Namespace check service.
+ */
 public class NamespaceCheck extends HttpServlet {
 
 	private static final long serialVersionUID = -4417846428551748172L;
-	private static String PARAM_NAMESPACE = "ns";
+	private static final String PARAM_NAMESPACE = "ns";
 	
 	private static final Logger log = Logger.getLogger(NamespaceCheck.class.getName());
 
+	/**
+	 * Handle a post request.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, IOException
+	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String namespace = req.getParameter(PARAM_NAMESPACE);
 		resp.setContentType("text; charset=UTF-8");
@@ -79,6 +88,12 @@ public class NamespaceCheck extends HttpServlet {
 		}
 	}
 	
+	/**
+	 * Handle a get request.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, IOException
+	 */
 	public void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doPost(req, resp);
 	}

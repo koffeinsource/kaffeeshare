@@ -23,15 +23,32 @@ import org.jsoup.nodes.Document;
 import de.kaffeeshare.server.datastore.Item;
 
 /**
- * Abstract base class for all plugins
+ * Abstract base class for all plugins.
  */
 public abstract class BasePlugin {
 
 	protected static final Logger log = Logger.getLogger(BasePlugin.class.getName());
 	
+	/**
+	 * Check URL for a matching.
+	 * @param url URL
+	 * @return true, if plugin match otherwise false
+	 */
 	public abstract boolean match(URL url);
+	
+	/**
+	 * Create an item.
+	 * @param url URL
+	 * @return Item
+	 */
 	public abstract Item createItem(URL url);
 
+	/**
+	 * Get the property content.
+	 * @param doc Document
+	 * @param prop Property
+	 * @return Caption
+	 */
 	protected String getProperty(Document doc, String prop) {
 		String caption;
 		caption = doc.getElementsByAttributeValue("property", prop)

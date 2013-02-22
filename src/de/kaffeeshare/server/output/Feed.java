@@ -51,7 +51,11 @@ public class Feed extends HttpServlet {
 	private Logger log = Logger.getLogger(Feed.class.getName());
 	
 	/**
+	 * Handle a get request.
 	 * Called when the feed url is requested.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, IOException
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

@@ -62,8 +62,8 @@ public class DatastoreManager {
 	}
 	
 	/**
-	 * Sets namespace
-	 * @param ns the namespace to be set
+	 * Sets the namespace to use.
+	 * @param ns The namespace to be set
 	 */
 	public static void setNamespace(String ns) {
 		NamespaceValidator.validate(ns);

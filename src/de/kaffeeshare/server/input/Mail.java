@@ -47,7 +47,13 @@ public class Mail extends HttpServlet {
 	private static final long serialVersionUID = 294584452111372279L;
 	private static final Logger log = Logger.getLogger(Mail.class.getName());
 
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+	/**
+	 * Handle a post request.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, SystemErrorException
+	 */
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SystemErrorException {
         Properties props = new Properties(); 
         Session session = Session.getDefaultInstance(props, null); 
         try {
@@ -102,8 +108,12 @@ public class Mail extends HttpServlet {
 	
 	/**
 	 * Return the text content of the message with the matching mime type.
+	 * @param p Part
+	 * @param mime Mime type
+	 * @return Text content
+	 * @throws InputErrorException, SystemErrorException
 	 */
-	static private String getMime(Part p, String mime) {
+	static private String getMime(Part p, String mime) throws InputErrorException, SystemErrorException {
 		try {
 			// ok is p text? yes => return body
 			if (p.isMimeType(mime)) {

@@ -48,39 +48,49 @@ public class AppEngineDatastore implements Datastore {
 	
 	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-	/**
-	 * Creates an item.
-	 * @param caption Caption
-	 * @param url URL
-	 * @param description Description
-	 * @param imageUrl Image URL
-	 * @return Item
-	 */
+	@Override
 	public Item createItem(String caption, String url, String description, String imageUrl) {
 		return new Item(caption, url, description, imageUrl);
 	}
 	
-	/**
-	 * Stores an item in the DB.
-	 * @param item Item to store
-	 * @return Stored item
-	 */
+	@Override
 	public Item storeItem(Item item) {
 		Entity entity = toEntity(item);
 		datastore.put(entity);
 		return item;
 	}
 
-	/**
-	 * Stores a list of items in the DB.
-	 * @param items List with items
-	 */
+	@Override
 	public void storeItems(List<Item> items) {
 		List<Entity> entities = new ArrayList<Entity>();
 		for (Item item : items) {
 			entities.add(toEntity(item));
 		}
 		datastore.put(entities);
+	}
+	
+	@Override
+	public List<Item> getItems(int maxNumber) {
+		PreparedQuery pq = datastore.prepare(getDBQuery());
+		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber));
+		return getItems(entities);
+	}
+	
+	@Override
+	public void setNamespace(String ns) {
+		NamespaceManager.set(ns);
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		
+		Query query = new Query(DB_KIND_ITEM, null);
+		query.setKeysOnly();
+		
+		PreparedQuery pq = datastore.prepare(query);
+		if (pq.asList(FetchOptions.Builder.withLimit(1)).size() > 0) return false;
+
+		return true;
 	}
 	
 	@SuppressWarnings("unused")
@@ -94,18 +104,7 @@ public class AppEngineDatastore implements Datastore {
 	}
 
 	/**
-	 * Gets the newest items.
-	 * @param maxNumber Number of items from DB
-	 * @return List with items
-	 */
-	public List<Item> getItems(int maxNumber) {
-		PreparedQuery pq = datastore.prepare(getDBQuery());
-		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber));
-		return getItems(entities);
-	}
-
-	/**
-	 * Gets the 
+	 * Gets a list with items from entities.
 	 * @param entities Collection with entities
 	 * @return List with items
 	 */
@@ -115,14 +114,6 @@ public class AppEngineDatastore implements Datastore {
 			items.add(fromEntity(entity));
 		}
 		return items;
-	}
-	
-	/**
-	 * Set the namespace.
-	 * @param ns Namespace
-	 */
-	public void setNamespace(String ns) {
-		NamespaceManager.set(ns);
 	}
 	
 	/**
@@ -171,21 +162,6 @@ public class AppEngineDatastore implements Datastore {
 		Query query = new Query(DB_KIND_ITEM, null);
 		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
 		return query;
-	}
-	
-	/**
-	 * Check if current namespace is unused.
-	 * @return true, if namespace is unused
-	 */
-	public boolean isEmpty() {
-		
-		Query query = new Query(DB_KIND_ITEM, null);
-		query.setKeysOnly();
-		
-		PreparedQuery pq = datastore.prepare(query);
-		if (pq.asList(FetchOptions.Builder.withLimit(1)).size() > 0) return false;
-
-		return true;
 	}
 	
 }

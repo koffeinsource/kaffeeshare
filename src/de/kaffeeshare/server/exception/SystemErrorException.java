@@ -16,7 +16,7 @@
 package de.kaffeeshare.server.exception;
 
 /**
- * Thrown if some unexpected system error.
+ * Thrown if an unexpected system error occurs.
  */
 public class SystemErrorException extends RuntimeException {
 

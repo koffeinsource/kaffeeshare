@@ -39,7 +39,11 @@ public class Item {
 	}
 	
 	/**
-	 * Creates a new item.
+	 * Constructor creates a new item.
+	 * @param caption Caption
+	 * @param url URL
+	 * @param description Description
+	 * @param imageUrl Image URL
 	 */
 	public Item(String caption, String url, String description, String imageUrl) {
 		this.caption = caption;
@@ -50,13 +54,20 @@ public class Item {
 	}
 	
 	/**
-	 * Creates a new item with defined creation date.
+	 * Constructor creates a new item with defined creation date.
+	 * @param caption Caption
+	 * @param url URL
+	 * @param description Description
+	 * @param imageUrl Image URL
+	 * @param createdAt Creation date
 	 */
 	public Item(String caption, String url, String description, String imageUrl, Date createdAt) {
 		this(caption, url, description, imageUrl);
 		this.createdAt = createdAt;
 	}
 
+	// -------------------------------------------------------------------------------------------
+	// GETTER and SETTER
 	
 	public String getCaption() {
 		return caption;

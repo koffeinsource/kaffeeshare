@@ -28,7 +28,7 @@ import de.kaffeeshare.server.utils.NamespaceValidator;
  */
 public class DatastoreManager {
 	
-	private static final String datastoreConfig = ResourceBundle.getBundle("de.kaffeeshare.server.datastore.config").getString("datastore");
+	private static final String datastoreConfig = ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("datastore");
 	
 	private static final String APPENGINE = "AppEngine";
 	private static final String JPA = "JPA";
@@ -62,8 +62,8 @@ public class DatastoreManager {
 	}
 	
 	/**
-	 * Sets namespace
-	 * @param ns the namespace to be set
+	 * Sets the namespace to use.
+	 * @param ns The namespace to be set
 	 */
 	public static void setNamespace(String ns) {
 		NamespaceValidator.validate(ns);

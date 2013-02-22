@@ -28,7 +28,7 @@ import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.exception.ReservedNamespaceException;
 
 /**
- * Called by the browser extension-
+ * Service called by the browser extension-
  */
 public class OneClickShare extends HttpServlet {
 
@@ -36,12 +36,19 @@ public class OneClickShare extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(OneClickShare.class.getName());
 
-	private static String PARAM_URL = "url";
-	private static String PARAM_NAMESPACE = "ns";
+	private static final String PARAM_URL = "url";
+	private static final String PARAM_NAMESPACE = "ns";
+	
+	private static final String OK = "0";
+	private static final String ERROR = "1";
 	
 	/**
-	 * imports url given by url parameter
-	 * reponse is "0" on success and "1" on failure 
+	 * Handle a get request.
+	 * Imports url given by url parameter.
+	 * Response is OK on success and ERROR on failure 
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, IOExcption
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -51,20 +58,20 @@ public class OneClickShare extends HttpServlet {
 			try {
 				DatastoreManager.setNamespace(req.getParameter(PARAM_NAMESPACE));
 			} catch (ReservedNamespaceException e) {
-				resp.getWriter().append("1"); // TODO return a different error code
+				resp.getWriter().append(ERROR); // TODO return a different error code
 				return;
 			}
 			try {
 				log.info("Try to add url " + url + " to DB");
 				DatastoreManager.getDatastore().storeItem(UrlImporter.fetchUrl(url));
-				resp.getWriter().append("0");
+				resp.getWriter().append(OK);
 			} catch (Exception e) {
 				log.warning("exeption during import of url: " + e);
-				resp.getWriter().append("1");
+				resp.getWriter().append(ERROR);
 			}
 		} else {
 			log.warning("no url provided!");
-			resp.getWriter().append("1");
+			resp.getWriter().append(OK);
 		}
 	}
 

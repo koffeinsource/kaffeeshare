@@ -18,19 +18,49 @@ package de.kaffeeshare.server.datastore;
 import java.util.List;
 
 /**
- * Datastore interface.
+ * Datastore interface. A datatore backend have to implement this interface.
  */
 public interface Datastore {
 	
+	/**
+	 * Create a new item.
+	 * @param catption Captionj
+	 * @param url URL
+	 * @param description Description
+	 * @param imageUrl Image URL
+	 * @return Item
+	 */
 	public Item createItem(String catption, String url, String description, String imageUrl);
 	
+	/**
+	 * Stores a item and returns the persistent entity.
+	 * @param item Item to store
+	 * @return Persistent item
+	 */
 	public Item storeItem(Item item);
 	
+	/**
+	 * Stores a list of items.
+	 * @param items List with items to store
+	 */
 	public void storeItems(List<Item> items);
 	
+	/**
+	 * Gets a list with items.
+	 * @param maxNumber Number of list entries
+	 * @return List with items
+	 */
 	public List<Item> getItems(int maxNumber);
 	
+	/**
+	 * Sets the namespace.
+	 * @param ns Namespace
+	 */
 	public void setNamespace(String ns);
 	
+	/**
+	 * Check whether the current datastore with currently set namespace is empty.
+	 * @return true if empty, otherwise false
+	 */
 	public boolean isEmpty();
 }

@@ -27,6 +27,9 @@ import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
+/**
+ * Plugin to handle youtube pages.
+ */
 public class Youtube extends BasePlugin {
 
 	@Override

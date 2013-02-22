@@ -43,7 +43,11 @@ public class Jabber extends HttpServlet {
 	private static final XMPPService xmppService = XMPPServiceFactory.getXMPPService();
 
 	/**
+	 * Handle a post request.
 	 * This is called whenever a jabber message is sent to the app.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws IOException
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		Message message;
@@ -62,6 +66,10 @@ public class Jabber extends HttpServlet {
 		importUrl(message);
 	}
 
+	/**
+	 * Import a URL.
+	 * @param message Message
+	 */
 	private void importUrl(Message message) {
 		String replyMessageBody = null;
 

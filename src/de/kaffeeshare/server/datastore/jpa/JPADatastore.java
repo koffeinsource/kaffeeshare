@@ -35,28 +35,17 @@ public class JPADatastore implements Datastore {
 	private String namespace = null;
 	
 	/**
-	 * Constructor.
+	 * Void constructor.
 	 */
 	public JPADatastore() {
 	}
 	
-	/**
-	 * Creates an item.
-	 * @param caption Caption
-	 * @param url URL
-	 * @param description Description
-	 * @param imageUrl Image URL
-	 * @return Item
-	 */
+	@Override
 	public Item createItem(String caption, String url, String description, String imageUrl) {
 		return new JPAItem(caption, url, namespace, description, imageUrl);
 	}
 	
-	/**
-	 * Stores an item in the DB.
-	 * @param item Item to store
-	 * @return Stored item
-	 */
+	@Override
 	public Item storeItem(Item item) {
 		
 		Item persistentItem = null;
@@ -77,10 +66,7 @@ public class JPADatastore implements Datastore {
 		return persistentItem;
 	}
 
-	/**
-	 * Stores a list of items in the DB.
-	 * @param items List with items
-	 */
+	@Override
 	public void storeItems(List<Item> items) {
 
 		EntityManager entityManager = emfInstance.createEntityManager();
@@ -99,34 +85,8 @@ public class JPADatastore implements Datastore {
 		}
 
 	}
-	
-	@SuppressWarnings("unused")
-	/**
-	 * Deletes an item in DB, currently not used and only kept for reference.
-	 * @param Item Item to delete
-	 */
-	private void deleteItem(Item item) {
-		
-		EntityManager entityManager = emfInstance.createEntityManager();
-		try {
-			entityManager.getTransaction().begin();
-			entityManager.remove(item);
-			entityManager.getTransaction().commit();
-		} catch(Exception e) {
-			e.printStackTrace();
-			entityManager.getTransaction().rollback();
-			entityManager.close();
-		} finally {
-			entityManager.close();
-		}
-	}
 
-	/**
-	 * Gets the newest items.
-	 * @param ns Namespace
-	 * @param maxNumber Number of items from DB
-	 * @return List with items
-	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Item> getItems(int maxNumber) {
 
@@ -154,18 +114,12 @@ public class JPADatastore implements Datastore {
 
 	}
 
-	/**
-	 * Set the namespace.
-	 * @param ns Namespace
-	 */
+	@Override
 	public void setNamespace(String ns) {
 		this.namespace = ns;
 	}
 
-	/**
-	 * Check if current namespace is unused.
-	 * @return true, if namespace is unused
-	 */
+	@Override
 	public boolean isEmpty() {
 
 		List<Item> items = getItems(1);
@@ -174,6 +128,27 @@ public class JPADatastore implements Datastore {
 		}
 
 		return false;
+	}
+	
+	@SuppressWarnings("unused")
+	/**
+	 * Deletes an item in DB, currently not used and only kept for reference.
+	 * @param Item Item to delete
+	 */
+	private void deleteItem(Item item) {
+		
+		EntityManager entityManager = emfInstance.createEntityManager();
+		try {
+			entityManager.getTransaction().begin();
+			entityManager.remove(item);
+			entityManager.getTransaction().commit();
+		} catch(Exception e) {
+			e.printStackTrace();
+			entityManager.getTransaction().rollback();
+			entityManager.close();
+		} finally {
+			entityManager.close();
+		}
 	}
 
 }

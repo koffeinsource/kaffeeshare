@@ -25,6 +25,9 @@ import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
+/**
+ * Plugin to handle vimeo pages.
+ */
 public class Vimeo extends BasePlugin {
 
 	@Override

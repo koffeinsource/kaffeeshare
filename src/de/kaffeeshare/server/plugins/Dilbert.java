@@ -28,6 +28,9 @@ import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.InputErrorException;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
+/**
+ * Plugin to handle dilbert pages.
+ */
 public class Dilbert extends BasePlugin {
 
 	@Override

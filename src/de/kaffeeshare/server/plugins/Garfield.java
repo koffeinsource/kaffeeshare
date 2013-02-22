@@ -27,6 +27,9 @@ import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.InputErrorException;
 import de.kaffeeshare.server.exception.SystemErrorException;
 
+/**
+ * Plugin to handle garfield pages.
+ */
 public class Garfield extends BasePlugin {
 
 	@Override

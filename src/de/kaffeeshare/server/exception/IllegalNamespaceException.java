@@ -22,6 +22,9 @@ public class IllegalNamespaceException extends RuntimeException {
 	
 	private static final long serialVersionUID = -3633614066774348135L;
 
+	/**
+	 * Void constructor.
+	 */
 	public IllegalNamespaceException() {
 		super("Trying to use an illegal namespace!");
 	}

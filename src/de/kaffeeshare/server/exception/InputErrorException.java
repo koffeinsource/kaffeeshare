@@ -22,6 +22,9 @@ public class InputErrorException extends RuntimeException {
 
 	private static final long serialVersionUID = -6560942737782782844L;
 
+	/**
+	 * Void constructor.
+	 */
 	public InputErrorException() {
 		super ("Input error, not what we expected!");
 	}

@@ -39,8 +39,9 @@ public class NamespaceValidator {
 	/**
 	 * Validates a namespace. An exception if thrown in case it is not valid
 	 * @param ns the namespace to be validated
+	 * @throws ReservedNamespaceException, IllegalNamespaceException
 	 */
-	public static void validate(String ns) {
+	public static void validate(String ns) throws ReservedNamespaceException, IllegalNamespaceException {
 		if (ns == null || reservedNamespaces.contains(ns)) {
 			log.info("Trying to use a reserved namespace");
 			throw new ReservedNamespaceException();

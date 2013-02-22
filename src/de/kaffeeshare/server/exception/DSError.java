@@ -22,6 +22,9 @@ public class DSError extends RuntimeException {
 
 	private static final long serialVersionUID = -6898169722430572339L;
 
+	/**
+	 * Void constructor.
+	 */
 	public DSError() {
 		super ("There is something wrong with our data store!");
 	}

@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Datastore interface. A datatore backend have to implement this interface.
+ * Datastore interface. All datatore backends have to implement this interface.
  */
 public interface Datastore {
 	

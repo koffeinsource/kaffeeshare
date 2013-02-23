@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.kaffeeshare.server.datastore;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,4 +64,11 @@ public interface Datastore {
 	 * @return true if empty, otherwise false
 	 */
 	public boolean isEmpty();
+	
+	/**
+	 * Remove old data form database.
+	 * @param maxKeepNumber Maximum number of items to hold in the db
+	 * @param eldestDate Items elder than this date will be delete
+	 */
+	public void garbageCollection(int maxKeepNumber, Date eldestDate);
 }

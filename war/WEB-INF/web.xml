@@ -29,7 +29,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>de.kaffeeshare.server.cron.GarbageCollection</servlet-name>
-    <url-pattern>/garbagecollection</url-pattern>
+    <url-pattern>/cron/garbagecollection</url-pattern>
   </servlet-mapping>
   <security-constraint>
     <web-resource-collection>

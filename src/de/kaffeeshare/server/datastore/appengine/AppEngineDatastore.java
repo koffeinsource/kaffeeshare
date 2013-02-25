@@ -19,16 +19,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entities;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Text;
 
@@ -46,8 +51,10 @@ public class AppEngineDatastore implements Datastore {
 	private static final String DB_ITEM_CREATEDAT = "CreatedAt";
 	private static final String DB_ITEM_IMAGEURL = "imageUrl";
 	
+	private static final Logger log = Logger.getLogger(AppEngineDatastore.class.getName());
+	
 	private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+	
 	@Override
 	public Item createItem(String caption, String url, String description, String imageUrl) {
 		return new Item(caption, url, description, imageUrl);
@@ -93,14 +100,46 @@ public class AppEngineDatastore implements Datastore {
 		return true;
 	}
 	
-	@SuppressWarnings("unused")
-	/**
-	 * Deletes an item in DB, currently not used and only kept for reference.
-	 * @param Item Item to delete
-	 */
-	private void deleteItem(Item item) {
-		Key key = getDBKey(item);
-		datastore.delete(key);
+	@Override
+	public void garbageCollection(int maxKeepNumber, Date eldestDate) {
+		
+		// Metadata query to find all namespaces
+		Query nsQuery = new Query(Entities.NAMESPACE_METADATA_KIND);
+		nsQuery.setKeysOnly();
+		
+		for (Entity nsEntity : datastore.prepare(nsQuery).asIterable()) {
+
+			String ns = nsEntity.getKey().getName();
+			log.info("Garbage collection for ns: " + ns);
+			setNamespace(ns);
+			
+			// First delete all items elder than date
+			Filter filter = new FilterPredicate(DB_ITEM_CREATEDAT,
+												FilterOperator.GREATER_THAN,
+												eldestDate);
+
+			Query query = new Query(DB_KIND_ITEM, null);
+			query.setFilter(filter);
+			query.setKeysOnly();
+			
+			for( Entity e : datastore.prepare(query).asIterable(FetchOptions.Builder.withDefaults())) {
+				log.info("Delete item: " +  e.getKey().getName());
+				datastore.delete(e.getKey());
+			}
+
+			// Second query ignores the first "maxKeepNumber" Items
+			query = new Query(DB_KIND_ITEM, null);
+			query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
+			query.setKeysOnly();
+
+			for( Entity e : datastore.prepare(query).asIterable(FetchOptions.Builder.withOffset(maxKeepNumber)) ) {
+				log.info("Delete item: " +  e.getKey().getName());
+				datastore.delete(e.getKey());
+			}
+			
+			
+		}
+
 	}
 
 	/**

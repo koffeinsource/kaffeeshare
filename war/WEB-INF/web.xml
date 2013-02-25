@@ -23,6 +23,14 @@
     <servlet-name>de.kaffeeshare.server.NamespaceCheck</servlet-name>
     <url-pattern>/namespacecheck</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>de.kaffeeshare.server.cron.GarbageCollection</servlet-name>
+    <servlet-class>de.kaffeeshare.server.cron.GarbageCollection</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>de.kaffeeshare.server.cron.GarbageCollection</servlet-name>
+    <url-pattern>/cron/garbagecollection</url-pattern>
+  </servlet-mapping>
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>kaffeeshare-user</web-resource-name>

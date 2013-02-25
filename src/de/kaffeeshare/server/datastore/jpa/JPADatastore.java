@@ -15,6 +15,7 @@
  ******************************************************************************/
 package de.kaffeeshare.server.datastore.jpa;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -128,6 +129,11 @@ public class JPADatastore implements Datastore {
 		}
 
 		return false;
+	}
+	
+	@Override
+	public void garbageCollection(int maxKeepNumber, Date eldestDate) {
+		// TODO Implement garbage collection
 	}
 	
 	@SuppressWarnings("unused")

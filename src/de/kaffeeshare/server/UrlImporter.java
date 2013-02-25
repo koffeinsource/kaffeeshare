@@ -15,8 +15,11 @@
  ******************************************************************************/
 package de.kaffeeshare.server;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -27,18 +30,13 @@ import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.InputErrorException;
 import de.kaffeeshare.server.plugins.BasePlugin;
 import de.kaffeeshare.server.plugins.DefaultPlugin;
-import de.kaffeeshare.server.plugins.Dilbert;
-import de.kaffeeshare.server.plugins.Garfield;
-import de.kaffeeshare.server.plugins.Image;
-import de.kaffeeshare.server.plugins.Vimeo;
-import de.kaffeeshare.server.plugins.Youtube;
 
 /**
  * Imports a URL into our DB. The code calls plugins to extract the data from
  * the homepage.
  */
 public class UrlImporter {
-
+	
 	private static final Logger log = Logger.getLogger(UrlImporter.class.getName());
 	private static Vector<BasePlugin> plugins;
 	
@@ -99,15 +97,57 @@ public class UrlImporter {
 	 * @return Plugins
 	 */
 	private synchronized static Vector<BasePlugin> getPlugins() {
-		// TODO Plugins handling over config.properties
-		if (plugins == null) {
+
+		if(plugins == null) {
+			
 			plugins = new Vector<BasePlugin>();
-			plugins.add(new Image());
-			plugins.add(new Garfield());
-			plugins.add(new Youtube());
-			plugins.add(new Vimeo());
-			plugins.add(new Dilbert());
+			
+			// Get a file object for the plugins package
+			File directory = new File(Thread.currentThread()
+										.getContextClassLoader()
+										.getResource("de/kaffeeshare/server/plugins").getFile());
+			
+			if(directory.exists()) {
+				
+				ResourceBundle bundle = ResourceBundle.getBundle("de.kaffeeshare.server.config");
+				
+				// Get the list of the files contained in the package
+				String[] files = directory.list();
+				for(int i = 0; i < files.length; i++) {
+				
+					// we are only interested in .class files
+					if(files[i].endsWith(".class")) {
+						
+						// removes the .class extension
+						String className = files[i].substring(0, files[i].length() - 6);
+						
+						// Check if the plugin is disabled in the config.properties
+						boolean use = true;
+						try {
+							use = Boolean.valueOf(bundle.getString(className));
+						} catch(MissingResourceException e) {
+							// Plugin not defined in config.properties -> Use it
+						}
+						
+						if(use && !(className.equals("BasePlugin") || className.equals("DefaultPlugin"))) {
+							try {
+								Object plugin = Class.forName("de.kaffeeshare.server.plugins." + className)
+													.newInstance();
+								
+								if(plugin instanceof BasePlugin) {
+									log.info("Start plugin: " +  className);
+									plugins.add((BasePlugin)plugin);
+								}
+
+							} catch (Exception e) {
+								log.warning("Can't start plugin " + className);
+							}
+						}
+					}
+				}
+			}
 		}
+		
 		return plugins;
 	}
 

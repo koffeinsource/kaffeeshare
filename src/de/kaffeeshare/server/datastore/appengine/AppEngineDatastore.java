@@ -78,7 +78,9 @@ public class AppEngineDatastore implements Datastore {
 	
 	@Override
 	public List<Item> getItems(int maxNumber) {
-		PreparedQuery pq = datastore.prepare(getDBQuery());
+		Query query = new Query(DB_KIND_ITEM, null);
+		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
+		PreparedQuery pq = datastore.prepare(query);
 		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber));
 		return getItems(entities);
 	}
@@ -112,9 +114,7 @@ public class AppEngineDatastore implements Datastore {
 			String ns = nsEntity.getKey().getName();
 			log.info("Garbage collection for ns: " + ns);
 			setNamespace(ns);
-			
-			if (ns != null && ns.equalsIgnoreCase("TransformerSiehtManNicht")) continue;
-			
+						
 			// First deletes everything but the first "maxKeepNumber" Items
 			{
 				Query query = new Query(DB_KIND_ITEM, null);
@@ -144,7 +144,6 @@ public class AppEngineDatastore implements Datastore {
 				deleteEntities(entities);
 			}
 		}
-
 	}
 	
 	/**
@@ -157,6 +156,8 @@ public class AppEngineDatastore implements Datastore {
 		for( Entity e : entities) {
 			keys.add(e.getKey());
 		}
+		
+		log.info("Going to delete " + keys.size() + " enteties");
 		
 		datastore.delete(keys);
 	}
@@ -180,7 +181,6 @@ public class AppEngineDatastore implements Datastore {
 	 * @return Item
 	 */
 	private Item fromEntity(Entity e) {
-		
 		return new Item((String) e.getProperty(DB_ITEM_CAPTION),
 						(String) e.getKey().getName(),
 						((Text) e.getProperty(DB_ITEM_DESCRIPTION)).getValue(),
@@ -195,7 +195,7 @@ public class AppEngineDatastore implements Datastore {
 	 * @return Entity
 	 */
 	private Entity toEntity(Item item) {
-		Entity entity = new Entity(getDBKey(item));
+		Entity entity = new Entity(getItemDBKey(item));
 		entity.setUnindexedProperty(DB_ITEM_CAPTION, item.getCaption());
 		entity.setUnindexedProperty(DB_ITEM_DESCRIPTION, new Text(item.getDescription()));
 		entity.setUnindexedProperty(DB_ITEM_IMAGEURL, item.getImageUrl());
@@ -208,18 +208,8 @@ public class AppEngineDatastore implements Datastore {
 	 * @param item Item
 	 * @return Key
 	 */
-	private Key getDBKey(Item item) {
+	private Key getItemDBKey(Item item) {
 		return KeyFactory.createKey(DB_KIND_ITEM, item.getUrl());
-	}
-	
-	/**
-	 * Creates a DB query returning items ordered by creation date.
-	 * @return Query
-	 */
-	private Query getDBQuery() {
-		Query query = new Query(DB_KIND_ITEM, null);
-		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
-		return query;
 	}
 	
 }

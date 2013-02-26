@@ -113,33 +113,55 @@ public class AppEngineDatastore implements Datastore {
 			log.info("Garbage collection for ns: " + ns);
 			setNamespace(ns);
 			
-			// First delete all items elder than date
-			Filter filter = new FilterPredicate(DB_ITEM_CREATEDAT,
-												FilterOperator.GREATER_THAN,
-												eldestDate);
-
-			Query query = new Query(DB_KIND_ITEM, null);
-			query.setFilter(filter);
-			query.setKeysOnly();
+			if (ns.equalsIgnoreCase("TransformerSiehtManNicht")) continue;
 			
-			for( Entity e : datastore.prepare(query).asIterable(FetchOptions.Builder.withDefaults())) {
-				log.info("Delete item: " +  e.getKey().getName());
-				datastore.delete(e.getKey());
+			// First delete all items elder than date
+			{
+				Filter filter = new FilterPredicate(DB_ITEM_CREATEDAT,
+													FilterOperator.GREATER_THAN,
+													eldestDate);
+	
+				Query query = new Query(DB_KIND_ITEM, null);
+				query.setFilter(filter);
+				query.setKeysOnly();
+				
+				PreparedQuery pq = datastore.prepare(query);
+				
+				Iterable<Entity> entities = pq.asIterable(FetchOptions.Builder.withDefaults());
+				deleteEntities(entities);
 			}
+			
 
 			// Second query ignores the first "maxKeepNumber" Items
-			query = new Query(DB_KIND_ITEM, null);
-			query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
-			query.setKeysOnly();
-
-			for( Entity e : datastore.prepare(query).asIterable(FetchOptions.Builder.withOffset(maxKeepNumber)) ) {
-				log.info("Delete item: " +  e.getKey().getName());
-				datastore.delete(e.getKey());
+			{
+				Query query = new Query(DB_KIND_ITEM, null);
+				query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
+				query.setKeysOnly();
+	
+				PreparedQuery pq = datastore.prepare(query);
+				
+				Iterable<Entity> entities = pq.asIterable(FetchOptions.Builder.withDefaults());
+				
+				deleteEntities(entities);
 			}
 			
 			
 		}
 
+	}
+	
+	/**
+	 * Deletes a set of entities from the datastore
+	 * @param entities the entities to be deleted
+	 */
+	private void deleteEntities(Iterable<Entity> entities) {
+		List<Key> keys = new ArrayList<Key>();
+		
+		for( Entity e : entities) {
+			keys.add(e.getKey());
+		}
+		
+		datastore.delete(keys);
 	}
 
 	/**

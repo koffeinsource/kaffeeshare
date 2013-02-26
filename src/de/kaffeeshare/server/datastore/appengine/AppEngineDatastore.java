@@ -113,9 +113,22 @@ public class AppEngineDatastore implements Datastore {
 			log.info("Garbage collection for ns: " + ns);
 			setNamespace(ns);
 			
-			if (ns.equalsIgnoreCase("TransformerSiehtManNicht")) continue;
+			if (ns != null && ns.equalsIgnoreCase("TransformerSiehtManNicht")) continue;
 			
-			// First delete all items elder than date
+			// First deletes everything but the first "maxKeepNumber" Items
+			{
+				Query query = new Query(DB_KIND_ITEM, null);
+				query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
+				query.setKeysOnly();
+	
+				PreparedQuery pq = datastore.prepare(query);
+				
+				Iterable<Entity> entities = pq.asIterable(FetchOptions.Builder.withOffset(maxKeepNumber));
+				
+				deleteEntities(entities);
+			}
+			
+			// Second delete all items elder than date
 			{
 				Filter filter = new FilterPredicate(DB_ITEM_CREATEDAT,
 													FilterOperator.GREATER_THAN,
@@ -130,22 +143,6 @@ public class AppEngineDatastore implements Datastore {
 				Iterable<Entity> entities = pq.asIterable(FetchOptions.Builder.withDefaults());
 				deleteEntities(entities);
 			}
-			
-
-			// Second query ignores the first "maxKeepNumber" Items
-			{
-				Query query = new Query(DB_KIND_ITEM, null);
-				query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
-				query.setKeysOnly();
-	
-				PreparedQuery pq = datastore.prepare(query);
-				
-				Iterable<Entity> entities = pq.asIterable(FetchOptions.Builder.withDefaults());
-				
-				deleteEntities(entities);
-			}
-			
-			
 		}
 
 	}

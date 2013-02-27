@@ -38,7 +38,10 @@ public class GarbageCollection extends HttpServlet {
 	private static final long serialVersionUID = 8864732716177174197L;
 
 	private static final Logger log = Logger.getLogger(GarbageCollection.class.getName());
-	
+
+	private static final int maxKeepNumber = Integer.valueOf(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("max_ns_items"));
+	private static final int lifeTime = Integer.valueOf(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("item_life_time"));
+
 	/**
 	 * Handle a get request.
 	 * Remove old data from the db.
@@ -48,9 +51,6 @@ public class GarbageCollection extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
-		int maxKeepNumber = Integer.valueOf(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("max_ns_items"));
-		int lifeTime = Integer.valueOf(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("item_life_time"));
 		
 		// Calculate date: Current date - liftTime
 		Calendar deleteDate = GregorianCalendar.getInstance();

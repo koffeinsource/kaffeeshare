@@ -18,6 +18,7 @@ package de.kaffeeshare.server.output;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,6 +51,8 @@ public class Feed extends HttpServlet {
 	
 	private Logger log = Logger.getLogger(Feed.class.getName());
 	
+	private static final int maxKeepNumber = Integer.valueOf(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("max_ns_items"));
+	
 	/**
 	 * Handle a get request.
 	 * Called when the feed url is requested.
@@ -80,7 +83,7 @@ public class Feed extends HttpServlet {
 			feed.setDescription(Config.getString("phrase"));
 
 			List<SyndEntry> feedEntries = new ArrayList<SyndEntry>();
-			List<Item> items = DatastoreManager.getDatastore().getItems(20);
+			List<Item> items = DatastoreManager.getDatastore().getItems(maxKeepNumber);
 			for (Item item : items) {
 				SyndEntry feedEntry;
 				SyndContent feedContent;

@@ -25,6 +25,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
+
 import de.kaffeeshare.server.datastore.DatastoreManager;
 
 /**
@@ -47,44 +50,56 @@ public class NamespaceCheck extends HttpServlet {
 		String namespace = req.getParameter(PARAM_NAMESPACE);
 		resp.setContentType("text; charset=UTF-8");
 		
-		if (namespace != null) {
-			log.info("Check status of namespace: " + namespace);
-			
-			// By convention, all namespaces starting with "_" (underscore) are reserved for system use.
-			if (namespace.charAt(0) == '_') {
-				resp.getWriter().append("{\"status\": \"error\"}");
+		try {
+			if (namespace != null) {
+				log.info("Check status of namespace: " + namespace);
+				
+				JSONObject json = new JSONObject();
+				
+				// By convention, all namespaces starting with "_" (underscore) are reserved for system use.
+				if (namespace.charAt(0) == '_') {
+					json.put("status", "error");
+					resp.getWriter().append(json.toString());
+					return;
+				}
+				
+				// check if namespace is valid 
+				try {
+					DatastoreManager.setNamespace(namespace);
+				} catch (Exception e) {
+					json.put("status", "error");
+					resp.getWriter().append(json.toString());
+					return;
+				}
+				
+				// check if email and jabber address are valid!
+				// I believe a valid email address also a valid jabber address
+				// so I only check for valid email address
+				try {
+					InternetAddress emailAddr = new InternetAddress(namespace+"@abc.com");
+					emailAddr.validate();
+				} catch (AddressException ex) {
+					json.put("status", "error");
+					resp.getWriter().append(json.toString());
+					return;
+				}
+				
+				// check if namespace is empty
+				if (!DatastoreManager.getDatastore().isEmpty()) {
+					json.put("status", "use");
+					resp.getWriter().append(json.toString());
+					return;
+				}
+				
+				json.put("status", "success");
+				resp.getWriter().append(json.toString());
+			} else {
+				log.warning("no namespace provided!");
 				return;
 			}
-			
-			// check if namespace is valid 
-			try {
-				DatastoreManager.setNamespace(namespace);
-			} catch (Exception e) {
-				resp.getWriter().append("{\"status\": \"error\"}");
-				return;
-			}
-			
-			// check if email and jabber address are valid!
-			// I think a valid email address also a valid jabber address
-			// so I only check for valid email address
-			try {
-				InternetAddress emailAddr = new InternetAddress(namespace+"@abc.com");
-				emailAddr.validate();
-			} catch (AddressException ex) {
-				resp.getWriter().append("{\"status\": \"error\"}");
-				return;
-			}
-			
-			// check if namespace is empty
-			if (!DatastoreManager.getDatastore().isEmpty()) {
-				resp.getWriter().append("{\"status\": \"use\"}");
-				return;
-			}
-			
-			resp.getWriter().append("{\"status\": \"success\"}");
-		} else {
-			log.warning("no namespace provided!");
-			return;
+		} catch (JSONException e) {
+			log.warning("JSON error!");
+			e.printStackTrace();
 		}
 	}
 	

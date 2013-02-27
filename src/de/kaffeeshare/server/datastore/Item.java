@@ -19,6 +19,9 @@ import java.util.Date;
 
 import javax.persistence.MappedSuperclass;
 
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
+
 /**
  * A news item.
  */
@@ -64,6 +67,18 @@ public class Item {
 	public Item(String caption, String url, String description, String imageUrl, Date createdAt) {
 		this(caption, url, description, imageUrl);
 		this.createdAt = createdAt;
+	}
+	
+	public JSONObject toJSON() throws JSONException {
+		JSONObject json = new JSONObject();
+		
+		json.put("caption", caption);
+		json.put("url", url);
+		json.put("imageurl", imageUrl);
+		json.put("description", description);
+		json.put("createdat", createdAt.toString());
+		
+		return json;
 	}
 
 	// -------------------------------------------------------------------------------------------

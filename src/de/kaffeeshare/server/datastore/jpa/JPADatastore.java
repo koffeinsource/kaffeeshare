@@ -25,6 +25,7 @@ import javax.persistence.Query;
 
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Item;
+import de.kaffeeshare.server.exception.UnsupportedException;
 
 /**
  * Datastore helper class for googles app engine.
@@ -134,6 +135,7 @@ public class JPADatastore implements Datastore {
 	@Override
 	public void garbageCollection(int maxKeepNumber, Date eldestDate) {
 		// TODO Implement garbage collection
+		throw new UnsupportedException();
 	}
 	
 	@SuppressWarnings("unused")

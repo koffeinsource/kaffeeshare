@@ -25,6 +25,7 @@ import javax.persistence.Query;
 
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Item;
+import de.kaffeeshare.server.exception.UnsupportedException;
 
 /**
  * Datastore helper class for googles app engine.
@@ -89,7 +90,7 @@ public class JPADatastore implements Datastore {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Item> getItems(int maxNumber) {
+	public List<Item> getItems(int maxNumber, int offset) {
 
 		List<Item> items = null;
 		
@@ -98,6 +99,7 @@ public class JPADatastore implements Datastore {
 
 			Query q = entityManager.createNamedQuery("findNsItems");
 			q.setParameter("ns", namespace);
+			q.setFirstResult(offset);
 			
 			q.setMaxResults(maxNumber);
 			
@@ -123,7 +125,7 @@ public class JPADatastore implements Datastore {
 	@Override
 	public boolean isEmpty() {
 
-		List<Item> items = getItems(1);
+		List<Item> items = getItems(1, 0);
 		if(items == null || items.isEmpty()) {
 			return true;
 		}
@@ -133,7 +135,7 @@ public class JPADatastore implements Datastore {
 	
 	@Override
 	public void garbageCollection(int maxKeepNumber, Date eldestDate) {
-		// TODO Implement garbage collection
+		throw new UnsupportedException();
 	}
 	
 	@SuppressWarnings("unused")

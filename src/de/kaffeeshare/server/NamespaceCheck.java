@@ -25,6 +25,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
+
 import de.kaffeeshare.server.datastore.DatastoreManager;
 
 /**
@@ -48,40 +51,9 @@ public class NamespaceCheck extends HttpServlet {
 		resp.setContentType("text; charset=UTF-8");
 		
 		if (namespace != null) {
-			log.info("Check status of namespace: " + namespace);
-			
-			// By convention, all namespaces starting with "_" (underscore) are reserved for system use.
-			if (namespace.charAt(0) == '_') {
-				resp.getWriter().append("{\"status\": \"error\"}");
-				return;
-			}
-			
-			// check if namespace is valid 
-			try {
-				DatastoreManager.setNamespace(namespace);
-			} catch (Exception e) {
-				resp.getWriter().append("{\"status\": \"error\"}");
-				return;
-			}
-			
-			// check if email and jabber address are valid!
-			// I think a valid email address also a valid jabber address
-			// so I only check for valid email address
-			try {
-				InternetAddress emailAddr = new InternetAddress(namespace+"@abc.com");
-				emailAddr.validate();
-			} catch (AddressException ex) {
-				resp.getWriter().append("{\"status\": \"error\"}");
-				return;
-			}
-			
-			// check if namespace is empty
-			if (!DatastoreManager.getDatastore().isEmpty()) {
-				resp.getWriter().append("{\"status\": \"use\"}");
-				return;
-			}
-			
-			resp.getWriter().append("{\"status\": \"success\"}");
+			JSONObject json = checkNamespace(namespace);
+			if (json == null) return;
+			resp.getWriter().append(json.toString());
 		} else {
 			log.warning("no namespace provided!");
 			return;
@@ -96,6 +68,50 @@ public class NamespaceCheck extends HttpServlet {
 	 */
 	public void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doPost(req, resp);
+	}
+	
+	private JSONObject checkNamespace(String namespace) {
+		JSONObject json = new JSONObject();
+		try {
+		
+			// By convention, all namespaces starting with "_" (underscore) are reserved for system use.
+			if (namespace.charAt(0) == '_') {
+				json.put("status", "error");
+				return json;
+			}
+			
+			// check if namespace is valid 
+			try {
+				DatastoreManager.setNamespace(namespace);
+			} catch (Exception e) {
+				json.put("status", "error");
+				return json;
+			}
+			
+			// check if email and jabber address are valid!
+			// I believe a valid email address also a valid jabber address
+			// so I only check for valid email address
+			try {
+				InternetAddress emailAddr = new InternetAddress(namespace+"@abc.com");
+				emailAddr.validate();
+			} catch (AddressException ex) {
+				json.put("status", "error");
+				return json;
+			}
+			
+			// check if namespace is empty
+			if (!DatastoreManager.getDatastore().isEmpty()) {
+				json.put("status", "use");
+				return json;
+			}
+		
+			json.put("status", "success");
+			return json;
+		} catch (JSONException e) {
+			log.warning("JSON exception @ namespace check");
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

@@ -8,6 +8,14 @@
     <url-pattern>/feed</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>de.kaffeeshare.server.output.JSON</servlet-name>
+    <servlet-class>de.kaffeeshare.server.output.JSON</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>de.kaffeeshare.server.output.JSON</servlet-name>
+    <url-pattern>/json</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>de.kaffeeshare.server.input.OneClickShare</servlet-name>
     <servlet-class>de.kaffeeshare.server.input.OneClickShare</servlet-class>
   </servlet>

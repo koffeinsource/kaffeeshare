@@ -47,11 +47,12 @@ public interface Datastore {
 	public void storeItems(List<Item> items);
 	
 	/**
-	 * Gets a list with items.
-	 * @param maxNumber Number of list entries
+	 * Gets the last maxNumber items ordered by date using the offset offset
+	 * @param maxNumber Number of items
+	 * @param offset Number of items to skip
 	 * @return List with items
 	 */
-	public List<Item> getItems(int maxNumber);
+	public List<Item> getItems(int maxNumber, int offset);
 	
 	/**
 	 * Sets the namespace.

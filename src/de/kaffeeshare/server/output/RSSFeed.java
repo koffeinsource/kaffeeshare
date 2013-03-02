@@ -83,7 +83,7 @@ public class RSSFeed extends HttpServlet {
 			feed.setDescription(Config.getString("phrase"));
 
 			List<SyndEntry> feedEntries = new ArrayList<SyndEntry>();
-			List<Item> items = DatastoreManager.getDatastore().getItems(maxKeepNumber);
+			List<Item> items = DatastoreManager.getDatastore().getItems(maxKeepNumber, 0);
 			for (Item item : items) {
 				SyndEntry feedEntry;
 				SyndContent feedContent;

@@ -77,11 +77,11 @@ public class AppEngineDatastore implements Datastore {
 	}
 	
 	@Override
-	public List<Item> getItems(int maxNumber) {
+	public List<Item> getItems(int maxNumber, int offset) {
 		Query query = new Query(DB_KIND_ITEM, null);
 		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
 		PreparedQuery pq = datastore.prepare(query);
-		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber));
+		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber).offset(offset));
 		return getItems(entities);
 	}
 	

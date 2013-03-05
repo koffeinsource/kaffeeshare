@@ -43,13 +43,13 @@ import de.kaffeeshare.server.utils.UrlValidator;
 /**
  * This servlet generates a rss feed with the latest news.
  */
-public class Feed extends HttpServlet {
+public class RSSFeed extends HttpServlet {
 
 	private static final long serialVersionUID = -5819674729148390595L;
 
 	private static String PARAM_NAMESPACE = "ns";
 	
-	private Logger log = Logger.getLogger(Feed.class.getName());
+	private Logger log = Logger.getLogger(RSSFeed.class.getName());
 	
 	private static final int maxKeepNumber = Integer.valueOf(ResourceBundle.getBundle("de.kaffeeshare.server.config").getString("max_ns_items"));
 	
@@ -83,7 +83,7 @@ public class Feed extends HttpServlet {
 			feed.setDescription(Config.getString("phrase"));
 
 			List<SyndEntry> feedEntries = new ArrayList<SyndEntry>();
-			List<Item> items = DatastoreManager.getDatastore().getItems(maxKeepNumber);
+			List<Item> items = DatastoreManager.getDatastore().getItems(maxKeepNumber, 0);
 			for (Item item : items) {
 				SyndEntry feedEntry;
 				SyndContent feedContent;

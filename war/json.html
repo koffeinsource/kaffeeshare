@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Kaffeeshare</title>
+	
+	<!--[if lt IE 9]>
+	<script src="js/html5shiv.js"></script>
+	<![endif]-->
+	
+	<style>
+		a.name {
+			position: relative;
+			top: -50px;
+			margin: 0;
+			padding: 0;
+			float: left;
+		}
+	</style>
+	<link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+	<link rel="stylesheet" href="css/bootstrap-responsive.min.css" media="screen">
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/spin.min.js"></script>
+	<script src="js/jquery.inview.js"></script>
+
+	<script type="text/javascript">
+		var spinnerOpts = {
+			lines: 13, // The number of lines to draw
+			length: 4, // The length of each line
+			width: 2, // The line thickness
+			radius: 4, // The radius of the inner circle
+			corners: 1, // Corner roundness (0..1)
+			rotate: 0, // The rotation offset
+			color: '#000', // #rgb or #rrggbb
+			speed: 1, // Rounds per second
+			trail: 60, // Afterglow percentage
+			shadow: false, // Whether to render a shadow
+			hwaccel: true, // Whether to use hardware acceleration
+			className: 'spinner', // The CSS class to assign to the spinner
+			zIndex: 2e9, // The z-index (defaults to 2000000000)
+			top: 'auto', // Top position relative to parent in px
+			left: 'auto' // Left position relative to parent in px
+		};
+	</script>
+
+</head>
+ 
+<body style="padding-top: 45px">
+
+<div class="navbar navbar-fixed-top" bs-navbar>
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="brand" href="/">Kaffeeshare</a>
+			<ul class="nav pull-right">
+				<li><a href="https://github.com/koffeinsource">Developers</a></li>
+			</ul>      
+		</div>
+	</div>
+</div>
+
+
+
+
+<div class="container">
+	<div class="hero-unit">
+		<h2>Public Namespace</h2>
+		<p><em>TransformerSiehtManNicht</em></p>
+	</div>
+</div>
+
+
+<div class="container" id="items"></div>
+<div id="loading"></div>
+
+
+<script type="text/javascript">
+
+// global variables to store the request and the spinner
+// this is done so we can cancel the request and delete the spinner
+// TODO move it into jquery data attribute?
+var request;
+var spinner;
+nextpage = 0;
+
+
+$('#loading').bind('inview', function (event, visible) {
+	if (visible) {
+		// start the spinner
+		var target = document.getElementById('loading');
+		spinner = new Spinner(spinnerOpts).spin(target);
+
+		// start the request
+		request = $.ajax({
+			type: "POST",
+			url: "json",
+			data: { ns: "TransformerSiehtManNicht", start: nextpage },
+			dataType: 'json'
+		}).done(function( msg ) {
+			console.log(msg);
+			$('#items').append(createItems(msg.items));
+			++nextpage;
+		}).fail(function(jqXHR, textStatus) {
+			// also called if request is aborted
+		}).always(function( msg ) {
+			//console.log("always");
+			spinner.stop();
+		});
+
+	} else {
+		// hidden
+	}
+});
+
+function createItems(items) {
+	returnee = "<ul class='media-list'>";
+
+	for (i = 0; i<items.length; ++i) {
+		returnee += "<li class='media'>";
+		returnee += "<div class='media-body'>";
+		
+		returnee += "<h3 class='media-heading'>" + items[i].caption + "</h3>";
+		
+		if (items[i].imageurl) {
+			returnee += "<a class='pull-left' href='" + items[i].url + "'>";
+			returnee += "<img class='media-object, thumbnail' width='200' src='" + items[i].imageurl + "' alt=''>";
+			returnee += "</a>";
+		}
+		
+		returnee += "<p>" + items[i].description + "</p>";
+		returnee += "<small><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></small>";
+		//returnee += "<div style='clear:both'></div>";
+		
+		returnee += "</div>"
+		returnee += "</li>";
+	}
+
+	returnee += "</ul>";
+	
+/*	for (i = 0; i<items.length; ++i) {
+		returnee += "<div>";
+		returnee += "<h3>" + items[i].caption + "</h3>";
+		
+		if (items[i].imageurl) {
+			returnee += "<img class='thumbnail' style='float:left; margin-right:16px; margin-bottom:16px;' width='200' src='" + items[i].imageurl + "' alt=''>";
+		}
+		returnee += "<blockquote><p>" + items[i].description + "</blockquote></p>";
+		returnee += "<small><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></small>";
+		returnee += "<div style='clear:both'></div>";
+		
+		returnee += "</div>";
+	}*/
+	
+	console.log(returnee);
+
+	return returnee;
+}
+
+$(window).scroll();
+
+</script>
+
+
+
+</body>
+</html>

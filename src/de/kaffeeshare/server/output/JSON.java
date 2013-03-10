@@ -22,6 +22,9 @@ public class JSON extends HttpServlet {
 	private static final String PARAM_NAMESPACE = "ns";
 	private static final String PARAM_OFFSET    = "start";
 	
+	// TODO magic number
+	private static final int RESULTS_PER_REQUEST = 20;
+	
 	private static final Logger log = Logger.getLogger(JSON.class.getName());
 
 	/**
@@ -33,13 +36,13 @@ public class JSON extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String namespace = req.getParameter(PARAM_NAMESPACE);
 		Integer offset = new Integer(req.getParameter(PARAM_OFFSET));
+		offset *= RESULTS_PER_REQUEST;
 		
 		log.info("JSON request for namespace " + namespace + " offset " + offset);
 		
 		DatastoreManager.setNamespace(namespace);
 		
-		// TODO magic number
-		List<Item> items = DatastoreManager.getDatastore().getItems(20, offset);
+		List<Item> items = DatastoreManager.getDatastore().getItems(RESULTS_PER_REQUEST, offset);
 		JSONObject returnee = new JSONObject();
 		JSONArray jarr = new JSONArray();
 		

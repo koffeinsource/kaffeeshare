@@ -34,7 +34,7 @@ public class NamespaceValidator {
 	/**
 	 * A list of namespaces we want to reserver for special use
 	 */
-	private static List<String> reservedNamespaces = Arrays.asList("public", "private", "kaffee");
+	private static List<String> reservedNamespaces = Arrays.asList("public", "private", "kaffee", null);
 	
 	/**
 	 * Validates a namespace. An exception if thrown in case it is not valid

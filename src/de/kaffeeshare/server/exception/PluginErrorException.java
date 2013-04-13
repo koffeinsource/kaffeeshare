@@ -13,41 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package de.kaffeeshare.server.plugins;
+package de.kaffeeshare.server.exception;
 
-import java.net.URL;
-
-import org.jsoup.nodes.Document;
-
-import de.kaffeeshare.server.exception.PluginErrorException;
+import de.kaffeeshare.server.plugins.BasePlugin;
 
 /**
- * Plugin to handle imgur pages.
+ * Thrown if an error occurs in a plugin.
  */
-public class Imgur extends BasePlugin {
+public class PluginErrorException extends RuntimeException {
 
-	@Override
-	public boolean match(URL url) {
-		
-		String str = url.toString();
-		return (str.startsWith("http://imgur.com/") || str.startsWith("https://imgur.com/"));
+	private static final long serialVersionUID = -2171829811099619421L;
+
+	/**
+	 * Constructor.
+	 * @param plugin Plugin who throws the exception
+	 */
+	public PluginErrorException(BasePlugin plugin) {
+		super("Error in plugin " + plugin.getClass().getName());
 	}
-	
-	@Override
-	protected String getDescription(Document doc) {
-		
-		String description = "";
-
-		try {
-			String imageUrl = doc.getElementById("image").getElementsByTag("img").first().attr("src");
-			if (imageUrl != null) {
-				description = "<img src=\"" +  imageUrl + "\" />";
-			}
-		} catch(Exception e) {
-			throw new PluginErrorException(this);
-		}
-
-		return description;
-	}
-
 }

@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.InputErrorException;
+import de.kaffeeshare.server.exception.PluginErrorException;
 import de.kaffeeshare.server.plugins.BasePlugin;
 import de.kaffeeshare.server.plugins.DefaultPlugin;
 
@@ -157,11 +158,17 @@ public class UrlImporter {
 	 * @return Plugin 
 	 */
 	public static Item callMatchingPlugin(URL url) {
-		for (BasePlugin plugin: getPlugins()) {
-			if (plugin.match(url)) {
-				return plugin.createItem(url);
+		
+		try {
+			for (BasePlugin plugin: getPlugins()) {
+				if (plugin.match(url)) {
+					return plugin.createItem(url);
+				}
 			}
+		} catch(PluginErrorException e) {
+			// Plugin error, use the default plugin
 		}
+		
 		return new DefaultPlugin().createItem(url);
 	}
 

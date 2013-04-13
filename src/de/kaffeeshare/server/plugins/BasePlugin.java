@@ -15,7 +15,6 @@
  ******************************************************************************/
 package de.kaffeeshare.server.plugins;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -24,7 +23,6 @@ import org.jsoup.nodes.Document;
 
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
-import de.kaffeeshare.server.exception.SystemErrorException;
 
 /**
  * Abstract base class for all plugins.
@@ -51,27 +49,28 @@ public abstract class BasePlugin {
 	public Item createItem(URL url) {
 		log.info("Running " + this.getClass().getName() + " plugin!");
 
+		String urlString = url.toString();
+		String caption = "";
+		String description = "";
+		String imageUrl = "";
+		
 		Document doc;
 		try {
 			doc = Jsoup.parse(url, 10000);
-		} catch (IOException e1) {
-			throw new SystemErrorException();
-		}
-		
-		String caption = getCaption(doc);
-		log.info("caption: " + caption);
-		
-		String description = getDescription(doc);
-		log.info("description: " + description);
-		
-		String imageUrl = getImageUrl(doc);
-		log.info("image url: " + description);
-		
-		String urlString = null;
-		try {
+			
+			caption = getCaption(doc);
+			log.info("caption: " + caption);
+			
+			description = getDescription(doc);
+			log.info("description: " + description);
+			
+			imageUrl = getImageUrl(doc);
+			log.info("image url: " + description);
+			
 			urlString = getProperty(doc, "og:url");
-		} catch (Exception e) {
-			urlString = url.toString();
+			
+		} catch (Exception e1) {
+			// Use empty strings.
 		}
 
 		return DatastoreManager.getDatastore().createItem(caption, urlString, description, imageUrl);

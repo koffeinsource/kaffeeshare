@@ -166,6 +166,7 @@ public class UrlImporter {
 				}
 			}
 		} catch(PluginErrorException e) {
+			log.info(e.getMessage());
 			// Plugin error, use the default plugin
 		}
 		

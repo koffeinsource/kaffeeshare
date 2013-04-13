@@ -18,44 +18,34 @@ package de.kaffeeshare.server.plugins;
 import java.net.URL;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
+import de.kaffeeshare.server.exception.PluginErrorException;
 
 /**
- * Plugin to handle youtube pages.
+ * Plugin to handle pastebin pages.
  */
-public class Youtube extends BasePlugin {
+public class Pastebin extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
+		
 		String str = url.toString();
-		return (str.startsWith("http://www.youtube.com/") || str.startsWith("https://www.youtube.com/"));
+		return (str.startsWith("http://pastebin.com/") || str.startsWith("https://pastebin.com/"));
 	}
 
 	@Override
 	public String getDescription(Document doc) {
 
-		String videoId = null;
+		String description = "";
+
 		try {
-			Elements elements = doc.getElementsByTag("link");
-			for (Element el: elements) {
-				if (el.hasAttr("rel")) {
-					if (el.attr("rel").equalsIgnoreCase("canonical")) {
-						videoId = el.attr("href").replace("/watch?v=", "");
-					}
-				}
-			}
+			description = doc.getElementById("paste_code").text();
 		} catch (Exception e) {
+			throw new PluginErrorException(this);
 		}
-
-		String description = super.getDescription(doc);
-		if (videoId != null) {
-			description += "<br /><br /><br /><iframe width=\"560\" height=\"315\" src=\"http://www.youtube.com/embed/"
-					+ videoId
-					+ "\" frameborder=\"0\" allowfullscreen></iframe>";
-		}
-
+		
 		return description;
+
 	}
 
 }

@@ -39,7 +39,7 @@ public class Pastebin extends BasePlugin {
 		String description = "";
 
 		try {
-			description = doc.getElementById("paste_code").text();
+			description = doc.getElementById("paste_code").text().replace("\n", "<br />\n");
 		} catch (Exception e) {
 			throw new PluginErrorException(this);
 		}

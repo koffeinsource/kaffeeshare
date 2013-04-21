@@ -60,46 +60,34 @@ public class AppEngineDatastore implements Datastore {
 		return new Item(caption, url, description, imageUrl);
 	}
 	
-	@Override
-	public Item storeItem(Item item) {
-		Entity entity = toEntity(item);
-		datastore.put(entity);
-		return item;
-	}
-
-	@Override
-	public void storeItems(List<Item> items) {
-		List<Entity> entities = new ArrayList<Entity>();
-		for (Item item : items) {
-			entities.add(toEntity(item));
+	/**
+	 * Deletes a set of entities from the datastore
+	 * @param entities the entities to be deleted
+	 */
+	private void deleteEntities(Iterable<Entity> entities) {
+		List<Key> keys = new ArrayList<Key>();
+		
+		for( Entity e : entities) {
+			keys.add(e.getKey());
 		}
-		datastore.put(entities);
-	}
-	
-	@Override
-	public List<Item> getItems(int maxNumber, int offset) {
-		Query query = new Query(DB_KIND_ITEM, null);
-		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
-		PreparedQuery pq = datastore.prepare(query);
-		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber).offset(offset));
-		return getItems(entities);
-	}
-	
-	@Override
-	public void setNamespace(String ns) {
-		NamespaceManager.set(ns);
-	}
-	
-	@Override
-	public boolean isEmpty() {
 		
-		Query query = new Query(DB_KIND_ITEM, null);
-		query.setKeysOnly();
+		log.info("Going to delete " + keys.size() + " enteties");
 		
-		PreparedQuery pq = datastore.prepare(query);
-		if (pq.asList(FetchOptions.Builder.withLimit(1)).size() > 0) return false;
+		datastore.delete(keys);
+	}
 
-		return true;
+	/**
+	 * Creates an item from a google DB entity.
+	 * @param Entity
+	 * @return Item
+	 */
+	private Item fromEntity(Entity e) {
+		return new Item((String) e.getProperty(DB_ITEM_CAPTION),
+						(String) e.getKey().getName(),
+						((Text) e.getProperty(DB_ITEM_DESCRIPTION)).getValue(),
+						(String) e.getProperty(DB_ITEM_IMAGEURL),
+						new Date((Long)e.getProperty(DB_ITEM_CREATEDAT))
+						);
 	}
 	
 	@Override
@@ -147,21 +135,14 @@ public class AppEngineDatastore implements Datastore {
 	}
 	
 	/**
-	 * Deletes a set of entities from the datastore
-	 * @param entities the entities to be deleted
+	 * The DB key of the current item.
+	 * @param item Item
+	 * @return Key
 	 */
-	private void deleteEntities(Iterable<Entity> entities) {
-		List<Key> keys = new ArrayList<Key>();
-		
-		for( Entity e : entities) {
-			keys.add(e.getKey());
-		}
-		
-		log.info("Going to delete " + keys.size() + " enteties");
-		
-		datastore.delete(keys);
+	private Key getItemDBKey(Item item) {
+		return KeyFactory.createKey(DB_KIND_ITEM, item.getUrl());
 	}
-
+	
 	/**
 	 * Gets a list with items from entities.
 	 * @param entities Collection with entities
@@ -175,18 +156,46 @@ public class AppEngineDatastore implements Datastore {
 		return items;
 	}
 	
-	/**
-	 * Creates an item from a google DB entity.
-	 * @param Entity
-	 * @return Item
-	 */
-	private Item fromEntity(Entity e) {
-		return new Item((String) e.getProperty(DB_ITEM_CAPTION),
-						(String) e.getKey().getName(),
-						((Text) e.getProperty(DB_ITEM_DESCRIPTION)).getValue(),
-						(String) e.getProperty(DB_ITEM_IMAGEURL),
-						new Date((Long)e.getProperty(DB_ITEM_CREATEDAT))
-						);
+	@Override
+	public List<Item> getItems(int maxNumber, int offset) {
+		Query query = new Query(DB_KIND_ITEM, null);
+		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
+		PreparedQuery pq = datastore.prepare(query);
+		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber).offset(offset));
+		return getItems(entities);
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		
+		Query query = new Query(DB_KIND_ITEM, null);
+		query.setKeysOnly();
+		
+		PreparedQuery pq = datastore.prepare(query);
+		if (pq.asList(FetchOptions.Builder.withLimit(1)).size() > 0) return false;
+
+		return true;
+	}
+
+	@Override
+	public void setNamespace(String ns) {
+		NamespaceManager.set(ns);
+	}
+	
+	@Override
+	public Item storeItem(Item item) {
+		Entity entity = toEntity(item);
+		datastore.put(entity);
+		return item;
+	}
+	
+	@Override
+	public void storeItems(List<Item> items) {
+		List<Entity> entities = new ArrayList<Entity>();
+		for (Item item : items) {
+			entities.add(toEntity(item));
+		}
+		datastore.put(entities);
 	}
 	
 	/**
@@ -201,15 +210,6 @@ public class AppEngineDatastore implements Datastore {
 		entity.setUnindexedProperty(DB_ITEM_IMAGEURL, item.getImageUrl());
 		entity.setProperty(DB_ITEM_CREATEDAT, item.getCreatedAt().getTime());
 		return entity;
-	}
-	
-	/**
-	 * The DB key of the current item.
-	 * @param item Item
-	 * @return Key
-	 */
-	private Key getItemDBKey(Item item) {
-		return KeyFactory.createKey(DB_KIND_ITEM, item.getUrl());
 	}
 	
 }

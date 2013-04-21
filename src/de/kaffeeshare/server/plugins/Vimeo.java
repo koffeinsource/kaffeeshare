@@ -25,12 +25,6 @@ import org.jsoup.nodes.Document;
 public class Vimeo extends BasePlugin {
 
 	@Override
-	public boolean match(URL url) {
-		String str = url.toString();
-		return (str.startsWith("http://vimeo.com/") || str.startsWith("https://vimeo.com/"));
-	}
-
-	@Override
 	public String getDescription(Document doc) {
 
 		String videoId = null;
@@ -48,10 +42,16 @@ public class Vimeo extends BasePlugin {
 
 		return description;
 	}
-	
+
 	@Override
 	public String getImageUrl(Document doc) {
 		return null;
+	}
+	
+	@Override
+	public boolean match(URL url) {
+		String str = url.toString();
+		return (str.startsWith("http://vimeo.com/") || str.startsWith("https://vimeo.com/"));
 	}
 
 }

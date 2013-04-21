@@ -27,13 +27,6 @@ import de.kaffeeshare.server.exception.PluginErrorException;
 public class Pastebin extends BasePlugin {
 
 	@Override
-	public boolean match(URL url) {
-		
-		String str = url.toString();
-		return (str.startsWith("http://pastebin.com/") || str.startsWith("https://pastebin.com/"));
-	}
-
-	@Override
 	public String getDescription(Document doc) {
 
 		String description = "";
@@ -46,6 +39,13 @@ public class Pastebin extends BasePlugin {
 		
 		return description;
 
+	}
+
+	@Override
+	public boolean match(URL url) {
+		
+		String str = url.toString();
+		return (str.startsWith("http://pastebin.com/") || str.startsWith("https://pastebin.com/"));
 	}
 
 }

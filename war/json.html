@@ -2,31 +2,32 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<title>Kaffeeshare</title>
-	
-	<!--[if lt IE 9]>
+<meta charset="utf-8">
+<title>Kaffeeshare</title>
+
+<!--[if lt IE 9]>
 	<script src="js/html5shiv.js"></script>
 	<![endif]-->
-	
-	<style>
-		a.name {
-			position: relative;
-			top: -50px;
-			margin: 0;
-			padding: 0;
-			float: left;
-		}
-	</style>
-	<link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
-	<link rel="stylesheet" href="css/bootstrap-responsive.min.css" media="screen">
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/spin.min.js"></script>
-	<script src="js/jquery.inview.js"></script>
+<style>
+a.name {
+	position: relative;
+	top: -50px;
+	margin: 0;
+	padding: 0;
+	float: left;
+}
+</style>
+<link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+<link rel="stylesheet" href="css/bootstrap-responsive.min.css"
+	media="screen">
 
-	<script type="text/javascript">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/spin.min.js"></script>
+<script src="js/jquery.inview.js"></script>
+
+<script type="text/javascript">
 		var spinnerOpts = {
 			lines: 13, // The number of lines to draw
 			length: 4, // The length of each line
@@ -47,36 +48,38 @@
 	</script>
 
 </head>
- 
+
 <body style="padding-top: 45px">
 
-<div class="navbar navbar-fixed-top" bs-navbar>
-	<div class="navbar-inner">
-		<div class="container">
-			<a class="brand" href="/">Kaffeeshare</a>
-			<ul class="nav pull-right">
-				<li><a href="https://github.com/koffeinsource">Developers</a></li>
-			</ul>      
+	<div class="navbar navbar-fixed-top" bs-navbar>
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="/">Kaffeeshare</a>
+				<ul class="nav pull-right">
+					<li><a href="https://github.com/koffeinsource">Developers</a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
-</div>
 
 
 
 
-<div class="container">
-	<div class="hero-unit">
-		<h2>Public Namespace</h2>
-		<p><em>TransformerSiehtManNicht</em></p>
+	<div class="container">
+		<div class="hero-unit">
+			<h2>Public Namespace</h2>
+			<p>
+				<em>TransformerSiehtManNicht</em>
+			</p>
+		</div>
 	</div>
-</div>
 
 
-<div class="container" id="items"></div>
-<div id="loading"></div>
+	<div class="container" id="items"></div>
+	<div id="loading"></div>
 
 
-<script type="text/javascript">
+	<script type="text/javascript">
 
 // global variables to store the request and the spinner
 // this is done so we can cancel the request and delete the spinner

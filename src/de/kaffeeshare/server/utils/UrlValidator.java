@@ -28,16 +28,6 @@ public class UrlValidator {
 	private static final Logger log = Logger.getLogger(UrlValidator.class.getName());
 	
 	/**
-	 * Validates a url. An exception if thrown in case it is not valid
-	 * @param url the url to be validated
-	 * @throws URISyntaxException, URISyntaxException 
-	 */
-	private static void validate(String url) throws URISyntaxException, MalformedURLException {
-		URL temp = new URL(url);
-		temp.toURI();
-	}
-	
-	/**
 	 * Checks if a url is valid
 	 * @param url the url to be validated
 	 * @return true if url is valid, false otherwise
@@ -53,5 +43,15 @@ public class UrlValidator {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Validates a url. An exception if thrown in case it is not valid
+	 * @param url the url to be validated
+	 * @throws URISyntaxException, URISyntaxException 
+	 */
+	private static void validate(String url) throws URISyntaxException, MalformedURLException {
+		URL temp = new URL(url);
+		temp.toURI();
 	}
 }

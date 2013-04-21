@@ -69,6 +69,49 @@ public class Item {
 		this.createdAt = createdAt;
 	}
 	
+	public String getCaption() {
+		return caption;
+	}
+
+	// -------------------------------------------------------------------------------------------
+	// GETTER and SETTER
+	
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+
+	public boolean hasUrl() {
+		return url != null;
+	}
+
+	public void setCaption(String caption) {
+		this.caption = caption;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	public JSONObject toJSON() throws JSONException {
 		JSONObject json = new JSONObject();
 		
@@ -79,49 +122,6 @@ public class Item {
 		json.put("createdat", createdAt.toString());
 		
 		return json;
-	}
-
-	// -------------------------------------------------------------------------------------------
-	// GETTER and SETTER
-	
-	public String getCaption() {
-		return caption;
-	}
-
-	public void setCaption(String caption) {
-		this.caption = caption;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-	
-	public boolean hasUrl() {
-		return url != null;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
 	}
 
 }

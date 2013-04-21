@@ -29,12 +29,6 @@ public class Config {
 			.getBundle(BUNDLE_NAME);
 
 	/**
-	 * Void constructor
-	 */
-	private Config() {
-	}
-
-	/**
 	 * Get the string for a key.
 	 * @param key Key
 	 * @return String
@@ -45,6 +39,12 @@ public class Config {
 		} catch (MissingResourceException e) {
 			return '!' + key + '!';
 		}
+	}
+
+	/**
+	 * Void constructor
+	 */
+	private Config() {
 	}
 
 }

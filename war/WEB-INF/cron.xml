@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
-  <cron>
-    <url>/cron/garbagecollection</url>
-    <description>Delete old data from the db.</description>
-    <schedule>every day 00:00</schedule>
-    <target>db-cleanup</target>
-  </cron>
+	<cron>
+		<url>/cron/garbagecollection</url>
+		<description>Delete old data from the db.</description>
+		<schedule>every day 00:00</schedule>
+		<target>db-cleanup</target>
+	</cron>
 </cronentries>

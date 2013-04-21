@@ -28,4 +28,5 @@ public class DatastoreConfigException extends RuntimeException {
 	public DatastoreConfigException() {
 		super("No datastore interface is defined (See config.properties)!");
 	}
+	
 }

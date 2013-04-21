@@ -28,6 +28,16 @@ public class JSON extends HttpServlet {
 	private static final Logger log = Logger.getLogger(JSON.class.getName());
 
 	/**
+	 * Handles a get request.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, IOException
+	 */
+	public void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doPost(req, resp);
+	}
+	
+	/**
 	 * Handles a post request.
 	 * @param req Request
 	 * @param resp Response
@@ -64,15 +74,5 @@ public class JSON extends HttpServlet {
 		resp.setContentType("text; charset=UTF-8");
 		
 		resp.getWriter().append(returnee.toString());	
-	}
-	
-	/**
-	 * Handles a get request.
-	 * @param req Request
-	 * @param resp Response
-	 * @throws ServletException, IOException
-	 */
-	public void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doPost(req, resp);
 	}
 }

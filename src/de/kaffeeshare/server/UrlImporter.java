@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 import de.kaffeeshare.server.exception.InputErrorException;
@@ -37,141 +39,10 @@ import de.kaffeeshare.server.plugins.DefaultPlugin;
  * the homepage.
  */
 public class UrlImporter {
-	
-	private static final Logger log = Logger.getLogger(UrlImporter.class.getName());
+
+	private static final Logger log = Logger.getLogger(UrlImporter.class
+			.getName());
 	private static Vector<BasePlugin> plugins;
-	
-	/**
-	 * Adds the first URL of a String to the DB.
-	 * @param text Plain text to be parsed
-	 * @return null if no URL is in the text, otherwise the url
-	 */
-	public static String importFromText(String text) {
-		String url = getURLPlain(text);
-
-		if (url != null) {
-			log.info("Try to add url " + url + " to DB");
-			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
-		}
-
-		return url;
-	}
-
-	/**
-	 * Adds the first URL of a String to the DB.
-	 * @param text Html to be parsed
-	 * @return null if no URL is in the text, otherwise the url
-	 */
-	public static String importFromHTML(String text) {
-		String url = getURLHTML(text);
-
-		if (url != null) {
-			log.info("Try to add url " + url + " to DB");
-			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
-		}
-
-		return url;
-	}
-
-	/**
-	 * Generates an item from a url.
-	 * @param urlString URL
-	 * @return Item
-	 * @throws InputErrorException
-	 */
-	public static Item fetchUrl(String urlString) throws InputErrorException {
-		try {
-			if (urlString.startsWith("http://") || urlString.startsWith("https://")) {
-			} else {
-				urlString = "http://" + urlString;
-			}
-			URL url = new URL(urlString);
-			return callMatchingPlugin(url);
-		} catch (MalformedURLException e) {
-			throw new InputErrorException();
-		}
-	}
-
-	/**
-	 * Lazy init of plugins. use this method to get the plugins. If you create a
-	 * plugin - make sure to make it available here.
-	 * @return Plugins
-	 */
-	private synchronized static Vector<BasePlugin> getPlugins() {
-
-		if(plugins == null) {
-			
-			plugins = new Vector<BasePlugin>();
-			
-			// Get a file object for the plugins package
-			File directory = new File(Thread.currentThread()
-										.getContextClassLoader()
-										.getResource("de/kaffeeshare/server/plugins").getFile());
-			
-			if(directory.exists()) {
-				
-				ResourceBundle bundle = ResourceBundle.getBundle("de.kaffeeshare.server.config");
-				
-				// Get the list of the files contained in the package
-				String[] files = directory.list();
-				for(int i = 0; i < files.length; i++) {
-				
-					// we are only interested in .class files
-					if(files[i].endsWith(".class")) {
-						
-						// removes the .class extension
-						String className = files[i].substring(0, files[i].length() - 6);
-						
-						// Check if the plugin is disabled in the config.properties
-						boolean use = true;
-						try {
-							use = Boolean.valueOf(bundle.getString(className));
-						} catch(MissingResourceException e) {
-							// Plugin not defined in config.properties -> Use it
-						}
-						
-						if(use && !(className.equals("BasePlugin") || className.equals("DefaultPlugin"))) {
-							try {
-								Object plugin = Class.forName("de.kaffeeshare.server.plugins." + className)
-													.newInstance();
-								
-								if(plugin instanceof BasePlugin) {
-									log.info("Start plugin: " +  className);
-									plugins.add((BasePlugin)plugin);
-								}
-
-							} catch (Exception e) {
-								log.warning("Can't start plugin " + className);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return plugins;
-	}
-
-	/**
-	 * Naive approach on finding the right plugin ;-)
-	 * @param url URL
-	 * @return Plugin 
-	 */
-	public static Item callMatchingPlugin(URL url) {
-		
-		try {
-			for (BasePlugin plugin: getPlugins()) {
-				if (plugin.match(url)) {
-					return plugin.createItem(url);
-				}
-			}
-		} catch(PluginErrorException e) {
-			log.info(e.getMessage());
-			// Plugin error, use the default plugin
-		}
-		
-		return new DefaultPlugin().createItem(url);
-	}
 
 	/**
 	 * URL pattern, public domain.
@@ -189,8 +60,155 @@ public class UrlImporter {
 					+ "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b");
 
 	/**
+	 * URL pattern, html.
+	 */
+	static private Pattern urlPatternHTML = Pattern
+			.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))");
+
+	/**
+	 * Naive approach on finding the right plugin ;-)
+	 * 
+	 * @param url
+	 *            URL
+	 * @return Plugin
+	 */
+	public static Item callMatchingPlugin(URL url) {
+
+		try {
+			for (BasePlugin plugin : getPlugins()) {
+				if (plugin.match(url)) {
+					return plugin.createItem(url);
+				}
+			}
+		} catch (PluginErrorException e) {
+			log.info(e.getMessage());
+			// Plugin error, use the default plugin
+		}
+
+		return new DefaultPlugin().createItem(url);
+	}
+
+	/**
+	 * Generates an item from a url.
+	 * 
+	 * @param urlString
+	 *            URL
+	 * @return Item
+	 * @throws InputErrorException
+	 */
+	public static Item fetchUrl(String urlString) throws InputErrorException {
+		try {
+			if (urlString.startsWith("http://")
+					|| urlString.startsWith("https://")) {
+			} else {
+				urlString = "http://" + urlString;
+			}
+			URL url = new URL(urlString);
+			try {
+				// TODO maybe cache response and let plugins work on reponse 
+				// instead of url, to save additional url fetch - if not cached
+				return callMatchingPlugin(URLFetchServiceFactory
+						.getURLFetchService().fetch(url).getFinalUrl());
+			} catch (Exception e) {
+				return callMatchingPlugin(url);
+			}
+		} catch (MalformedURLException e) {
+			throw new InputErrorException();
+		}
+	}
+
+	/**
+	 * Lazy init of plugins. use this method to get the plugins. If you create a
+	 * plugin - make sure to make it available here.
+	 * 
+	 * @return Plugins
+	 */
+	private synchronized static Vector<BasePlugin> getPlugins() {
+
+		if (plugins == null) {
+
+			plugins = new Vector<BasePlugin>();
+
+			// Get a file object for the plugins package
+			File directory = new File(Thread.currentThread()
+					.getContextClassLoader()
+					.getResource("de/kaffeeshare/server/plugins").getFile());
+
+			if (directory.exists()) {
+
+				ResourceBundle bundle = ResourceBundle
+						.getBundle("de.kaffeeshare.server.config");
+
+				// Get the list of the files contained in the package
+				String[] files = directory.list();
+				for (int i = 0; i < files.length; i++) {
+
+					// we are only interested in .class files
+					if (files[i].endsWith(".class")) {
+
+						// removes the .class extension
+						String className = files[i].substring(0,
+								files[i].length() - 6);
+
+						// Check if the plugin is disabled in the
+						// config.properties
+						boolean use = true;
+						try {
+							use = Boolean.valueOf(bundle.getString(className));
+						} catch (MissingResourceException e) {
+							// Plugin not defined in config.properties -> Use it
+						}
+
+						if (use
+								&& !(className.equals("BasePlugin") || className
+										.equals("DefaultPlugin"))) {
+							try {
+								Object plugin = Class.forName(
+										"de.kaffeeshare.server.plugins."
+												+ className).newInstance();
+
+								if (plugin instanceof BasePlugin) {
+									log.info("Start plugin: " + className);
+									plugins.add((BasePlugin) plugin);
+								}
+
+							} catch (Exception e) {
+								log.warning("Can't start plugin " + className);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return plugins;
+	}
+
+	/**
+	 * Extracts the first URL from given HTML code.
+	 * 
+	 * @param html
+	 *            Html string
+	 * @return URL
+	 */
+	static private String getURLHTML(String html) {
+		Matcher m = urlPatternHTML.matcher(html);
+
+		while (m.find()) {
+			String url = m.group();
+
+			log.info("found url: " + url);
+			return url;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Extracts the first URL from a given string.
-	 * @param text String
+	 * 
+	 * @param text
+	 *            String
 	 * @return URL
 	 */
 	static private String getURLPlain(String text) {
@@ -210,27 +228,39 @@ public class UrlImporter {
 	}
 
 	/**
-	 * URL pattern, html.
+	 * Adds the first URL of a String to the DB.
+	 * 
+	 * @param text
+	 *            Html to be parsed
+	 * @return null if no URL is in the text, otherwise the url
 	 */
-	static private Pattern urlPatternHTML = Pattern
-			.compile("\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))");
+	public static String importFromHTML(String text) {
+		String url = getURLHTML(text);
 
-	/**
-	 * Extracts the first URL from given HTML code.
-	 * @param html Html string
-	 * @return URL
-	 */
-	static private String getURLHTML(String html) {
-		Matcher m = urlPatternHTML.matcher(html);
-
-		while (m.find()) {
-			String url = m.group();
-
-			log.info("found url: " + url);
-			return url;
+		if (url != null) {
+			log.info("Try to add url " + url + " to DB");
+			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
 		}
 
-		return null;
+		return url;
+	}
+
+	/**
+	 * Adds the first URL of a String to the DB.
+	 * 
+	 * @param text
+	 *            Plain text to be parsed
+	 * @return null if no URL is in the text, otherwise the url
+	 */
+	public static String importFromText(String text) {
+		String url = getURLPlain(text);
+
+		if (url != null) {
+			log.info("Try to add url " + url + " to DB");
+			DatastoreManager.getDatastore().storeItem(fetchUrl(url));
+		}
+
+		return url;
 	}
 
 }

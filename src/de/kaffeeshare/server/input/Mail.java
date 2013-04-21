@@ -47,61 +47,6 @@ public class Mail extends HttpServlet {
 	private static final long serialVersionUID = 294584452111372279L;
 	private static final Logger log = Logger.getLogger(Mail.class.getName());
 
-	/**
-	 * Handle a post request.
-	 * @param req Request
-	 * @param resp Response
-	 * @throws ServletException, SystemErrorException
-	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SystemErrorException {
-        Properties props = new Properties(); 
-        Session session = Session.getDefaultInstance(props, null); 
-        try {
-            MimeMessage message = new MimeMessage(session, req.getInputStream());			
-            
-			log.info("Got email from " + ((InternetAddress)message.getFrom()[0]).getAddress());
-			
-			List<String> toAddresses = new ArrayList<String>();
-			Address[] recipients = message.getRecipients(Message.RecipientType.TO);
-			for (Address address : recipients) {
-			    toAddresses.add(address.toString());
-			}
-			
-			for (String to : toAddresses) {
-			
-				// check if to is name <address@domain.tld>
-				if (to.contains("<")) {
-					int start = to.indexOf("<");
-					int end = to.indexOf(">");
-					if (start == -1 || end == -1) throw new InputErrorException();
-					++start;
-					--end;
-					to = to.substring(start, end);
-				}
-				
-				to = to.split("@")[0];
-				DatastoreManager.setNamespace(to);
-				
-				// first lets see if there is plain text with url
-				if (UrlImporter.importFromText(getText(message)) != null) continue;
-				
-				log.info("No URLs found in plain text, will look in HTML");
-				
-				UrlImporter.importFromHTML(getHTML(message));
-			}
-			
-		} catch (MessagingException e) {
-			throw new SystemErrorException();
-		} catch (IOException e) {
-			throw new SystemErrorException();
-		}
-
-	}
-	
-	static private String getText(Part p) {
-		return getMime(p, "text/plain");
-	}
-	
 	static private String getHTML(Part p) {
 		return getMime(p, "text/html");
 	}
@@ -154,5 +99,60 @@ public class Mail extends HttpServlet {
 		} catch (IOException e) {
 			throw new SystemErrorException();
 		}
+	}
+	
+	static private String getText(Part p) {
+		return getMime(p, "text/plain");
+	}
+	
+	/**
+	 * Handle a post request.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, SystemErrorException
+	 */
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SystemErrorException {
+        Properties props = new Properties(); 
+        Session session = Session.getDefaultInstance(props, null); 
+        try {
+            MimeMessage message = new MimeMessage(session, req.getInputStream());			
+            
+			log.info("Got email from " + ((InternetAddress)message.getFrom()[0]).getAddress());
+			
+			List<String> toAddresses = new ArrayList<String>();
+			Address[] recipients = message.getRecipients(Message.RecipientType.TO);
+			for (Address address : recipients) {
+			    toAddresses.add(address.toString());
+			}
+			
+			for (String to : toAddresses) {
+			
+				// check if to is name <address@domain.tld>
+				if (to.contains("<")) {
+					int start = to.indexOf("<");
+					int end = to.indexOf(">");
+					if (start == -1 || end == -1) throw new InputErrorException();
+					++start;
+					--end;
+					to = to.substring(start, end);
+				}
+				
+				to = to.split("@")[0];
+				DatastoreManager.setNamespace(to);
+				
+				// first lets see if there is plain text with url
+				if (UrlImporter.importFromText(getText(message)) != null) continue;
+				
+				log.info("No URLs found in plain text, will look in HTML");
+				
+				UrlImporter.importFromHTML(getHTML(message));
+			}
+			
+		} catch (MessagingException e) {
+			throw new SystemErrorException();
+		} catch (IOException e) {
+			throw new SystemErrorException();
+		}
+
 	}
 }

@@ -28,7 +28,7 @@ public class PluginSandbox {
 		testUrl("http://www.youtube.com/watch?v=C6O2ZIkcs-s&feature=g-vrec&context=G208b504RVAAAAAAAAAQ");
 		testUrl("http://vimeo.com/39249572");
 	}
-	
+
 	private static void testUrl(String urlString) {
 		Item item = UrlImporter.fetchUrl(urlString);
 		System.out.println("---------------------------------------");

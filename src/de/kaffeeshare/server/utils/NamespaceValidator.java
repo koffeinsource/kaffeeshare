@@ -37,6 +37,21 @@ public class NamespaceValidator {
 	private static List<String> reservedNamespaces = Arrays.asList("public", "private", "kaffee", null);
 	
 	/**
+	 * Checks if a namespace is valid
+	 * @param ns the namespace to be validated
+	 * @return true if namespace is valid, false otherwise
+	 */
+	static public boolean isValide(String ns)  {
+		try {
+			validate(ns);
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Validates a namespace. An exception if thrown in case it is not valid
 	 * @param ns the namespace to be validated
 	 * @throws ReservedNamespaceException, IllegalNamespaceException
@@ -53,20 +68,5 @@ public class NamespaceValidator {
 			log.info("Trying to use an illegal namespace: " + ns);
 			throw new IllegalNamespaceException();
 		}
-	}
-	
-	/**
-	 * Checks if a namespace is valid
-	 * @param ns the namespace to be validated
-	 * @return true if namespace is valid, false otherwise
-	 */
-	static public boolean isValide(String ns)  {
-		try {
-			validate(ns);
-		} catch (Exception e) {
-			return false;
-		}
-		
-		return true;
 	}
 }

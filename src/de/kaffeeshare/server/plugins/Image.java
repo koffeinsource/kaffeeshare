@@ -31,6 +31,23 @@ import de.kaffeeshare.server.datastore.Item;
 public class Image extends BasePlugin {
 
 	@Override
+	public Item createItem(URL url) {
+		log.info("Running Image plugin!");
+
+		String caption = url.getFile().substring(1); // .getFile() returns "/<name>"
+		String urlString = url.toString();
+		String description = "<img src='" +url.toString()+ "'>";
+
+		String imageUrl = "";
+		return DatastoreManager.getDatastore().createItem(caption,urlString, description, imageUrl);
+	}
+
+	@Override
+	public String getImageUrl(Document doc) {
+		return null;
+	}
+	
+	@Override
 	public boolean match(URL url) {
 		String contentType = null;
 		try {
@@ -56,22 +73,5 @@ public class Image extends BasePlugin {
 		log.info("Found content type: " + contentType + " for " + url.toString());
 		
 		return contentType.startsWith("image/");
-	}
-
-	@Override
-	public Item createItem(URL url) {
-		log.info("Running Image plugin!");
-
-		String caption = url.getFile().substring(1); // .getFile() returns "/<name>"
-		String urlString = url.toString();
-		String description = "<img src='" +url.toString()+ "'>";
-
-		String imageUrl = "";
-		return DatastoreManager.getDatastore().createItem(caption,urlString, description, imageUrl);
-	}
-	
-	@Override
-	public String getImageUrl(Document doc) {
-		return null;
 	}
 }

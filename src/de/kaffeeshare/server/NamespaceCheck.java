@@ -40,36 +40,6 @@ public class NamespaceCheck extends HttpServlet {
 	
 	private static final Logger log = Logger.getLogger(NamespaceCheck.class.getName());
 
-	/**
-	 * Handle a post request.
-	 * @param req Request
-	 * @param resp Response
-	 * @throws ServletException, IOException
-	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String namespace = req.getParameter(PARAM_NAMESPACE);
-		resp.setContentType("text; charset=UTF-8");
-		
-		if (namespace != null) {
-			JSONObject json = checkNamespace(namespace);
-			if (json == null) return;
-			resp.getWriter().append(json.toString());
-		} else {
-			log.warning("no namespace provided!");
-			return;
-		}
-	}
-	
-	/**
-	 * Handle a get request.
-	 * @param req Request
-	 * @param resp Response
-	 * @throws ServletException, IOException
-	 */
-	public void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doPost(req, resp);
-	}
-	
 	private JSONObject checkNamespace(String namespace) {
 		JSONObject json = new JSONObject();
 		try {
@@ -111,6 +81,36 @@ public class NamespaceCheck extends HttpServlet {
 			log.warning("JSON exception @ namespace check");
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	/**
+	 * Handle a get request.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, IOException
+	 */
+	public void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doPost(req, resp);
+	}
+	
+	/**
+	 * Handle a post request.
+	 * @param req Request
+	 * @param resp Response
+	 * @throws ServletException, IOException
+	 */
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String namespace = req.getParameter(PARAM_NAMESPACE);
+		resp.setContentType("text; charset=UTF-8");
+		
+		if (namespace != null) {
+			JSONObject json = checkNamespace(namespace);
+			if (json == null) return;
+			resp.getWriter().append(json.toString());
+		} else {
+			log.warning("no namespace provided!");
+			return;
 		}
 	}
 	

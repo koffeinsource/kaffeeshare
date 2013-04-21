@@ -28,12 +28,6 @@ import de.kaffeeshare.server.exception.PluginErrorException;
 public class Garfield extends BasePlugin {
 
 	@Override
-	public boolean match(URL url) {
-		String str = url.toString();
-		return (str.startsWith("http://www.gocomics.com/garfield") || str.startsWith("https://www.gocomics.com/garfield"));
-	}
-
-	@Override
 	public String getDescription(Document doc) {
 
 		String description = null;
@@ -53,6 +47,12 @@ public class Garfield extends BasePlugin {
 	@Override
 	public String getImageUrl(Document doc) {
 		return null;
+	}
+
+	@Override
+	public boolean match(URL url) {
+		String str = url.toString();
+		return (str.startsWith("http://www.gocomics.com/garfield") || str.startsWith("https://www.gocomics.com/garfield"));
 	}
 
 }

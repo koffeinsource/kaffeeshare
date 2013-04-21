@@ -27,13 +27,6 @@ import de.kaffeeshare.server.exception.PluginErrorException;
 public class Dilbert extends BasePlugin {
 
 	@Override
-	public boolean match(URL url) {
-		String str = url.toString();
-		return (str.startsWith("https://feed.dilbert.com/")) || (str.startsWith("http://feed.dilbert.com/"))
-				|| (str.startsWith("http://dilbert.com/strips/") || str.startsWith("https://dilbert.com/strips/"));
-	}
-
-	@Override
 	public String getDescription(Document doc) {
 
 		String description = "";
@@ -54,10 +47,17 @@ public class Dilbert extends BasePlugin {
 
 		return description;
 	}
-	
+
 	@Override
 	public String getImageUrl(Document doc) {
 		return null;
+	}
+	
+	@Override
+	public boolean match(URL url) {
+		String str = url.toString();
+		return (str.startsWith("https://feed.dilbert.com/")) || (str.startsWith("http://feed.dilbert.com/"))
+				|| (str.startsWith("http://dilbert.com/strips/") || str.startsWith("https://dilbert.com/strips/"));
 	}
 
 }

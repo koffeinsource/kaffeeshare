@@ -47,15 +47,17 @@ public class JPADatastore implements Datastore {
 		return new JPAItem(caption, url, namespace, description, imageUrl);
 	}
 	
-	@Override
-	public Item storeItem(Item item) {
-		
-		Item persistentItem = null;
+	@SuppressWarnings("unused")
+	/**
+	 * Deletes an item in DB, currently not used and only kept for reference.
+	 * @param Item Item to delete
+	 */
+	private void deleteItem(Item item) {
 		
 		EntityManager entityManager = emfInstance.createEntityManager();
 		try {
 			entityManager.getTransaction().begin();
-			persistentItem = entityManager.merge(item);
+			entityManager.remove(item);
 			entityManager.getTransaction().commit();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -64,28 +66,11 @@ public class JPADatastore implements Datastore {
 		} finally {
 			entityManager.close();
 		}
-
-		return persistentItem;
 	}
 
 	@Override
-	public void storeItems(List<Item> items) {
-
-		EntityManager entityManager = emfInstance.createEntityManager();
-		try {
-			entityManager.getTransaction().begin();
-			for (Item item : items) {
-				entityManager.merge(item);
-			}
-			entityManager.getTransaction().commit();
-		} catch(Exception e) {
-			e.printStackTrace();
-			entityManager.getTransaction().rollback();
-			entityManager.close();
-		} finally {
-			entityManager.close();
-		}
-
+	public void garbageCollection(int maxKeepNumber, Date eldestDate) {
+		throw new UnsupportedException();
 	}
 
 	@Override
@@ -118,11 +103,6 @@ public class JPADatastore implements Datastore {
 	}
 
 	@Override
-	public void setNamespace(String ns) {
-		this.namespace = ns;
-	}
-
-	@Override
 	public boolean isEmpty() {
 
 		List<Item> items = getItems(1, 0);
@@ -132,23 +112,21 @@ public class JPADatastore implements Datastore {
 
 		return false;
 	}
-	
+
 	@Override
-	public void garbageCollection(int maxKeepNumber, Date eldestDate) {
-		throw new UnsupportedException();
+	public void setNamespace(String ns) {
+		this.namespace = ns;
 	}
 	
-	@SuppressWarnings("unused")
-	/**
-	 * Deletes an item in DB, currently not used and only kept for reference.
-	 * @param Item Item to delete
-	 */
-	private void deleteItem(Item item) {
+	@Override
+	public Item storeItem(Item item) {
+		
+		Item persistentItem = null;
 		
 		EntityManager entityManager = emfInstance.createEntityManager();
 		try {
 			entityManager.getTransaction().begin();
-			entityManager.remove(item);
+			persistentItem = entityManager.merge(item);
 			entityManager.getTransaction().commit();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -157,6 +135,28 @@ public class JPADatastore implements Datastore {
 		} finally {
 			entityManager.close();
 		}
+
+		return persistentItem;
+	}
+	
+	@Override
+	public void storeItems(List<Item> items) {
+
+		EntityManager entityManager = emfInstance.createEntityManager();
+		try {
+			entityManager.getTransaction().begin();
+			for (Item item : items) {
+				entityManager.merge(item);
+			}
+			entityManager.getTransaction().commit();
+		} catch(Exception e) {
+			e.printStackTrace();
+			entityManager.getTransaction().rollback();
+			entityManager.close();
+		} finally {
+			entityManager.close();
+		}
+
 	}
 
 }

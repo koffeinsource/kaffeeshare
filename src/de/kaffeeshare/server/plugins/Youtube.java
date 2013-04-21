@@ -27,12 +27,6 @@ import org.jsoup.select.Elements;
 public class Youtube extends BasePlugin {
 
 	@Override
-	public boolean match(URL url) {
-		String str = url.toString();
-		return (str.startsWith("http://www.youtube.com/") || str.startsWith("https://www.youtube.com/"));
-	}
-
-	@Override
 	public String getDescription(Document doc) {
 
 		String videoId = null;
@@ -57,10 +51,16 @@ public class Youtube extends BasePlugin {
 
 		return description;
 	}
-	
+
 	@Override
 	public String getImageUrl(Document doc) {
 		return null;
+	}
+	
+	@Override
+	public boolean match(URL url) {
+		String str = url.toString();
+		return (str.startsWith("http://www.youtube.com/") || str.startsWith("https://www.youtube.com/"));
 	}
 
 }

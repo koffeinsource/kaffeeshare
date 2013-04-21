@@ -27,13 +27,6 @@ import de.kaffeeshare.server.exception.PluginErrorException;
 public class Imgur extends BasePlugin {
 
 	@Override
-	public boolean match(URL url) {
-		
-		String str = url.toString();
-		return (str.startsWith("http://imgur.com/") || str.startsWith("https://imgur.com/"));
-	}
-	
-	@Override
 	protected String getDescription(Document doc) {
 		
 		String description = "";
@@ -49,10 +42,17 @@ public class Imgur extends BasePlugin {
 
 		return description;
 	}
-
+	
 	@Override
 	public String getImageUrl(Document doc) {
 		return null;
+	}
+
+	@Override
+	public boolean match(URL url) {
+		
+		String str = url.toString();
+		return (str.startsWith("http://imgur.com/") || str.startsWith("https://imgur.com/"));
 	}
 
 }

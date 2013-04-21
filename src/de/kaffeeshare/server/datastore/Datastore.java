@@ -34,6 +34,33 @@ public interface Datastore {
 	public Item createItem(String catption, String url, String description, String imageUrl);
 	
 	/**
+	 * Remove old data form database.
+	 * @param maxKeepNumber Maximum number of items to hold in the db
+	 * @param eldestDate Items elder than this date will be delete
+	 */
+	public void garbageCollection(int maxKeepNumber, Date eldestDate);
+	
+	/**
+	 * Gets the last maxNumber items ordered by date using the offset offset
+	 * @param maxNumber Number of items
+	 * @param offset Number of items to skip
+	 * @return List with items
+	 */
+	public List<Item> getItems(int maxNumber, int offset);
+	
+	/**
+	 * Check whether the current datastore with currently set namespace is empty.
+	 * @return true if empty, otherwise false
+	 */
+	public boolean isEmpty();
+	
+	/**
+	 * Sets the namespace.
+	 * @param ns Namespace
+	 */
+	public void setNamespace(String ns);
+	
+	/**
 	 * Stores a item and returns the persistent entity.
 	 * @param item Item to store
 	 * @return Persistent item
@@ -45,31 +72,4 @@ public interface Datastore {
 	 * @param items List with items to store
 	 */
 	public void storeItems(List<Item> items);
-	
-	/**
-	 * Gets the last maxNumber items ordered by date using the offset offset
-	 * @param maxNumber Number of items
-	 * @param offset Number of items to skip
-	 * @return List with items
-	 */
-	public List<Item> getItems(int maxNumber, int offset);
-	
-	/**
-	 * Sets the namespace.
-	 * @param ns Namespace
-	 */
-	public void setNamespace(String ns);
-	
-	/**
-	 * Check whether the current datastore with currently set namespace is empty.
-	 * @return true if empty, otherwise false
-	 */
-	public boolean isEmpty();
-	
-	/**
-	 * Remove old data form database.
-	 * @param maxKeepNumber Maximum number of items to hold in the db
-	 * @param eldestDate Items elder than this date will be delete
-	 */
-	public void garbageCollection(int maxKeepNumber, Date eldestDate);
 }

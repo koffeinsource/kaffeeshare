@@ -50,5 +50,9 @@ public class Garfield extends BasePlugin {
 		return description;
 	}
 
+	@Override
+	public String getImageUrl(Document doc) {
+		return null;
+	}
 
 }

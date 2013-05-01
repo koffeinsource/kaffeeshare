@@ -20,6 +20,8 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import org.jsoup.nodes.Document;
+
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
 
@@ -67,5 +69,9 @@ public class Image extends BasePlugin {
 		String imageUrl = "";
 		return DatastoreManager.getDatastore().createItem(caption,urlString, description, imageUrl);
 	}
-
+	
+	@Override
+	public String getImageUrl(Document doc) {
+		return null;
+	}
 }

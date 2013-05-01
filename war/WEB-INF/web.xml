@@ -16,14 +16,6 @@
     <url-pattern>/json</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>de.kaffeeshare.server.output.HTML</servlet-name>
-    <servlet-class>de.kaffeeshare.server.output.HTML</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>de.kaffeeshare.server.output.HTML</servlet-name>
-    <url-pattern>/html</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>de.kaffeeshare.server.input.OneClickShare</servlet-name>
     <servlet-class>de.kaffeeshare.server.input.OneClickShare</servlet-class>
   </servlet>

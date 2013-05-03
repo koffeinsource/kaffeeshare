@@ -133,7 +133,7 @@ public class UrlImporter {
 						if(use && !(className.equals("BasePlugin") || className.equals("DefaultPlugin"))) {
 							try {
 								Object plugin = Class.forName("de.kaffeeshare.server.plugins." + className)
-													.newInstance();
+								                     .newInstance();
 								
 								if(plugin instanceof BasePlugin) {
 									log.info("Start plugin: " +  className);
@@ -146,6 +146,9 @@ public class UrlImporter {
 						}
 					}
 				}
+				
+				
+				
 			}
 		}
 		

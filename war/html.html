@@ -4,11 +4,11 @@
 <head>
 	<meta charset="utf-8">
 	<title>Kaffeeshare</title>
-	
+
 	<!--[if lt IE 9]>
 	<script src="js/html5shiv.js"></script>
 	<![endif]-->
-	
+
 	<style>
 		a.name {
 			position: relative;
@@ -16,6 +16,14 @@
 			margin: 0;
 			padding: 0;
 			float: left;
+		}
+		p#headline {
+			white-space: nowrap;
+			width: 100%;
+			overflow: hidden;
+			-o-text-overflow: ellipsis;
+			text-overflow:    ellipsis;
+			font-style: italic;
 		}
 	</style>
 	<link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
@@ -47,7 +55,7 @@
 	</script>
 
 </head>
- 
+
 <body style="padding-top: 45px">
 
 <div class="navbar navbar-fixed-top" bs-navbar>
@@ -56,7 +64,7 @@
 			<a class="brand" href="/">Kaffeeshare</a>
 			<ul class="nav pull-right">
 				<li><a href="https://github.com/koffeinsource">Developers</a></li>
-			</ul>      
+			</ul>
 		</div>
 	</div>
 </div>
@@ -66,8 +74,8 @@
 
 <div class="container">
 	<div class="hero-unit">
-		<h2>Public Namespace</h2>
-		<p><em>TransformerSiehtManNicht</em></p>
+		<h2>Public Namespace - HTML View</h2>
+		<p id="headline"></p>
 	</div>
 </div>
 
@@ -78,16 +86,26 @@
 
 <script type="text/javascript">
 
+// get GET URL parameter
+function getURLParameter(name) {
+	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+}
+
+$(document).ready(function() {
+	$('#headline').html(getURLParameter("ns"));
+	document.title = getURLParameter("ns") + " - Kaffeeshare";
+});
+
 // global variables to store the request and the spinner
 // this is done so we can cancel the request and delete the spinner
 // TODO move it into jquery data attribute?
 var request;
 var spinner;
-nextpage = 0;
+var db_cursor;
 
 
 $('#loading').bind('inview', function (event, visible) {
-	if (visible) {
+	if (visible && getURLParameter("ns")) {
 		// start the spinner
 		var target = document.getElementById('loading');
 		spinner = new Spinner(spinnerOpts).spin(target);
@@ -96,16 +114,14 @@ $('#loading').bind('inview', function (event, visible) {
 		request = $.ajax({
 			type: "POST",
 			url: "json",
-			data: { ns: "TransformerSiehtManNicht", start: nextpage },
+			data: { ns: getURLParameter("ns"), cursor: db_cursor },
 			dataType: 'json'
 		}).done(function( msg ) {
-			console.log(msg);
+			db_cursor = msg.cursor;
 			$('#items').append(createItems(msg.items));
-			++nextpage;
 		}).fail(function(jqXHR, textStatus) {
 			// also called if request is aborted
 		}).always(function( msg ) {
-			//console.log("always");
 			spinner.stop();
 		});
 
@@ -120,40 +136,23 @@ function createItems(items) {
 	for (i = 0; i<items.length; ++i) {
 		returnee += "<li class='media'>";
 		returnee += "<div class='media-body'>";
-		
+
 		returnee += "<h3 class='media-heading'>" + items[i].caption + "</h3>";
-		
+
 		if (items[i].imageurl) {
 			returnee += "<a class='pull-left' href='" + items[i].url + "'>";
 			returnee += "<img class='media-object, thumbnail' width='200' src='" + items[i].imageurl + "' alt=''>";
 			returnee += "</a>";
 		}
-		
+
 		returnee += "<p>" + items[i].description + "</p>";
 		returnee += "<small><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></small>";
-		//returnee += "<div style='clear:both'></div>";
-		
+
 		returnee += "</div>"
 		returnee += "</li>";
 	}
 
 	returnee += "</ul>";
-	
-/*	for (i = 0; i<items.length; ++i) {
-		returnee += "<div>";
-		returnee += "<h3>" + items[i].caption + "</h3>";
-		
-		if (items[i].imageurl) {
-			returnee += "<img class='thumbnail' style='float:left; margin-right:16px; margin-bottom:16px;' width='200' src='" + items[i].imageurl + "' alt=''>";
-		}
-		returnee += "<blockquote><p>" + items[i].description + "</blockquote></p>";
-		returnee += "<small><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></small>";
-		returnee += "<div style='clear:both'></div>";
-		
-		returnee += "</div>";
-	}*/
-	
-	console.log(returnee);
 
 	return returnee;
 }

@@ -65,7 +65,7 @@ public abstract class BasePlugin {
 			log.info("description: " + description);
 			
 			imageUrl = getImageUrl(doc);
-			log.info("image url: " + description);
+			log.info("image url: " + imageUrl);
 			
 			urlString = getProperty(doc, "og:url");
 			

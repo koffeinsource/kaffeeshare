@@ -232,8 +232,9 @@ $('#randomizer').click(function(e) {
 	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_";
 
 	var text = possible.charAt(Math.floor(Math.random() * (possible.length-3)));
-	for( var i=1; i < 63; i++ )
+	for( var i=1; i < 63; i++ ) {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
 	
 	text += possible.charAt(Math.floor(Math.random() * possible.length-3));
 	
@@ -307,8 +308,6 @@ function generateNamespaceMessage(namespace) {
 	
 	message += "<div class='span2 offset1'>Address:</div>";
 	message += "<div class='span8'>" + RSSFeedURL + "</div>";
-	message += "<div class='span2 offset1'>Add to Google Reader:</div>";
-	message += "<div class='span8'><a href=http://fusion.google.com/add?source=atgs&feedurl=" + encodeURIComponent(RSSFeedURL) + "><img src='http://buttons.googlesyndication.com/fusion/add.gif' alt='Add to Google'></a></div>";
 	message += "<div class='span11'><p>This feed will contain all your shared items. Share it with.</p></div>";
 	message += "</div>";
 	

@@ -21,7 +21,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
+
+import com.google.appengine.api.datastore.Cursor;
 
 import de.kaffeeshare.server.datastore.Datastore;
 import de.kaffeeshare.server.datastore.Item;
@@ -89,35 +90,6 @@ public class JPADatastore implements Datastore {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<Item> getItems(int maxNumber, int offset) {
-
-		List<Item> items = null;
-		
-		EntityManager entityManager = emfInstance.createEntityManager();
-		try {
-
-			Query q = entityManager.createNamedQuery("findNsItems");
-			q.setParameter("ns", namespace);
-			q.setFirstResult(offset);
-			
-			q.setMaxResults(maxNumber);
-			
-			items = q.getResultList();
-		
-		} catch(Exception e) {
-			e.printStackTrace();
-			entityManager.getTransaction().rollback();
-			entityManager.close();
-		} finally {
-			entityManager.close();
-		}
-		
-		return items;
-
-	}
-
-	@Override
 	public void setNamespace(String ns) {
 		this.namespace = ns;
 	}
@@ -125,12 +97,13 @@ public class JPADatastore implements Datastore {
 	@Override
 	public boolean isEmpty() {
 
-		List<Item> items = getItems(1, 0);
+		throw new UnsupportedException();
+		/*List<Item> items = getItems(1);
 		if(items == null || items.isEmpty()) {
 			return true;
 		}
 
-		return false;
+		return false;*/
 	}
 	
 	@Override
@@ -157,6 +130,38 @@ public class JPADatastore implements Datastore {
 		} finally {
 			entityManager.close();
 		}
+	}
+
+	@Override
+	public Cursor getItems(int maxNumber, Cursor cursor, List<Item> out) {
+		throw new UnsupportedException();
+	}
+
+	@Override
+	public Cursor getItems(int maxNumber, List<Item> out) {
+		throw new UnsupportedException();
+/* TODO update
+		List<Item> items = null;
+		
+		EntityManager entityManager = emfInstance.createEntityManager();
+		try {
+
+			Query q = entityManager.createNamedQuery("findNsItems");
+			q.setParameter("ns", namespace);
+			
+			q.setMaxResults(maxNumber);
+			
+			items = q.getResultList();
+		
+		} catch(Exception e) {
+			e.printStackTrace();
+			entityManager.getTransaction().rollback();
+			entityManager.close();
+		} finally {
+			entityManager.close();
+		}
+		
+		return items;*/
 	}
 
 }

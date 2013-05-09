@@ -18,6 +18,8 @@ package de.kaffeeshare.server.datastore;
 import java.util.Date;
 import java.util.List;
 
+import com.google.appengine.api.datastore.Cursor;
+
 /**
  * Datastore interface. All datatore backends have to implement this interface.
  */
@@ -47,12 +49,21 @@ public interface Datastore {
 	public void storeItems(List<Item> items);
 	
 	/**
+	 * Gets the last maxNumber items ordered by date
+	 * @param maxNumber Number of items
+	 * @param out List with items 
+	 * @return Cursor to the last position in the query
+	 */
+	public Cursor getItems(int maxNumber, List<Item> out);
+
+	/**
 	 * Gets the last maxNumber items ordered by date using the offset offset
 	 * @param maxNumber Number of items
-	 * @param offset Number of items to skip
-	 * @return List with items
+	 * @param cursor Query cursor of the query to continue
+	 * @param out List with items
+	 * @return Cursor to the last position in the query
 	 */
-	public List<Item> getItems(int maxNumber, int offset);
+	public Cursor getItems(int maxNumber, Cursor cursor, List<Item> out);
 	
 	/**
 	 * Sets the namespace.

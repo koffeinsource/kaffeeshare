@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.google.appengine.api.NamespaceManager;
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entities;
@@ -35,6 +36,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.datastore.Text;
 
 import de.kaffeeshare.server.datastore.Datastore;
@@ -74,15 +76,6 @@ public class AppEngineDatastore implements Datastore {
 			entities.add(toEntity(item));
 		}
 		datastore.put(entities);
-	}
-	
-	@Override
-	public List<Item> getItems(int maxNumber, int offset) {
-		Query query = new Query(DB_KIND_ITEM, null);
-		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
-		PreparedQuery pq = datastore.prepare(query);
-		Collection<Entity> entities = pq.asList(FetchOptions.Builder.withLimit(maxNumber).offset(offset));
-		return getItems(entities);
 	}
 	
 	@Override
@@ -167,12 +160,10 @@ public class AppEngineDatastore implements Datastore {
 	 * @param entities Collection with entities
 	 * @return List with items
 	 */
-	private List<Item> getItems(Collection<Entity> entities) {
-		List<Item> items = new ArrayList<Item>();
+	private void getItems(Collection<Entity> entities, List<Item> out) {
 		for (Entity entity : entities) {
-			items.add(fromEntity(entity));
+			out.add(fromEntity(entity));
 		}
-		return items;
 	}
 	
 	/**
@@ -211,5 +202,27 @@ public class AppEngineDatastore implements Datastore {
 	private Key getItemDBKey(Item item) {
 		return KeyFactory.createKey(DB_KIND_ITEM, item.getUrl());
 	}
+
+	@Override
+	public Cursor getItems(int maxNumber, List<Item> out) {
+		return getItems(maxNumber, null, out);
+	}
+
+	@Override
+	public Cursor getItems(int maxNumber, Cursor cursor, List<Item> out) {
+		Query query = new Query(DB_KIND_ITEM, null);
+		query.addSort(DB_ITEM_CREATEDAT, SortDirection.DESCENDING);
+		PreparedQuery pq = datastore.prepare(query);
+		
+		FetchOptions fetchOptions = FetchOptions.Builder.withLimit(maxNumber);
+		if (cursor != null) {
+			fetchOptions.startCursor(cursor);
+		}
+		
+		QueryResultList<Entity> entities = pq.asQueryResultList(fetchOptions);
+		getItems(entities, out);
+		return entities.getCursor();
+	}
+
 	
 }

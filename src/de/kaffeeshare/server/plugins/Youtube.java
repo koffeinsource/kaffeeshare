@@ -18,8 +18,6 @@ package de.kaffeeshare.server.plugins;
 import java.net.URL;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 /**
  * Plugin to handle youtube pages.
@@ -37,14 +35,8 @@ public class Youtube extends BasePlugin {
 
 		String videoId = null;
 		try {
-			Elements elements = doc.getElementsByTag("link");
-			for (Element el: elements) {
-				if (el.hasAttr("rel")) {
-					if (el.attr("rel").equalsIgnoreCase("canonical")) {
-						videoId = el.attr("href").replace("/watch?v=", "");
-					}
-				}
-			}
+			String url = getProperty(doc, "og:url");
+			videoId = url.substring(url.indexOf("v=")+2, url.length());
 		} catch (Exception e) {
 		}
 

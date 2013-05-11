@@ -51,14 +51,7 @@ public class Jabber extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		Message message;
-		try {
-			message = xmppService.parseMessage(req);
-		} catch (Exception e) {
-			// http://code.google.com/p/googleappengine/issues/detail?id=2082&can=5&colspec=ID%20Type%20Component%20Status%20Stars%20Summary%20Language%20Priority%20Owner%20Log
-			// there may be messages that are no messages, we ignore them
-			// for now
-			return;
-		}
+		message = xmppService.parseMessage(req);
 
 		log.info("got XMPP message from: " + message.getFromJid());
 		log.info("Message body: " + message.getBody());

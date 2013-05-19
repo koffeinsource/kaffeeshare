@@ -27,11 +27,11 @@ public class Vimeo extends BasePlugin {
 	@Override
 	public boolean match(URL url) {
 		String str = url.toString();
-		return (str.startsWith("http://vimeo.com/") || str.startsWith("https://vimeo.com/"));
+		return match(str, "vimeo.com/");
 	}
 
 	@Override
-	public String getDescription(Document doc) {
+	protected String getDescription(Document doc) {
 
 		String videoId = null;
 		try {
@@ -50,7 +50,7 @@ public class Vimeo extends BasePlugin {
 	}
 	
 	@Override
-	public String getImageUrl(Document doc) {
+	protected String getImageUrl(Document doc) {
 		return null;
 	}
 

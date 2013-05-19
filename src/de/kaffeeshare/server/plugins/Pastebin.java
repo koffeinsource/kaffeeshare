@@ -30,11 +30,11 @@ public class Pastebin extends BasePlugin {
 	public boolean match(URL url) {
 		
 		String str = url.toString();
-		return (str.startsWith("http://pastebin.com/") || str.startsWith("https://pastebin.com/"));
+		return match(str, "pastebin.com/");
 	}
 
 	@Override
-	public String getDescription(Document doc) {
+	protected String getDescription(Document doc) {
 
 		String description = "";
 

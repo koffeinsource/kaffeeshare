@@ -30,7 +30,7 @@ public class Imgur extends BasePlugin {
 	public boolean match(URL url) {
 		
 		String str = url.toString();
-		return (str.startsWith("http://imgur.com/") || str.startsWith("https://imgur.com/"));
+		return match(str, "imgur.com/");
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class Imgur extends BasePlugin {
 	}
 
 	@Override
-	public String getImageUrl(Document doc) {
+	protected String getImageUrl(Document doc) {
 		return null;
 	}
 

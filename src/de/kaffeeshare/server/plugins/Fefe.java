@@ -12,11 +12,11 @@ public class Fefe extends BasePlugin {
 	@Override
 	public boolean match(URL url) {
 		String str = url.toString();
-		return (str.startsWith("http://blog.fefe.de/?ts") || str.startsWith("https://blog.fefe.de/?ts"));
+		return match(str, "blog.fefe.de/?ts");
 	}
 
 	@Override
-	public String getDescription(Document doc) {
+	protected String getDescription(Document doc) {
 
 		String description = "";
 
@@ -32,12 +32,12 @@ public class Fefe extends BasePlugin {
 	}
 	
 	@Override
-	public String getCaption(Document doc) {
+	protected String getCaption(Document doc) {
 		return "Fefes Blog - " + Jsoup.parse(getDescription(doc)).text().replaceAll("(?<=.{20})\\b.*", "...");
 	}
 	
 	@Override
-	public String getImageUrl(Document doc) {
-		return "";
+	protected String getImageUrl(Document doc) {
+		return null;
 	}
 }

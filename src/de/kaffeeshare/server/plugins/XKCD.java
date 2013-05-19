@@ -11,13 +11,11 @@ public class XKCD extends BasePlugin {
 	@Override
 	public boolean match(URL url) {
 		String str = url.toString();
-		return (str.startsWith("http://xkcd.com") || str.startsWith("https://xkcd.com") ||
-				str.startsWith("http://www.xkcd.com") || str.startsWith("https://www.xkcd.com")
-				);
+		return (match(str, "xkcd.com") || match(str, "www.xkcd.com"));
 	}
 	
 	@Override
-	public String getDescription(Document doc) {
+	protected String getDescription(Document doc) {
 
 		String description = null;
 
@@ -31,12 +29,12 @@ public class XKCD extends BasePlugin {
 	}
 
 	@Override
-	public String getCaption(Document doc) {
+	protected String getCaption(Document doc) {
 		return "XKCD - " + doc.getElementById("ctitle").html();
 	}
 	
 	@Override
-	public String getImageUrl(Document doc) {
-		return "";
+	protected String getImageUrl(Document doc) {
+		return null;
 	}
 }

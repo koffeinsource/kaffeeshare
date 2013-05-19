@@ -158,4 +158,24 @@ public abstract class BasePlugin {
 		             .first().attr("content");
 		return caption;
 	}	
+	
+	/**
+	 * String url check.
+	 * @param url Url string
+	 * @param match string
+	 * @return true, if match
+	 */
+	protected boolean match(String url, String match) {
+	
+	  if(match.startsWith("http")) {
+	    return url.startsWith(match);
+	  }
+	  
+	  if(url.startsWith("http://" + match) || url.startsWith("https://" + match)) {
+	    return true;
+	  }
+	  
+	  return false;
+	  
+	} 
 }

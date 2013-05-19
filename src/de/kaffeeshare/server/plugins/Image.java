@@ -71,7 +71,7 @@ public class Image extends BasePlugin {
 	}
 	
 	@Override
-	public String getImageUrl(Document doc) {
+	protected String getImageUrl(Document doc) {
 		return null;
 	}
 }

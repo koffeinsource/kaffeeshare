@@ -12,7 +12,7 @@ import de.kaffeeshare.server.Config;
 public class Amazon extends BasePlugin {
 
 	// Add here the url extension string to earn money ;-)
-	private final static String urlExtension =  "&tag=" + Config.getString("amazon_url_extension");
+	private final static String urlExtension =  "tag=" + Config.getString("amazon_url_extension");
 
 	@Override
 	public boolean match(URL url) {
@@ -24,7 +24,7 @@ public class Amazon extends BasePlugin {
 	protected String getURL(URL url) {
 
 		String urlStr = url.toString();
-		int index = urlStr.indexOf("&tag=");
+		int index = urlStr.indexOf("tag=");
 		if(index != -1) {
 			int endIndex = urlStr.indexOf("&", index + 1);
 			String replace = "";
@@ -38,6 +38,8 @@ public class Amazon extends BasePlugin {
 
 		if(!urlStr.contains("?")) {
 			urlStr += "?";
+		} else {
+			urlStr += "&";
 		}
 		return urlStr + urlExtension;
 	}

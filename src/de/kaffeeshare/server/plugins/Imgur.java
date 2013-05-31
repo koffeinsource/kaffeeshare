@@ -18,6 +18,7 @@ package de.kaffeeshare.server.plugins;
 import java.net.URL;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import de.kaffeeshare.server.exception.PluginErrorException;
 
@@ -32,17 +33,35 @@ public class Imgur extends BasePlugin {
 		String str = url.toString();
 		return match(str, "imgur.com/");
 	}
-	
+
+	@Override
+	protected String getCaption(Document doc) {
+		String caption = super.getCaption(doc);
+		
+		Element element = doc.getElementById("image-container");
+		if(element != null) {
+			caption += " - ALBUM";
+		}
+		
+		return caption;
+	}
+
 	@Override
 	protected String getDescription(Document doc) {
 		
 		String description = "";
 
 		try {
+			Element element = doc.getElementById("image-container");
+			if(element != null) {
+				return "More pictures available on:";
+			}
+
 			String imageUrl = doc.getElementById("image").getElementsByTag("img").first().attr("src");
 			if (imageUrl != null) {
-				description = "<img src=\"" +  imageUrl + "\" />";
+				return "<img src=\"" +  imageUrl + "\" />";
 			}
+
 		} catch(Exception e) {
 			throw new PluginErrorException(this);
 		}
@@ -52,6 +71,12 @@ public class Imgur extends BasePlugin {
 
 	@Override
 	protected String getImageUrl(Document doc) {
+
+		String imageUrl = doc.getElementById("image-container").getElementsByTag("img").first().attr("data-src");
+		if (imageUrl != null) {
+			return imageUrl;
+		}
+
 		return null;
 	}
 

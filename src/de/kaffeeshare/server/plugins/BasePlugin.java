@@ -174,14 +174,15 @@ public abstract class BasePlugin {
 	 * @param match string
 	 * @return true, if match
 	 */
-	protected boolean match(String url, String match) {
-	
+	protected boolean match(URL url, String match) {
+		String urlStr = url.toString();
+		
 	  if(match.startsWith("http")) {
-	    return url.startsWith(match);
+	    return urlStr.startsWith(match);
 	  }
 	  
-	  if(url.startsWith("http://" + match) || url.startsWith("https://" + match) ||
-		(url.startsWith("http://www." + match) || url.startsWith("https://www." + match))) {
+	  if(urlStr.startsWith("http://" + match) || urlStr.startsWith("https://" + match) ||
+		(urlStr.startsWith("http://www." + match) || urlStr.startsWith("https://www." + match))) {
 	    return true;
 	  }
 	  

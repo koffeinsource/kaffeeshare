@@ -17,12 +17,16 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.datastore.Item;
+import de.kaffeeshare.server.exception.SystemErrorException;
 
 public class JSON extends HttpServlet {
 	private static final long serialVersionUID = 5705854772226283363L;
 
-	private static final String PARAM_NAMESPACE = "ns";
-	private static final String PARAM_CURSOR    = "cursor";
+	private static final String PARAM_NAMESPACE  = "ns";
+	private static final String PARAM_CURSOR     = "cursor";
+	private static final String PARAM_OP         = "op";
+	private static final String PARAM_OP_GET     = "get";
+	private static final String PARAM_OP_UPDATED = "updated";
 	
 	// TODO magic number
 	private static final int RESULTS_PER_REQUEST = 20;
@@ -36,10 +40,39 @@ public class JSON extends HttpServlet {
 	 * @throws ServletException, IOException
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		JSONObject returnee = new JSONObject();
+		
+		String op = req.getParameter(PARAM_OP);
+		if (op.equals(PARAM_OP_GET)) {
+			getItems(req, returnee);
+		}
+		if (op.equals(PARAM_OP_UPDATED)) {
+			String namespace = req.getParameter(PARAM_NAMESPACE);
+			log.info("JSON " + PARAM_OP_UPDATED + " request for namespace " + namespace);
+			
+			DatastoreManager.setNamespace(namespace);
+			List<Item> items = new ArrayList<Item>();
+			DatastoreManager.getDatastore().getItems(1, items);
+			try {
+				if (items.size()==0) returnee.put("last_update", 0);
+				else returnee.put("last_update", items.get(0).getCreatedAt().getTime());
+			} catch (JSONException e) {
+				log.warning("JSON Exception @ JSON API");
+				e.printStackTrace();
+				throw new SystemErrorException();
+			}
+	
+		}
+		resp.setContentType("text; charset=UTF-8");
+		
+		resp.getWriter().append(returnee.toString());	
+	}
+
+	private void getItems(HttpServletRequest req, JSONObject returnee) {
 		String namespace = req.getParameter(PARAM_NAMESPACE);
 		String cursorStr = req.getParameter(PARAM_CURSOR);		
 		
-		log.info("JSON request for namespace " + namespace);
+		log.info("JSON " + PARAM_OP_GET + " request for namespace " + namespace);
 		
 		DatastoreManager.setNamespace(namespace);
 		
@@ -53,7 +86,6 @@ public class JSON extends HttpServlet {
 		List<Item> items = new ArrayList<Item>();
 		cursor = DatastoreManager.getDatastore().getItems(RESULTS_PER_REQUEST, cursor, items);
 		log.info("cur " + cursor.toWebSafeString());
-		JSONObject returnee = new JSONObject();
 		JSONArray jarr = new JSONArray();
 				
 		for (Item i : items) {
@@ -62,6 +94,7 @@ public class JSON extends HttpServlet {
 			} catch (JSONException e) {
 				log.warning("JSON Exception @ JSON API");
 				e.printStackTrace();
+				throw new SystemErrorException();
 			}
 		}
 
@@ -73,10 +106,8 @@ public class JSON extends HttpServlet {
 		} catch (JSONException e) {
 			log.warning("JSON Exception @ JSON API");
 			e.printStackTrace();
+			throw new SystemErrorException();
 		}
-		resp.setContentType("text; charset=UTF-8");
-		
-		resp.getWriter().append(returnee.toString());	
 	}
 	
 	/**

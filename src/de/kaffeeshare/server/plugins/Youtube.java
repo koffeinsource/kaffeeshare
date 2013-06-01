@@ -26,8 +26,7 @@ public class Youtube extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		String str = url.toString();
-		return match(str, "www.youtube.com/");
+		return match(url, "www.youtube.com/");
 	}
 
 	@Override

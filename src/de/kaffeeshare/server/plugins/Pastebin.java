@@ -48,4 +48,8 @@ public class Pastebin extends BasePlugin {
 
 	}
 
+	@Override
+	public String getImageUrl(Document doc) {
+		return "";
+	}
 }

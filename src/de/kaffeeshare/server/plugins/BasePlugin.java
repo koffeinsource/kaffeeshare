@@ -49,7 +49,7 @@ public abstract class BasePlugin {
 	public Item createItem(URL url) {
 		log.info("Running " + this.getClass().getName() + " plugin!");
 
-		String urlString = url.toString();
+		String urlString = getURL(url);
 		String caption = "";
 		String description = "";
 		String imageUrl = "";
@@ -74,6 +74,15 @@ public abstract class BasePlugin {
 		}
 
 		return DatastoreManager.getDatastore().createItem(caption, urlString, description, imageUrl);
+	}
+
+	/**
+	 * Get the url.
+	 * @param url URL
+	 * @return Url string
+	 */
+	protected String getURL(URL url) {
+		return url.toString();
 	}
 
 	/**
@@ -158,4 +167,25 @@ public abstract class BasePlugin {
 		             .first().attr("content");
 		return caption;
 	}	
+	
+	/**
+	 * String url check.
+	 * @param url Url string
+	 * @param match string
+	 * @return true, if match
+	 */
+	protected boolean match(String url, String match) {
+	
+	  if(match.startsWith("http")) {
+	    return url.startsWith(match);
+	  }
+	  
+	  if(url.startsWith("http://" + match) || url.startsWith("https://" + match) ||
+		(url.startsWith("http://www." + match) || url.startsWith("https://www." + match))) {
+	    return true;
+	  }
+	  
+	  return false;
+	  
+	} 
 }

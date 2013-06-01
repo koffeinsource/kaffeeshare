@@ -29,12 +29,11 @@ public class Dilbert extends BasePlugin {
 	@Override
 	public boolean match(URL url) {
 		String str = url.toString();
-		return (str.startsWith("https://feed.dilbert.com/")) || (str.startsWith("http://feed.dilbert.com/"))
-				|| (str.startsWith("http://dilbert.com/strips/") || str.startsWith("https://dilbert.com/strips/"));
+		return match(str, "feed.dilbert.com/") || match(str, "dilbert.com/strips/");
 	}
 
 	@Override
-	public String getDescription(Document doc) {
+	protected String getDescription(Document doc) {
 
 		String description = "";
 		try {
@@ -56,7 +55,7 @@ public class Dilbert extends BasePlugin {
 	}
 	
 	@Override
-	public String getImageUrl(Document doc) {
+	protected String getImageUrl(Document doc) {
 		return null;
 	}
 

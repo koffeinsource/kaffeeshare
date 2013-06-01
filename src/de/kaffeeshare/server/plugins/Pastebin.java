@@ -28,9 +28,7 @@ public class Pastebin extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		
-		String str = url.toString();
-		return match(str, "pastebin.com/");
+		return match(url, "pastebin.com/");
 	}
 
 	@Override

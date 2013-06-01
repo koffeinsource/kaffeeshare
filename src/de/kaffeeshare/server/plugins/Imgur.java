@@ -29,9 +29,7 @@ public class Imgur extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		
-		String str = url.toString();
-		return match(str, "imgur.com/");
+		return match(url, "imgur.com/");
 	}
 
 	@Override

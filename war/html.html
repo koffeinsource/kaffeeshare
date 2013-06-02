@@ -114,7 +114,7 @@ $('#loading').bind('inview', function (event, visible) {
 		request = $.ajax({
 			type: "POST",
 			url: "json",
-			data: { ns: getURLParameter("ns"), cursor: db_cursor },
+			data: { op : "get", ns: getURLParameter("ns"), cursor: db_cursor },
 			dataType: 'json'
 		}).done(function( msg ) {
 			db_cursor = msg.cursor;

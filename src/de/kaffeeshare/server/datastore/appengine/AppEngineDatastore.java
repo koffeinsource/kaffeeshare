@@ -150,7 +150,7 @@ public class AppEngineDatastore implements Datastore {
 			keys.add(e.getKey());
 		}
 		
-		log.info("Going to delete " + keys.size() + " enteties");
+		log.info("Going to delete " + keys.size() + " entities");
 		
 		datastore.delete(keys);
 	}

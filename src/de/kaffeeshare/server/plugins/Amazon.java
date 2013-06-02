@@ -16,8 +16,7 @@ public class Amazon extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		String str = url.toString();
-		return match(str, "amazon");
+		return match(url, "amazon");
 	}
 
 	@Override

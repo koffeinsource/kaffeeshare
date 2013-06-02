@@ -10,8 +10,7 @@ public class XKCD extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		String str = url.toString();
-		return (match(str, "xkcd.com") || match(str, "www.xkcd.com"));
+		return (match(url, "xkcd.com") || match(url, "www.xkcd.com"));
 	}
 	
 	@Override

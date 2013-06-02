@@ -49,6 +49,9 @@ public class Image extends BasePlugin {
 		} catch (IOException e) {
 			log.warning("Got IOException when calling getContent on " + url.toString());
 			return false;
+		} catch (Exception e) {
+			log.warning("Some exception in image-plugin.match().");
+			return false;
 		}
 		
 		if (contentType == null) return false;

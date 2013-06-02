@@ -11,8 +11,7 @@ public class Fefe extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		String str = url.toString();
-		return match(str, "blog.fefe.de/?ts");
+		return match(url, "blog.fefe.de/?ts");
 	}
 
 	@Override

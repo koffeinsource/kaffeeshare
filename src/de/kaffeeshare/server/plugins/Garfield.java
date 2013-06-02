@@ -29,8 +29,7 @@ public class Garfield extends BasePlugin {
 
 	@Override
 	public boolean match(URL url) {
-		String str = url.toString();
-		return match(str, "www.gocomics.com/garfield");
+		return match(url, "www.gocomics.com/garfield");
 	}
 
 	@Override

@@ -138,6 +138,8 @@ function createItems(items) {
 		returnee += "<div class='media-body'>";
 
 		returnee += "<h3 class='media-heading'>" + items[i].caption + "</h3>";
+		
+		returnee += "<p><sup>" + items[i].createdat + "</sup></p>";
 
 		if (items[i].imageurl) {
 			returnee += "<a class='pull-left' href='" + items[i].url + "'>";

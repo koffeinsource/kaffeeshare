@@ -15,14 +15,12 @@
  ******************************************************************************/
 package de.kaffeeshare.server.input;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.mail.Address;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
@@ -54,21 +52,24 @@ public class Mail extends HttpServlet {
 	 * @throws ServletException, SystemErrorException
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, SystemErrorException {
-        Properties props = new Properties(); 
-        Session session = Session.getDefaultInstance(props, null); 
-        try {
-            MimeMessage message = new MimeMessage(session, req.getInputStream());			
-            
+		Properties props = new Properties(); 
+		Session session = Session.getDefaultInstance(props, null); 
+		try {
+			MimeMessage message = new MimeMessage(session, req.getInputStream());
+
 			log.info("Got email from " + ((InternetAddress)message.getFrom()[0]).getAddress());
-			
+			String mailServer = System.getProperty("com.google.appengine.application.id") + ".appspotmail.com";
+
 			List<String> toAddresses = new ArrayList<String>();
-			Address[] recipients = message.getRecipients(Message.RecipientType.TO);
+			Address[] recipients = message.getAllRecipients();
 			for (Address address : recipients) {
-			    toAddresses.add(address.toString());
+				String serverAddr = address.toString().split("@")[1];
+				if(serverAddr.equals(mailServer)) {
+					toAddresses.add(address.toString());
+				}
 			}
-			
+
 			for (String to : toAddresses) {
-			
 				// check if to is name <address@domain.tld>
 				if (to.contains("<")) {
 					int start = to.indexOf("<");
@@ -78,34 +79,46 @@ public class Mail extends HttpServlet {
 					--end;
 					to = to.substring(start, end);
 				}
-				
+
 				to = to.split("@")[0];
 				DatastoreManager.setNamespace(to);
-				
+
 				// first lets see if there is plain text with url
 				if (UrlImporter.importFromText(getText(message)) != null) continue;
-				
+
 				log.info("No URLs found in plain text, will look in HTML");
-				
+
 				UrlImporter.importFromHTML(getHTML(message));
 			}
-			
+
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			throw new SystemErrorException();
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new SystemErrorException();
 		}
 
 	}
-	
+
+	/**
+	 * Get the text.
+	 * @param p Part
+	 * @return Text string
+	 */
 	static private String getText(Part p) {
 		return getMime(p, "text/plain");
 	}
-	
+
+	/**
+	 * Get the html.
+	 * @param p Part
+	 * @return Html string
+	 */
 	static private String getHTML(Part p) {
 		return getMime(p, "text/html");
 	}
-	
+
 	/**
 	 * Return the text content of the message with the matching mime type.
 	 * @param p Part
@@ -123,35 +136,36 @@ public class Mail extends HttpServlet {
 			}
 
 			StringBuffer sb = new StringBuffer();
-			
+
 			// multipart/alternative? so we do have the text multiple times
 			if (p.isMimeType("multipart/alternative")) {
-	
+
 				log.info("Found multipart/alternative in email:");
-				
+
 				Multipart mp = (Multipart)p.getContent();
-				
 				for (int i = 0; i < mp.getCount(); i++) {
 					Part bp = mp.getBodyPart(i);
 					
 					String s = getMime(bp, mime);
 					if (s != null) sb.append(" " + s);
 				}
-				
+
 			} else if (p.isMimeType("multipart/*")) {
 				log.info("Found multipart/* in email:");
-				
+
 				Multipart mp = (Multipart)p.getContent();
 				for (int i = 0; i < mp.getCount(); i++) {
 					String s = getMime(mp.getBodyPart(i), mime);
 					if (s != null) sb.append(" " + s);
 				}
 			}
-	
+
 			return sb.toString();
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			throw new InputErrorException();
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new SystemErrorException();
 		}
 	}

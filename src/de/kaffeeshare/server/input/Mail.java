@@ -15,7 +15,6 @@
  ******************************************************************************/
 package de.kaffeeshare.server.input;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -59,13 +58,13 @@ public class Mail extends HttpServlet {
 			MimeMessage message = new MimeMessage(session, req.getInputStream());
 
 			log.info("Got email from " + ((InternetAddress)message.getFrom()[0]).getAddress());
-			String appEngineId = System.getProperty("com.google.appengine.application.id");
+			String mailServer = System.getProperty("com.google.appengine.application.id") + ".appspotmail.com";
 
 			List<String> toAddresses = new ArrayList<String>();
 			Address[] recipients = message.getAllRecipients();
 			for (Address address : recipients) {
-				String addressStr = address.toString().split("@")[1];
-				if(addressStr.contains(appEngineId)) {
+				String serverAddr = address.toString().split("@")[1];
+				if(serverAddr.equals(mailServer)) {
 					toAddresses.add(address.toString());
 				}
 			}

@@ -72,6 +72,11 @@ public abstract class BasePlugin {
 		} catch (Exception e1) {
 			// Use empty strings.
 		}
+		
+		// If caption is empty use the url as fallback caption
+		if(caption.isEmpty()) {
+			caption = urlString;
+		}
 
 		return DatastoreManager.getDatastore().createItem(caption, urlString, description, imageUrl);
 	}

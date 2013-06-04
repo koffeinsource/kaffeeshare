@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.kaffeeshare.server.Config;
 import de.kaffeeshare.server.UrlImporter;
 import de.kaffeeshare.server.datastore.DatastoreManager;
 import de.kaffeeshare.server.exception.InputErrorException;
@@ -58,13 +59,13 @@ public class Mail extends HttpServlet {
 			MimeMessage message = new MimeMessage(session, req.getInputStream());
 
 			log.info("Got email from " + ((InternetAddress)message.getFrom()[0]).getAddress());
-			String mailServer = System.getProperty("com.google.appengine.application.id") + ".appspotmail.com";
+			String mailDomain = Config.getString("email_domain");
 
 			List<String> toAddresses = new ArrayList<String>();
 			Address[] recipients = message.getAllRecipients();
 			for (Address address : recipients) {
-				String serverAddr = address.toString().split("@")[1];
-				if(serverAddr.equals(mailServer)) {
+				String domain = address.toString().split("@")[1];
+				if(domain.equals(mailDomain)) {
 					toAddresses.add(address.toString());
 				}
 			}

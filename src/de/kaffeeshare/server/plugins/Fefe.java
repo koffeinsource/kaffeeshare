@@ -29,7 +29,7 @@ public class Fefe extends BasePlugin {
 				
 		return description;
 	}
-	
+
 	@Override
 	protected String getCaption(Document doc) {
 		return "Fefes Blog - " + Jsoup.parse(getDescription(doc)).text().replaceAll("(?<=.{20})\\b.*", "...");

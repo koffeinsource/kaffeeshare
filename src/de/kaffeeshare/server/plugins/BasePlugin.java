@@ -56,7 +56,10 @@ public abstract class BasePlugin {
 		
 		Document doc;
 		try {
-			doc = Jsoup.parse(url, 10000);
+			// Let us always parse the http Link for now. Not perfect, but Google doesn't like
+			// e.g. Fefes https setup
+			URL parseUrl = new URL("http", url.getHost(), url.getPort(), url.getFile());
+			doc = Jsoup.parse(parseUrl, 10000);
 			
 			caption = getCaption(doc);
 			log.info("caption: " + caption);

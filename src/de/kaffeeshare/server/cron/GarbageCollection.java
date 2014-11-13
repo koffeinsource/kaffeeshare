@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.datanucleus.store.types.sco.simple.GregorianCalendar;
-
 import de.kaffeeshare.server.datastore.DatastoreManager;
 
 /**
@@ -53,7 +51,7 @@ public class GarbageCollection extends HttpServlet {
 			throws ServletException, IOException {
 		
 		// Calculate date: Current date - liftTime
-		Calendar deleteDate = GregorianCalendar.getInstance();
+		Calendar deleteDate = Calendar.getInstance();
 		deleteDate.add(Calendar.DAY_OF_YEAR, -1*lifeTime);
 		
 		log.info("Start garbage collection. Max ns items: " + String.valueOf(maxKeepNumber) + 

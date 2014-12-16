@@ -10,6 +10,13 @@ import de.kaffeeshare.server.exception.PluginErrorException;
 public class Gfycat extends BasePlugin {
 
 	@Override
+	protected String getCaption(Document doc) {
+		String returnee =  super.getCaption(doc);
+		returnee = returnee.replace(" - Jiffier gifs through HTML5 Video Conversion.", "");
+		return returnee;
+	}
+
+	@Override
 	public boolean match(URL url) {
 		return match(url, "gfycat.com/");
 	}

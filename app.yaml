@@ -4,6 +4,7 @@ runtime: go
 api_version: go1
 automatic_scaling:
   max_concurrent_requests: 10
+default_expiration: "10m"
 
 handlers:
 - url: /favicon.ico

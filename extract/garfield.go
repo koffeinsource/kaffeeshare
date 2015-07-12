@@ -6,7 +6,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
-	"github.com/koffeinsource/kaffeeshare2go/data"
+	"github.com/koffeinsource/notreddit/data"
 )
 
 func garfield(i *data.Item, sourceURL string, doc *goquery.Document) {

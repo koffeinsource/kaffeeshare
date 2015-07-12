@@ -235,10 +235,11 @@
 		message += "</div>";
 		message += "</li><li><strong><i class='fa fa-rss'></i> <em>RSS Feed</em></strong>";
 		message += "<div>";
-		var RSSFeedURL = "https://kaffeeshare.appspot.com/k/" + encodeURIComponent(namespace) + "/rss";
+		var RSSFeedURL = "https://kaffeeshare.appspot.com/k/show/rss/"+ encodeURIComponent(namespace);
 		message += "<p><strong>Address: </strong> <a href='" + RSSFeedURL + "'>"+ RSSFeedURL +"</a></p>";
 		message += "<p><em>This feed will contain all your shared items. Share it with.</em></p>";
 		message += "</div></li></ul>";
+		// TODO add html view
 
 		return message;
 	}

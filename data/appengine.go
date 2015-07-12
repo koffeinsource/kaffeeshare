@@ -43,3 +43,16 @@ func DeleteAllItems(c appengine.Context) error {
 
 	return datastore.DeleteMulti(c, k)
 }
+
+// NamespaceIsEmpty checks if there is already an item in a namespace
+func NamespaceIsEmpty(c appengine.Context, namespace string) (bool, error) {
+	q := datastore.NewQuery("Item").
+		Filter("Namespace =", namespace).
+		Limit(1).
+		KeysOnly()
+
+	k, err := q.GetAll(c, nil)
+	b := len(k) == 0
+
+	return b, err
+}

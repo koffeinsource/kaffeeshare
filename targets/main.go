@@ -19,5 +19,5 @@ func GetNamespace(r *http.Request, baseURL string) string {
 	if indexNamespace == -1 {
 		return ""
 	}
-	return url[indexNamespace+len(baseURL)+1:]
+	return url[indexNamespace+len(baseURL):]
 }

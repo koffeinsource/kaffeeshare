@@ -5,10 +5,10 @@ package main
 import (
 	"net/http"
 
-	"github.com/koffeinsource/kaffeeshare2go/targets/check"
-	"github.com/koffeinsource/kaffeeshare2go/targets/share"
-	"github.com/koffeinsource/kaffeeshare2go/targets/show"
-	"github.com/koffeinsource/kaffeeshare2go/targets/startpage"
+	"github.com/koffeinsource/notreddit/targets/check"
+	"github.com/koffeinsource/notreddit/targets/share"
+	"github.com/koffeinsource/notreddit/targets/show"
+	"github.com/koffeinsource/notreddit/targets/startpage"
 )
 
 // TODO update. Moved namespace to the end!

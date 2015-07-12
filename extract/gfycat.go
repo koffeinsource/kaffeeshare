@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/koffeinsource/kaffeeshare2go/data"
+	"github.com/koffeinsource/notreddit/data"
 	"golang.org/x/net/html"
 )
 

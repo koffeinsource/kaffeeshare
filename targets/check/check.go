@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/koffeinsource/kaffeeshare2go/targets"
-	"github.com/koffeinsource/kaffeeshare2go/targets/startpage"
+	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/notreddit/targets"
+	"github.com/koffeinsource/notreddit/targets/startpage"
 
 	"appengine"
 )
@@ -27,12 +28,21 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	temp := map[string]string{"status": statusOk}
+	var temp map[string]string
 
-	// TODO do real check
+	inUse, err := data.NamespaceIsEmpty(c, namespace)
 
-	// validate namespace
-	// check datastore
+	if err != nil {
+		temp = map[string]string{"status": statusError}
+	} else {
+
+		if inUse {
+			temp = map[string]string{"status": statusOk}
+		} else {
+			temp = map[string]string{"status": statusInUse}
+		}
+
+	}
 
 	b, err := json.Marshal(temp)
 	if err != nil {

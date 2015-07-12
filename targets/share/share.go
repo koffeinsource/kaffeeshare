@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/koffeinsource/kaffeeshare2go/data"
-	"github.com/koffeinsource/kaffeeshare2go/extract"
-	"github.com/koffeinsource/kaffeeshare2go/targets"
-	"github.com/koffeinsource/kaffeeshare2go/targets/startpage"
+	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/notreddit/extract"
+	"github.com/koffeinsource/notreddit/targets"
+	"github.com/koffeinsource/notreddit/targets/startpage"
 
 	"appengine"
 )
@@ -30,7 +30,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	// get namespace
-	namespace := targets.GetNamespace(r, "/k/check/json/")
+	namespace := targets.GetNamespace(r, "/k/share/json/")
 	if namespace == "" {
 		startpage.Dispatch(w, r)
 		return

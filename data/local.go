@@ -20,3 +20,8 @@ func GetNewestItems(c interface{}, namespace string, limit int) ([]Item, error) 
 func DeleteAllItems(c interface{}) error {
 	return errors.New("not implemented")
 }
+
+// NamespaceIsEmpty checks if there is already an item in a namespace
+func NamespaceIsEmpty(c interface{}, namespace string) (bool, error) {
+	return false, errors.New("not implemented")
+}

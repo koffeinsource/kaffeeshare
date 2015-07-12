@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/koffeinsource/kaffeeshare2go/extract"
+	"github.com/koffeinsource/notreddit/extract"
 )
 
 func main() {

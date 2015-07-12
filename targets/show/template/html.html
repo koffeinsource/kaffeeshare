@@ -1,0 +1,96 @@
+{{define "content"}}
+<nav><ul>
+	<li class="p-intro"><a href="/">notRedd.it</a></li>
+	<li class="p-why"><a href="#why">RSS</a></li>
+	<li class="p-details"><a href="#details">email</a></li>
+</ul></nav>
+
+<div id="intro" class="section p-intro">
+	<div class="container center">
+		<h3 class="text-purple"><em>NAMESPACE</em></h3>
+	</div>
+</div>
+
+<div class="container" id="items"></div>
+<div id="loading"></div>
+
+
+<script type="text/javascript">
+
+// get GET URL parameter
+function getURLParameter(name) {
+	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+}
+
+$(document).ready(function() {
+	$('#headline').html(getURLParameter("ns"));
+	document.title = getURLParameter("ns") + " - Kaffeeshare";
+});
+
+// global variables to store the request and the spinner
+// this is done so we can cancel the request and delete the spinner
+// TODO move it into jquery data attribute?
+var request;
+var spinner;
+var db_cursor;
+
+
+$('#loading').bind('inview', function (event, visible) {
+	if (visible && getURLParameter("ns")) {
+		// start the spinner
+		var target = document.getElementById('loading');
+		spinner = new Spinner(spinnerOpts).spin(target);
+
+		// start the request
+		request = $.ajax({
+			type: "POST",
+			url: "json",
+			data: { op : "get", ns: getURLParameter("ns"), cursor: db_cursor },
+			dataType: 'json'
+		}).done(function( msg ) {
+			db_cursor = msg.cursor;
+			$('#items').append(createItems(msg.items));
+		}).fail(function(jqXHR, textStatus) {
+			// also called if request is aborted
+		}).always(function( msg ) {
+			spinner.stop();
+		});
+
+	} else {
+		// hidden
+	}
+});
+
+function createItems(items) {
+	returnee = "<ul class='media-list'>";
+
+	for (i = 0; i<items.length; ++i) {
+		returnee += "<li class='media'>";
+		returnee += "<div class='media-body'>";
+
+		returnee += "<h3 class='media-heading'>" + items[i].caption + "</h3>";
+
+		returnee += "<p><sup>" + items[i].createdat + "</sup></p>";
+
+		if (items[i].imageurl) {
+			returnee += "<a class='pull-left' href='" + items[i].url + "'>";
+			returnee += "<img class='media-object, thumbnail' width='200' src='" + items[i].imageurl + "' alt=''>";
+			returnee += "</a>";
+		}
+
+		returnee += "<p>" + items[i].description + "</p>";
+		returnee += "<small><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></small>";
+
+		returnee += "</div>"
+		returnee += "</li>";
+	}
+
+	returnee += "</ul>";
+
+	return returnee;
+}
+
+$(window).scroll();
+
+</script>
+{{end}}

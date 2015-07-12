@@ -1,0 +1,14 @@
+application: notreddit-k
+version: alpha2go
+runtime: go
+api_version: go1
+automatic_scaling:
+  max_concurrent_requests: 10
+
+handlers:
+- url: /favicon.ico
+  static_dir: static/favicon.ico
+- url: /static
+  static_dir: static
+- url: /.*
+  script: _go_app

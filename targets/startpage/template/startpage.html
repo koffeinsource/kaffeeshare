@@ -1,0 +1,349 @@
+{{define "content"}}
+<nav><ul>
+	<li class="p-intro"><a href="#intro">notRedd.it</a></li>
+	<li class="p-why"><a href="#why">Why</a></li>
+	<li class="p-details"><a href="#details">Namespace</a></li>
+	<li class="p-usage"><a href="#usage">Browser Extension</a></li>
+	<li class="p-updating"><a href="#updating">Configuration</a></li>
+</ul></nav>
+
+<div id="intro" class="section p-intro">
+	<div class="container center">
+		<h3 class="text-purple"><em>whoa, open-source link sharing platform</em></h3>
+
+		<p><span class="fa-stack subtlecircle" style="font-size:100px; background:rgba(255,166,0,0.1)">
+			<i class="fa fa-circle fa-stack-2x text-white"></i>
+			<i class="fa fa-share-alt fa-stack-1x text-orange"></i>
+		</span>
+		<span class="fa-stack subtlecircle" style="font-size:100px; background:rgba(255,166,0,0.1)">
+			<i class="fa fa-circle fa-stack-2x text-white"></i>
+			<i class="fa fa-code-fork fa-stack-1x text-orange"></i>
+		</span></p>
+
+
+		<h1 class="text-purple">notRedd.it</h1>
+
+		<p>…it’s provides an easy, quick and anonymous way to share information!</p>
+
+		<p>Want to run your own instance? Go <a href="https://github.com/koffeinsource/notreddit">fork me on github!</a></p>
+
+	</div>
+</div>
+
+<div id="why" class="section p-why">
+
+	<div class="subtlecircle sectiondivider faicon">
+		<span class="fa-stack">
+			<i class="fa fa-circle fa-stack-2x"></i>
+			<i class="fa fa-question fa-stack-1x"></i>
+		</span>
+		<h5 class="icon-title">Why</h5>
+	</div>
+
+	<div class="container ">
+		<h4 id="basically">Basically</h4>
+
+		<h1 id="this-theme-rocks">open source information sharing rocks.</h1>
+
+		<p>It's <strong><em>easy to use</em></strong></p>
+		<ul>
+			<li>Just one click/email to share a link with your friends.</li>
+			<li>Read the shared items with any RSS reader.</li>
+			<li>No need to search the share button.</li>
+		</ul>
+
+		<p>provides a <strong><em>less cluttered web</em></strong></p>
+		<ul>
+			<li>You can block all like/+1/... buttons and still share.</li>
+			<li>No account required.</li>
+		</ul>
+
+		<p><strong><em>better privacy</em></strong></p>
+		<ul>
+			<li>We don't track you!</li>
+			<li>Check our source code to be sure!</li>
+			<li>Don't trust our server? Run your own!</li>
+		</ul>
+
+		<p>Sound good? Let’s go!</p>
+
+	</div>
+</div>
+
+<div id="details" class="section p-details">
+
+	<div class="subtlecircle sectiondivider faicon">
+		<span class="fa-stack">
+			<i class="fa fa-circle fa-stack-2x"></i>
+			<i class="fa fa-user-secret fa-stack-1x"></i>
+		</span>
+		<h5 class="icon-title">namespace</h5>
+	</div>
+
+	<div class="container ">
+		<h2 id="setup-as-user-homepage">Setup your namespace</h2>
+
+		<p><strong><em>Check your namespace</em></strong></p>
+		<p>Everybody who knows the namespace can read and post to it. Want to keep it hidden? Create a random one!</p>
+
+		<form role="form">
+			<div id="namespace-control" class="input-group">
+				<span class="input-group-btn">
+					<button id="randomizer" class="btn btn-default" type="button">
+						Randomize namespace
+					</button>
+				</span>
+				<input id="namespace" type="text" class="form-control" placeholder="Check your namespace">
+			</div><!-- /input-group -->
+		</form>
+
+		<p id="namespace-status" class="help-inline"></p>
+	</div>
+
+	<script type="text/javascript">
+	// use a timeout so we don't make the ajax call every keypress.
+	$('#namespace')
+	.data('timeout', null)
+	.keyup(function(){
+		resetInput();
+		clearTimeout(jQuery(this).data('timeout'));
+		jQuery(this).data('timeout', setTimeout(checkNamespace, 300));
+	});
+
+	// global variables to store the request and the spinner
+	// this is done so we can cancel the request and delete the spinner
+	// TODO move it into jquery data attribute?
+	var request;
+	var spinner;
+
+	// called to process #namespace
+	function checkNamespace() {
+		// if there is an active request: stop it
+		if(request && request.readyState != 4){
+			request.abort();
+		}
+
+		// namespace field is empty? reset everything
+		if( !$('#namespace').val() ) {
+			resetNamespace();
+			return;
+		}
+
+		var namespace = $('#namespace').val();
+
+		// TODO use regex to check for invalid namespaces
+
+		// start the spinner
+		var target = document.getElementById('namespace-status');
+		spinner = new Spinner(spinnerOpts).spin(target);
+		// start the request
+		request = $.ajax({
+			type: "POST",
+			url: "k/check/json/"+namespace,
+			dataType: 'json'
+		}).done(function( msg ) {
+			parseResult(msg);
+		}).fail(function(jqXHR, textStatus) {
+			// also called if request is aborted
+		}).always(function( msg ) {
+			spinner.stop();
+		});
+	};
+
+	// parse the return message of namespacecheck
+	function parseResult(value) {
+		var namespace = $('#namespace').val();
+
+		if( value.status == "error" ) {
+			errorNamespace(namespace);
+			return;
+		}
+
+		if( value.status == "use" ) {
+			inuseNamespace(namespace);
+			return;
+		}
+
+		if( value.status == "ok" ) {
+			successNamespace(namespace);
+			return;
+		}
+
+		alert ("Should never happen! Please report the bug!")
+	}
+
+	$('#randomizer').click(function(e) {
+		resetInput();
+
+		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_";
+
+		var text = possible.charAt(Math.floor(Math.random() * (possible.length-3)));
+		for( var i=1; i < 63; i++ ) {
+			text += possible.charAt(Math.floor(Math.random() * possible.length));
+		}
+
+		text += possible.charAt(Math.floor(Math.random() * possible.length-3));
+
+		$('#namespace').val(text);
+		checkNamespace();
+
+		e.preventDefault();
+	});
+
+	function lowcasenamespace() {
+		resetInput();
+
+		$('#namespace').val( $('#namespace').val().toLowerCase() );
+		checkNamespace();
+	}
+
+	// ignore return
+	$('#namespace').keydown(function(event) {
+		if (event.which == 13) {
+			event.preventDefault();
+		}
+	});
+
+	function resetNamespace() {
+		message = "<div class='alert alert-error'>Please choose a namespace.</div>";
+		$('#namespace-message').html(message);
+		$('#namespace-control').removeClass( 'error' );
+		$('#namespace-control').removeClass( 'info' );
+		$('#namespace-control').removeClass( 'success' );
+		$('#namespace-status').html("");
+	}
+
+	function resetInput() {
+		$('#namespace-control').removeClass( 'error' );
+		$('#namespace-control').removeClass( 'info' );
+		$('#namespace-control').removeClass( 'success' );
+		$('#namespace-status').html("");
+	}
+
+
+	function generateNamespaceMessage(namespace) {
+		message  = "<ul><li><strong><i class='fa fa-puzzle-piece'></i> <em>Browser extension</em></strong>";
+		message += "<div>";
+		message += "<p><strong>Server: </strong>"+location.hostname+"</p>";
+		message += "<p><strong>Namespace: </strong>" + namespace + "</p>";
+		message += "<p><em>Put this information in your browser extension preferences dialog and click the share button.</em></p>";
+		message += "</div>";
+		message += "</li><li><strong><i class='fa fa-envelope-o'></i> <em>Email</em></strong>";
+		message += "<div>";
+		message += "<p><strong>Address: </strong> <a href='mailto:" + namespace + "@kaffeeshare.appspotmail.com'>"+ namespace + "@kaffeeshare.appspotmail.com</a></p>";
+		message += "<p><em>Just sent a link to the email address and it will be shared.</em></p>";
+		message += "</div>";
+		message += "</li><li><strong><i class='fa fa-rss'></i> <em>RSS Feed</em></strong>";
+		message += "<div>";
+		var RSSFeedURL = "https://kaffeeshare.appspot.com/k/" + encodeURIComponent(namespace) + "/rss";
+		message += "<p><strong>Address: </strong> <a href='" + RSSFeedURL + "'>"+ RSSFeedURL +"</a></p>";
+		message += "<p><em>This feed will contain all your shared items. Share it with.</em></p>";
+		message += "</div></li></ul>";
+
+		return message;
+	}
+
+	function successNamespace(namespace) {
+		message = generateNamespaceMessage(namespace);
+
+		message += "<div class='alert alert-info'>Reserve your namespace now by sharing your first item!</div>";
+		$('#namespace-control').removeClass( 'error' );
+		$('#namespace-control').removeClass( 'info' );
+		$('#namespace-control').addClass( 'success' );
+		$('#namespace-status').html("This namespace is free. Feel free to use it!");
+
+		$('#namespace-message').html(message);
+	}
+
+	function errorNamespace(namespace) {
+		$('#namespace-control').removeClass( 'info' );
+		$('#namespace-control').removeClass( 'success' );
+		$('#namespace-control').addClass( 'error' );
+		$('#namespace-status').html("Invalid namespace. Please choose a different one!");
+		message ="<div class='alert alert-error'>Please enter a valid namespace.</div>";
+
+		$('#namespace-message').html(message);
+	}
+
+	function inuseNamespace(namespace) {
+		message = generateNamespaceMessage(namespace);
+
+		$('#namespace-control').removeClass( 'error' );
+		$('#namespace-control').removeClass( 'success' );
+		$('#namespace-control').addClass( 'info' );
+		$('#namespace-status').html("This namespace is already in use by someone else.");
+
+		$('#namespace-message').html(message);
+	}
+	</script>
+
+</div>
+</div>
+
+<div id="usage" class="section p-usage">
+
+<div class="subtlecircle sectiondivider faicon">
+	<span class="fa-stack">
+	<i class="fa fa-circle fa-stack-2x"></i>
+	<i class="fa fa-puzzle-piece fa-stack-1x"></i>
+	</span>
+	<h5 class="icon-title">Browser addon</h5>
+</div>
+
+<div class="container ">
+	<h2>Install browser extension</h2>
+	<ul>
+		<li>
+		<div>
+				<p><strong><em>Chrome:</em></strong> Install our extension from the Chrome Store!</p>
+				<p>
+				<a target="_blank" href="https://chrome.google.com/webstore/detail/kaffeeshare/bandplnfdmdhhbnahljgnkdhgailfeod" class="btn btn-primary">Chrome store</a>
+		</div>
+		</li>
+		<li>
+			<div>
+					<p><strong><em>Firefox:</em></strong> Click the install button.</p>
+					<p><a onclick="return install(event);" href="https://github.com/koffeinsource/kaffeeshare-browser-extensions/blob/master/firefox/kaffeeshare.xpi?raw=true" class="btn btn-primary">Install</a></p>
+			</div>
+		</li>
+	</ul>
+
+	<script type="application/javascript">
+	// firefox extension install script
+	function install (aEvent) {
+		var params = {
+			"Kaffeeshare": { URL: aEvent.target.href,
+				toString: function () { return this.URL; }
+			}
+		};
+		InstallTrigger.install(params);
+
+		return false;
+	}
+	</script>
+
+</div>
+</div>
+
+
+<div id="updating" class="section p-updating">
+
+<div class="subtlecircle sectiondivider faicon">
+	<span class="fa-stack">
+	<i class="fa fa-circle fa-stack-2x"></i>
+	<i class="fa fa-wrench fa-stack-1x"></i>
+	</span>
+	<h5 class="icon-title">setup</h5>
+</div>
+<div class="container ">
+	<h2>How to use it / configuration</h2>
+
+	<div id="namespace-message" >
+		<div class="alert alert-error">Please choose a namespace.</div>
+	</div>
+
+
+</div>
+</div>
+
+{{end}}

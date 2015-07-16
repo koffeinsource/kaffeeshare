@@ -31,15 +31,14 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	var temp map[string]string
 
 	inUse, err := data.NamespaceIsEmpty(c, namespace)
+	temp["status"] = statusError
 
-	if err != nil {
-		temp = map[string]string{"status": statusError}
-	} else {
+	if err == nil {
 
 		if inUse {
-			temp = map[string]string{"status": statusOk}
+			temp["status"] = statusOk
 		} else {
-			temp = map[string]string{"status": statusInUse}
+			temp["status"] = statusInUse
 		}
 
 	}

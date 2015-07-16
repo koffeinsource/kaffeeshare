@@ -1,7 +1,6 @@
 package share
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -13,17 +12,11 @@ import (
 	"appengine"
 )
 
-type shareJSON struct {
-	URL string `json:"url"`
-}
-
-const (
-	statusOk = "ok"
+// JSON understood by the extensions
+var (
+	statusOk    = []byte("{\"status\":\"ok\"}")
+	statusError = []byte("{\"status\":\"error\"}")
 )
-
-type returnJSON struct {
-	Status string `json:"status"`
-}
 
 // DispatchJSON receives an extension json request
 func DispatchJSON(w http.ResponseWriter, r *http.Request) {
@@ -36,23 +29,15 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	decoder := json.NewDecoder(r.Body)
+	shareURL := r.URL.Query().Get("url")
 
-	var t shareJSON
-
-	if err := decoder.Decode(&t); err != nil {
-		c.Errorf("Error at unmarshalling for share/json. Namespace: %v. Error: %v", namespace, err)
+	if !govalidator.IsRequestURL(shareURL) {
+		c.Errorf("Error at unmarshalling for share/json. Namespace: %v. Error: %v", namespace, shareURL)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	if !govalidator.IsRequestURL(t.URL) {
-		c.Errorf("Error at unmarshalling for share/json. Namespace: %v. Error: %v", namespace, t.URL)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	i := extract.ItemFromURL(t.URL, r)
+	i := extract.ItemFromURL(shareURL, r)
 	i.Namespace = namespace
 
 	c.Infof("Item: %v", i)
@@ -63,10 +48,5 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var returnee returnJSON
-	returnee.Status = statusOk
-
-	s, _ := json.Marshal(returnee)
-
-	w.Write(s)
+	w.Write(statusOk)
 }

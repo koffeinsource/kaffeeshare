@@ -11,14 +11,13 @@ import (
 	"github.com/koffeinsource/notreddit/targets/startpage"
 )
 
-// TODO update. Moved namespace to the end!
-//<domain>/k/<namespace>/check/json <- check namespace status
-//<domain>/k/<namespace>/show/www <- html ansicht
-//<domain>/k/<namespace>/show/rss <- rss feed
-//<domain>/k/<namespace>/twitter/connect
-//<domain>/k/<namespace>/twitter/disconnect
-//<domain>/k/<namespace>/email/connect
-//<domain>/k/<namespace>/share <- extension url
+//<domain>/k/check/json/<namespace> <- check namespace status
+//<domain>/k/show/www/<namespace> <- html ansicht
+//<domain>/k/show/rss/<namespace> <- rss feed
+//<domain>/k/twitter/connect/<namespace>
+//<domain>/k/twitter/disconnect/<namespace>
+//<domain>/k/email/connect/<namespace>
+//<domain>/k/share/<namespace> <- extension url
 
 func init() {
 	http.HandleFunc("/", startpage.Dispatch)

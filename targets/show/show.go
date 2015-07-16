@@ -51,7 +51,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	// get namespace
-	namespace := targets.GetNamespace(r, "/k/check/json/")
+	namespace := targets.GetNamespace(r, "/k/show/json/")
 	if namespace == "" {
 		startpage.Dispatch(w, r)
 		return
@@ -82,7 +82,7 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	// get namespace
-	namespace := targets.GetNamespace(r, "/k/check/json/")
+	namespace := targets.GetNamespace(r, "/k/show/rss/")
 	if namespace == "" {
 		startpage.Dispatch(w, r)
 		return

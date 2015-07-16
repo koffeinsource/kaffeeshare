@@ -8,8 +8,13 @@ import (
 // GetNamespace returns the namespace provided in a http.Request. "" is returned
 // in case there is not namespace provided.
 func GetNamespace(r *http.Request, baseURL string) string {
-	// remove trailing /
 	url := strings.ToLower(r.URL.String())
+
+	if questionIndex := strings.Index(url, "?"); questionIndex != -1 {
+		url = url[:questionIndex-1]
+	}
+
+	// remove trailing /
 	if url[len(url)-1] == '/' {
 		url = url[:len(url)-1]
 	}

@@ -1,7 +1,6 @@
 package check
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/koffeinsource/notreddit/data"
@@ -11,10 +10,11 @@ import (
 	"appengine"
 )
 
-const (
-	statusOk    = "ok"
-	statusError = "error"
-	statusInUse = "use"
+// JSON understood by the front page
+var (
+	statusOk    = []byte("{\"status\":\"ok\"}")
+	statusError = []byte("{\"status\":\"error\"}")
+	statusInUse = []byte("{\"status\":\"use\"}")
 )
 
 // DispatchJSON executes all commands for the www target
@@ -28,27 +28,17 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var temp map[string]string
-
-	inUse, err := data.NamespaceIsEmpty(c, namespace)
-	temp["status"] = statusError
+	empty, err := data.NamespaceIsEmpty(c, namespace)
 
 	if err == nil {
 
-		if inUse {
-			temp["status"] = statusOk
+		if empty {
+			w.Write(statusOk)
 		} else {
-			temp["status"] = statusInUse
+			w.Write(statusInUse)
 		}
 
+	} else {
+		w.Write(statusError)
 	}
-
-	b, err := json.Marshal(temp)
-	if err != nil {
-		c.Errorf("Error at marshalling for check/json. Namespace: %v. Error: %v", namespace, err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Write(b)
-	c.Infof("JSON result for namespace %v is %v", namespace, string(b))
 }

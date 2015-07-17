@@ -1,13 +1,21 @@
 {{define "content"}}
 <nav><ul>
 	<li class="p-intro"><a href="/">notRedd.it</a></li>
-	<li class="p-why"><a href="#why">RSS</a></li>
-	<li class="p-details"><a href="#details">email</a></li>
+	<li class="p-why"><a id="rss-link" href="">RSS</a></li>
+	<li class="p-details"><a href='mailto:{{.Namespace}}@kaffeeshare.appspotmail.com'>email</a></li>
 </ul></nav>
+
+<script>
+  $( document ).ready(function() {
+	  var a = document.getElementById('rss-link'); //or grab it by tagname etc
+	  a.href = getNamespaceRSS("{{.Namespace}}");
+  });
+</script>
+
 
 <div id="intro" class="section p-intro">
 	<div class="container center">
-		<h3 class="text-purple"><em>NAMESPACE</em></h3>
+		<h3 class="text-purple"><em>{{.Namespace}}</em></h3>
 	</div>
 </div>
 
@@ -22,21 +30,8 @@ function getURLParameter(name) {
 	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
 }
 
-$(document).ready(function() {
-	$('#headline').html(getURLParameter("ns"));
-	document.title = getURLParameter("ns") + " - Kaffeeshare";
-});
-
-// global variables to store the request and the spinner
-// this is done so we can cancel the request and delete the spinner
-// TODO move it into jquery data attribute?
-var request;
-var spinner;
-var db_cursor;
-
-
 $('#loading').bind('inview', function (event, visible) {
-	if (visible && getURLParameter("ns")) {
+	if (visible) {
 		// start the spinner
 		var target = document.getElementById('loading');
 		spinner = new Spinner(spinnerOpts).spin(target);
@@ -44,8 +39,8 @@ $('#loading').bind('inview', function (event, visible) {
 		// start the request
 		request = $.ajax({
 			type: "POST",
-			url: "json",
-			data: { op : "get", ns: getURLParameter("ns"), cursor: db_cursor },
+			url: "/k/show/json/{{.Namespace}}",
+			data: { cursor: db_cursor },
 			dataType: 'json'
 		}).done(function( msg ) {
 			db_cursor = msg.cursor;

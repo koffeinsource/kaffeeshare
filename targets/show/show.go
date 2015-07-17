@@ -12,34 +12,26 @@ import (
 	"appengine"
 )
 
+type wwwTemplateValues struct {
+	Namespace string
+}
+
 var templateWWW = template.Must(template.ParseFiles("template/base.html", "targets/show/template/html.html"))
 
 //DispatchWWW returns the HTML view of a namespace
-//TODO
 func DispatchWWW(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
+	//c := appengine.NewContext(r)
 
-	// get namespace
-	namespace := targets.GetNamespace(r, "/k/show/www/")
-	if namespace == "" {
+	var value wwwTemplateValues
+	value.Namespace = targets.GetNamespace(r, "/k/show/www/")
+
+	if value.Namespace == "" {
 		startpage.Dispatch(w, r)
 		return
 	}
 
-	i, err := data.GetNewestItems(c, namespace, 20)
-	if err != nil {
-		c.Errorf("Error at in www.dispatch @ GetNewestItem. Error: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	c.Infof("items: %v", i)
-
-	// TODO generate html
-	if err != nil {
-		c.Errorf("Error at mashaling in www.dispatch. Error: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	if err := templateWWW.Execute(w, value); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.Write(nil)

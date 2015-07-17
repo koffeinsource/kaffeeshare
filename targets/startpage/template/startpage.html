@@ -110,12 +110,6 @@
 		jQuery(this).data('timeout', setTimeout(checkNamespace, 300));
 	});
 
-	// global variables to store the request and the spinner
-	// this is done so we can cancel the request and delete the spinner
-	// TODO move it into jquery data attribute?
-	var request;
-	var spinner;
-
 	// called to process #namespace
 	function checkNamespace() {
 		// if there is an active request: stop it
@@ -139,7 +133,7 @@
 		// start the request
 		request = $.ajax({
 			type: "POST",
-			url: "k/check/json/"+namespace,
+			url: "/k/check/json/"+namespace,
 			dataType: 'json'
 		}).done(function( msg ) {
 			parseResult(msg);
@@ -235,7 +229,7 @@
 		message += "</div>";
 		message += "</li><li><strong><i class='fa fa-rss'></i> <em>RSS Feed</em></strong>";
 		message += "<div>";
-		var RSSFeedURL = "https://kaffeeshare.appspot.com/k/show/rss/"+ encodeURIComponent(namespace);
+		var RSSFeedURL = getNamespaceRSS(namespace);
 		message += "<p><strong>Address: </strong> <a href='" + RSSFeedURL + "'>"+ RSSFeedURL +"</a></p>";
 		message += "<p><em>This feed will contain all your shared items. Share it with.</em></p>";
 		message += "</div></li></ul>";

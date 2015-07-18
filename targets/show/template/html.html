@@ -13,14 +13,26 @@
 </script>
 
 
-<div id="intro" class="section p-intro">
+<div id="intro" class="section p-intro" style="padding:150px 0px 150px 0px;">
 	<div class="container center">
 		<h3 class="text-purple"><em>{{.Namespace}}</em></h3>
 	</div>
 </div>
 
-<div class="container" id="items"></div>
+<div id="why" class="section p-why">
+
+	<div class="subtlecircle sectiondivider faicon">
+		<span class="fa-stack">
+			<i class="fa fa-circle fa-stack-2x"></i>
+			<i class="fa fa-newspaper-o fa-stack-1x"></i>
+		</span>
+		<h5 class="icon-title">News</h5>
+	</div>
+
+	<div class="container" id="items"></div>
 <div id="loading"></div>
+</div>
+
 
 
 <script type="text/javascript">
@@ -58,6 +70,7 @@ $('#loading').bind('inview', function (event, visible) {
 	}
 });
 
+
 function createItems(items) {
 	returnee = "<ul class='media-list'>";
 
@@ -65,9 +78,9 @@ function createItems(items) {
 		returnee += "<li class='media'>";
 		returnee += "<div class='media-body'>";
 
-		returnee += "<h3 class='media-heading'>" + items[i].caption + "</h3>";
+		returnee += "<h4>" + items[i].caption + "</h4>";
 
-		returnee += "<p><sup>" + items[i].createdat + "</sup></p>";
+		returnee += "<p><sup>" + moment(items[i].createdat).format("LLLL") + "</sup></p>";
 
 		if (items[i].imageurl) {
 			returnee += "<a class='pull-left' href='" + items[i].url + "'>";

@@ -17,7 +17,6 @@ type jsonReturn struct {
 }
 
 //DispatchJSON returns the json view of a namespace
-//TODO
 func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 

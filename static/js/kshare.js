@@ -3,6 +3,9 @@ function getNamespaceRSS(namespace) {
     return RSSFeedURL;
 }
 
+var language = window.navigator.userLanguage || window.navigator.language;
+moment.locale(language);
+
 var spinnerOpts = {
 		lines: 13, // The number of lines to draw
 		length: 4, // The length of each line

@@ -225,13 +225,17 @@
 		message += "<p><strong>Address: </strong> <a href='mailto:" + namespace + "@kaffeeshare.appspotmail.com'>"+ namespace + "@kaffeeshare.appspotmail.com</a></p>";
 		message += "<p><em>Just sent a link to the email address and it will be shared.</em></p>";
 		message += "</div>";
+		message += "</li><li><strong><i class='fa fa-newspaper-o'></i> <em>WWW</em></strong>";
+		message += "<div>";
+		message += "<p><strong>Address: </strong> <a href='https://" + location.hostname+ "/k/show/www/" + namespace + "'>"+ location.protocol + '//' + location.hostname+"/k/show/www/"+ namespace + "</a></p>";
+		message += "<p><em>Just bookmark this url to read the shares in your browser.</em></p>";
+		message += "</div>";
 		message += "</li><li><strong><i class='fa fa-rss'></i> <em>RSS Feed</em></strong>";
 		message += "<div>";
 		var RSSFeedURL = getNamespaceRSS(namespace);
 		message += "<p><strong>Address: </strong> <a href='" + RSSFeedURL + "'>"+ RSSFeedURL +"</a></p>";
 		message += "<p><em>This feed will contain all your shared items. Share it with.</em></p>";
 		message += "</div></li></ul>";
-		// TODO add html view
 
 		return message;
 	}

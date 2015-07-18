@@ -6,11 +6,12 @@ import (
 	"github.com/koffeinsource/notreddit/data"
 	"github.com/koffeinsource/notreddit/targets"
 
+	"github.com/gorilla/feeds"
+
 	"appengine"
 )
 
 //DispatchRSS returns the rss feed of namespace
-// TODO
 func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
@@ -30,12 +31,26 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 
 	c.Infof("items: %v", is)
 
-	// TODO generate rss
-	if err != nil {
+	feed := &feeds.Feed{
+		Title: namespace + " - notRedd.it",
+		Link:  &feeds.Link{Href: r.URL.String()},
+	}
+
+	for _, i := range is {
+		rssI := feeds.Item{
+			Title:       i.Caption,
+			Link:        &feeds.Link{Href: i.URL},
+			Description: i.Description,
+			Created:     i.CreatedAt,
+		}
+		feed.Items = append(feed.Items, &rssI)
+	}
+
+	if s, err := feed.ToRss(); err == nil {
+		w.Write([]byte(s))
+	} else {
 		c.Errorf("Error at mashaling in www.dispatch. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	w.Write(nil)
 }

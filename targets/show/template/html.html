@@ -74,7 +74,7 @@ function createItems(items) {
 	returnee = "<ul class='media-list'>";
 
 	for (i = 0; i<items.length; ++i) {
-		returnee += "<li class='media'>";
+		returnee += "<li class='media' style='margin-bottom:55px;'>";
 		returnee += "<div class='media-body'>";
 
 		returnee += "<h4>" + items[i].caption + "</h4>";
@@ -82,13 +82,13 @@ function createItems(items) {
 		returnee += "<p><small><em>" + moment(items[i].createdat).format("LLLL") + "</em></small></p>";
 
 		if (items[i].imageURL) {
-			returnee += "<a class='pull-left' href='" + items[i].url + "' style='padding-right: 15px;'>";
+			returnee += "<a class='pull-right' href='" + items[i].url + "' style='padding-left: 15px;'>";
 			returnee += "<img class='media-object, thumbnail' width='200' src='" + items[i].imageURL + "' alt=''>";
 			returnee += "</a>";
 		}
 
-		returnee += "<p>" + items[i].description + "</p>";
-		returnee += "<a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a>";
+		returnee += "<blockquote>" + items[i].description + "</blockquote>";
+		returnee += "<p><cite><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></cite></p>";
 
 		returnee += "</div>"
 		returnee += "</li>";

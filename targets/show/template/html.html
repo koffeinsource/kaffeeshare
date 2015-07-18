@@ -45,8 +45,7 @@ function getURLParameter(name) {
 $('#loading').bind('inview', function (event, visible) {
 	if (visible) {
 		// start the spinner
-		var target = document.getElementById('loading');
-		spinner = new Spinner(spinnerOpts).spin(target);
+		$('#loading').html("<i class='fa fa-refresh fa-spin'></i>");
 
 		// start the request
 		request = $.ajax({
@@ -62,7 +61,7 @@ $('#loading').bind('inview', function (event, visible) {
 		}).fail(function(jqXHR, textStatus) {
 			// also called if request is aborted
 		}).always(function( msg ) {
-			spinner.stop();
+			$('#loading').html("");
 		});
 
 	} else {

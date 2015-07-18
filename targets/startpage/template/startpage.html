@@ -97,7 +97,7 @@
 			</div><!-- /input-group -->
 		</form>
 
-		<p id="namespace-status" class="help-inline"></p>
+		<p id="namespace-status" class="help-inline" align="center"></p>
 	</div>
 
 	<script type="text/javascript">
@@ -127,9 +127,7 @@
 
 		// TODO use regex to check for invalid namespaces
 
-		// start the spinner
-		var target = document.getElementById('namespace-status');
-		spinner = new Spinner(spinnerOpts).spin(target);
+		$('#namespace-status').html("<i class='fa fa-refresh fa-spin'></i>");
 		// start the request
 		request = $.ajax({
 			type: "POST",
@@ -139,8 +137,8 @@
 			parseResult(msg);
 		}).fail(function(jqXHR, textStatus) {
 			// also called if request is aborted
+			$('#namespace-status').html("");
 		}).always(function( msg ) {
-			spinner.stop();
 		});
 	};
 

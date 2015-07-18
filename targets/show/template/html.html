@@ -43,8 +43,10 @@ $('#loading').bind('inview', function (event, visible) {
 			data: { cursor: db_cursor },
 			dataType: 'json'
 		}).done(function( msg ) {
-			db_cursor = msg.cursor;
-			$('#items').append(createItems(msg.items));
+			db_cursor = msg.Cursor;
+			if (msg.Items) {
+				$('#items').append(createItems(msg.Items));
+			}
 		}).fail(function(jqXHR, textStatus) {
 			// also called if request is aborted
 		}).always(function( msg ) {

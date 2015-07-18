@@ -1,7 +1,6 @@
 package show
 
 import (
-	"encoding/json"
 	"net/http"
 	"text/template"
 
@@ -37,39 +36,8 @@ func DispatchWWW(w http.ResponseWriter, r *http.Request) {
 	w.Write(nil)
 }
 
-//DispatchJSON returns the json view of a namespace
-//TODO
-func DispatchJSON(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
-
-	// get namespace
-	namespace := targets.GetNamespace(r, "/k/show/json/")
-	if namespace == "" {
-		startpage.Dispatch(w, r)
-		return
-	}
-
-	i, err := data.GetNewestItems(c, namespace, 20)
-	if err != nil {
-		c.Errorf("Error at in www.dispatch @ GetNewestItem. Error: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	c.Infof("items: %v", i)
-
-	s, err := json.Marshal(i)
-	if err != nil {
-		c.Errorf("Error at mashaling in www.dispatch. Error: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(s)
-}
-
 //DispatchRSS returns the rss feed of namespace
-//TODO
+// TODO
 func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
@@ -80,14 +48,14 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	i, err := data.GetNewestItems(c, namespace, 20)
+	is, _, err := data.GetNewestItems(c, namespace, 20, "")
 	if err != nil {
 		c.Errorf("Error at in www.dispatch @ GetNewestItem. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	c.Infof("items: %v", i)
+	c.Infof("items: %v", is)
 
 	// TODO generate rss
 	if err != nil {

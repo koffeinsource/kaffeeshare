@@ -12,8 +12,8 @@ func StoreItem(c interface{}, i Item) error {
 }
 
 // GetNewestItems returns the latest number elements for a specific namespace
-func GetNewestItems(c interface{}, namespace string, limit int) ([]Item, error) {
-	return nil, errors.New("not implemented")
+func GetNewestItems(c interface{}, namespace string, limit int, cursor string) ([]Item, string, error) {
+	return nil, "", errors.New("not implemented")
 }
 
 // DeleteAllItems deletes all items from datastore

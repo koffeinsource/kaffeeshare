@@ -20,16 +20,39 @@ func StoreItem(c appengine.Context, i Item) error {
 }
 
 // GetNewestItems returns the latest number elements for a specific namespace
-func GetNewestItems(c appengine.Context, namespace string, limit int) ([]Item, error) {
+func GetNewestItems(c appengine.Context, namespace string, limit int, cursor string) ([]Item, string, error) {
+
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
 		Order("-CreatedAt").
 		Limit(limit)
 
-	var is []Item
-	_, err := q.GetAll(c, &is)
+	if cursor, err := datastore.DecodeCursor(cursor); err == nil {
+		q = q.Start(cursor)
+	}
 
-	return is, err
+	var is []Item
+	var err error
+	t := q.Run(c)
+	for {
+		var i Item
+		_, err = t.Next(&i)
+		if err == datastore.Done {
+			break
+		}
+
+		is = append(is, i)
+		if err != nil {
+			c.Errorf("Error fetching next item for namespace %v: %v", namespace, err)
+			return nil, "", err
+		}
+	}
+
+	if cursor, err := t.Cursor(); err == nil {
+		return is, cursor.String(), nil
+	}
+
+	return nil, "", err
 }
 
 // DeleteAllItems deletes all items from datastore

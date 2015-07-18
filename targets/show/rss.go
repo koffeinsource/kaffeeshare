@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/koffeinsource/notreddit/data"
-	"github.com/koffeinsource/notreddit/targets"
 
 	"github.com/gorilla/feeds"
+	"github.com/gorilla/mux"
 
 	"appengine"
 )
@@ -16,7 +16,7 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	// get namespace
-	namespace := targets.GetNamespace(r, "/k/show/rss/")
+	namespace := mux.Vars(r)["namespace"]
 	if namespace == "" {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

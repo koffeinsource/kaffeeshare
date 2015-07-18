@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/koffeinsource/notreddit/data"
-	"github.com/koffeinsource/notreddit/targets"
 
 	"appengine"
 )
@@ -20,7 +20,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	// get namespace
-	namespace := targets.GetNamespace(r, "/k/show/json/")
+	namespace := mux.Vars(r)["namespace"]
 	if namespace == "" {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

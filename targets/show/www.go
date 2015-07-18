@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/koffeinsource/notreddit/targets"
+	"github.com/gorilla/mux"
 	"github.com/koffeinsource/notreddit/targets/startpage"
 )
 
@@ -19,7 +19,7 @@ func DispatchWWW(w http.ResponseWriter, r *http.Request) {
 	//c := appengine.NewContext(r)
 
 	var value wwwTemplateValues
-	value.Namespace = targets.GetNamespace(r, "/k/show/www/")
+	value.Namespace = mux.Vars(r)["namespace"]
 
 	if value.Namespace == "" {
 		startpage.Dispatch(w, r)

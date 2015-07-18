@@ -9,7 +9,11 @@ import (
 	"github.com/koffeinsource/notreddit/targets/share"
 	"github.com/koffeinsource/notreddit/targets/show"
 	"github.com/koffeinsource/notreddit/targets/startpage"
+
+	"github.com/gorilla/mux"
 )
+
+var router = mux.NewRouter()
 
 //<domain>/k/check/json/<namespace> <- check namespace status
 //<domain>/k/show/www/<namespace> <- html ansicht
@@ -20,10 +24,17 @@ import (
 //<domain>/k/share/<namespace> <- extension url
 
 func init() {
-	http.HandleFunc("/", startpage.Dispatch)
-	http.HandleFunc("/k/check/json/", check.DispatchJSON)
-	http.HandleFunc("/k/share/json/", share.DispatchJSON)
-	http.HandleFunc("/k/show/json/", show.DispatchJSON)
-	http.HandleFunc("/k/show/www/", show.DispatchWWW)
-	http.HandleFunc("/k/show/rss/", show.DispatchRSS)
+	router.HandleFunc("/", startpage.Dispatch)
+	router.HandleFunc("/k/check/json/{namespace}/", check.DispatchJSON)
+	router.HandleFunc("/k/check/json/{namespace}", check.DispatchJSON)
+	router.HandleFunc("/k/share/json/{namespace}/", share.DispatchJSON)
+	router.HandleFunc("/k/share/json/{namespace}", share.DispatchJSON)
+	router.HandleFunc("/k/show/json/{namespace}/", show.DispatchJSON)
+	router.HandleFunc("/k/show/json/{namespace}", show.DispatchJSON)
+	router.HandleFunc("/k/show/www/{namespace}/", show.DispatchWWW)
+	router.HandleFunc("/k/show/www/{namespace}", show.DispatchWWW)
+	router.HandleFunc("/k/show/rss/{namespace}/", show.DispatchRSS)
+	router.HandleFunc("/k/show/rss/{namespace}", show.DispatchRSS)
+
+	http.Handle("/", router)
 }

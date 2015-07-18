@@ -3,8 +3,8 @@ package check
 import (
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/koffeinsource/notreddit/data"
-	"github.com/koffeinsource/notreddit/targets"
 	"github.com/koffeinsource/notreddit/targets/startpage"
 
 	"appengine"
@@ -22,7 +22,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	// get namespace
-	namespace := targets.GetNamespace(r, "/k/check/json/")
+	namespace := mux.Vars(r)["namespace"]
 	if namespace == "" {
 		startpage.Dispatch(w, r)
 		return

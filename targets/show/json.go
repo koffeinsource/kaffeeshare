@@ -6,7 +6,6 @@ import (
 
 	"github.com/koffeinsource/notreddit/data"
 	"github.com/koffeinsource/notreddit/targets"
-	"github.com/koffeinsource/notreddit/targets/startpage"
 
 	"appengine"
 )
@@ -23,7 +22,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	// get namespace
 	namespace := targets.GetNamespace(r, "/k/show/json/")
 	if namespace == "" {
-		startpage.Dispatch(w, r)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

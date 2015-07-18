@@ -70,7 +70,6 @@ $('#loading').bind('inview', function (event, visible) {
 	}
 });
 
-
 function createItems(items) {
 	returnee = "<ul class='media-list'>";
 
@@ -80,16 +79,16 @@ function createItems(items) {
 
 		returnee += "<h4>" + items[i].caption + "</h4>";
 
-		returnee += "<p><sup>" + moment(items[i].createdat).format("LLLL") + "</sup></p>";
+		returnee += "<p><small><em>" + moment(items[i].createdat).format("LLLL") + "</em></small></p>";
 
-		if (items[i].imageurl) {
-			returnee += "<a class='pull-left' href='" + items[i].url + "'>";
-			returnee += "<img class='media-object, thumbnail' width='200' src='" + items[i].imageurl + "' alt=''>";
+		if (items[i].imageURL) {
+			returnee += "<a class='pull-left' href='" + items[i].url + "' style='padding-right: 15px;'>";
+			returnee += "<img class='media-object, thumbnail' width='200' src='" + items[i].imageURL + "' alt=''>";
 			returnee += "</a>";
 		}
 
 		returnee += "<p>" + items[i].description + "</p>";
-		returnee += "<small><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></small>";
+		returnee += "<a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a>";
 
 		returnee += "</div>"
 		returnee += "</li>";

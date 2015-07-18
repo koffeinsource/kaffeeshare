@@ -47,6 +47,7 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if s, err := feed.ToRss(); err == nil {
+		w.Header().Set("Content-Type", "application/rss+xml")
 		w.Write([]byte(s))
 	} else {
 		c.Errorf("Error at mashaling in www.dispatch. Error: %v", err)

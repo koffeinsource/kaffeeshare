@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/koffeinsource/notreddit/targets/check"
+	"github.com/koffeinsource/notreddit/targets/email"
 	"github.com/koffeinsource/notreddit/targets/share"
 	"github.com/koffeinsource/notreddit/targets/show"
 	"github.com/koffeinsource/notreddit/targets/startpage"
@@ -36,5 +37,6 @@ func init() {
 	router.HandleFunc("/k/show/rss/{namespace}/", show.DispatchRSS)
 	router.HandleFunc("/k/show/rss/{namespace}", show.DispatchRSS)
 
+	http.HandleFunc("/_ah/mail/", email.DispatchEmail)
 	http.Handle("/", router)
 }

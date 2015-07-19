@@ -37,6 +37,7 @@ func init() {
 	router.HandleFunc("/k/show/rss/{namespace}/", show.DispatchRSS)
 	router.HandleFunc("/k/show/rss/{namespace}", show.DispatchRSS)
 
+	// TODO move to router
 	http.HandleFunc("/_ah/mail/", email.DispatchEmail)
 	http.Handle("/", router)
 }

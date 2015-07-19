@@ -64,11 +64,11 @@ func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 		for _, namespace := range namespaces {
 			i.Namespace = namespace
 			c.Infof("Item: %v", i)
-		}
 
-		if err := data.StoreItem(c, i); err != nil {
-			c.Errorf("Error at in StoreItem. Item: %v. Error: %v", i, err)
-			continue
+			if err := data.StoreItem(c, i); err != nil {
+				c.Errorf("Error at in StoreItem. Item: %v. Error: %v", i, err)
+				continue
+			}
 		}
 	}
 

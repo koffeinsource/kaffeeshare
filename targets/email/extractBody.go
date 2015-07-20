@@ -78,13 +78,14 @@ func extractMimeBody(c appengine.Context, boundary string, bodyReader io.Reader)
 // Decode body text and store it in a string
 func extractTextBody(c appengine.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
 	var returnee email
-	encoding := header.Get("Content-Transfer-Encoding")
-	c.Infof("extractTextBody encoding: %v", encoding)
 
 	s, err := ioutil.ReadAll(bodyReader)
 	if err != nil {
 		return nil, err
 	}
+
+	encoding := header.Get("Content-Transfer-Encoding")
+	c.Infof("extractTextBody encoding: %v", encoding)
 
 	if encoding == "base64" {
 		b, err := base64.StdEncoding.DecodeString(string(s))
@@ -95,12 +96,22 @@ func extractTextBody(c appengine.Context, header emailHeader, bodyReader io.Read
 		returnee.ContentType = header.Get("Content-Type")
 		return &returnee, nil
 	}
+
+	if encoding == "7bit" {
+		// that is just US ASCII (7bit)
+		// https://stackoverflow.com/questions/25710599/content-transfer-encoding-7bit-or-8-bit
+		returnee.Body = string(s)
+		returnee.ContentType = header.Get("Content-Type")
+		return &returnee, nil
+	}
+
 	if encoding == "quoted-printable" {
 		// https://stackoverflow.com/questions/24883742/how-to-decode-mail-body-in-go
 		// looks like it will be in go 1.5
 		// maybe wait until then?
 		// TODO
 	}
+
 
 	// ok, let's guess this is just plain text and put it into a string
 	returnee.Body = string(s)

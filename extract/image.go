@@ -17,5 +17,4 @@ func image(i *data.Item, sourceURL string, contentType string) {
 	i.ImageURL = ""
 	i.Caption = sourceURL[strings.LastIndex(sourceURL, "/")+1:]
 	i.Description = "<img src=\"" + sourceURL + "\">"
-
 }

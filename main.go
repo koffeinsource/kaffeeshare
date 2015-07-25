@@ -20,11 +20,13 @@ func main() {
 		return
 	}
 
+	fmt.Print("Validating URL...")
 	// Is it a valid URL?
 	if !govalidator.IsRequestURL(*webaddr) {
-		fmt.Println("Invalid URL")
+		fmt.Println("invalid!")
 		return
 	}
+	fmt.Println(" success!")
 
 	fmt.Print(extract.ItemFromURL(*webaddr, nil))
 }

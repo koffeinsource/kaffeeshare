@@ -28,7 +28,6 @@ func match(u, startwith string) bool {
 
 // ItemFromURL creates an Item from the passed url
 func ItemFromURL(sourceURL string, r *http.Request) data.Item {
-	log.SetPrefix("callPlugin: ")
 
 	// Create return value with default values
 	returnee := data.Item{
@@ -90,7 +89,9 @@ func ItemFromURL(sourceURL string, r *http.Request) data.Item {
 		// Make sure to call this one first
 		defaultHTML(&returnee, sourceURL, doc)
 
+		// TODO pass in appengine context for logging!
 		amazon(&returnee, sourceURL, doc)
+		imgurl(&returnee, sourceURL, doc)
 		dilbert(&returnee, sourceURL, doc)
 		fefe(&returnee, sourceURL, doc)
 		garfield(&returnee, sourceURL, doc)

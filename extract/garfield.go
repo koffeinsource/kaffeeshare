@@ -32,7 +32,7 @@ func garfield(i *data.Item, sourceURL string, doc *goquery.Document) {
 			i.Description += m["src"]
 			i.Description += "\" />"
 		} else {
-			fmt.Println("Amazon plugin invalid url. " + m["src"])
+			fmt.Println("Garfield plugin invalid url. " + m["src"])
 		}
 		i.ImageURL = ""
 	}

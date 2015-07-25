@@ -11,7 +11,7 @@ import (
 
 // ogtags extracts the og:title, og:image, ... tags from a webpage
 func defaultHTML(i *data.Item, sourceURL string, doc *goquery.Document) {
-	fmt.Println("Running OG extract.")
+	fmt.Println("Running OG extract. " + sourceURL)
 
 	selection := doc.Find("title")
 	if len(selection.Nodes) != 0 {

@@ -40,10 +40,6 @@ func imgurl(i *data.Item, sourceURL string, doc *goquery.Document) {
 					set[m["content"]] = true
 				}
 			}
-			if m["property"] == "og:title" {
-				fmt.Println("FOOOOOOUUUUUN " + m["content"])
-				i.Caption = m["content"]
-			}
 		}
 
 	}

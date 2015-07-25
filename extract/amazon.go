@@ -6,6 +6,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
+	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
 	"golang.org/x/net/html"
 )
@@ -42,7 +43,7 @@ func amazon(i *data.Item, sourceURL string, doc *goquery.Document) {
 	// update url to contain tag
 	{
 		// This is our tag. We should make it configurable
-		urlExtension := "tag=" + "gschaftshuonl-21"
+		urlExtension := "tag=" + config.AmazonAdID
 		start := strings.Index(i.URL, "tag=")
 		if start != -1 {
 			end := strings.Index(i.URL[start+1:], "&") + start + 1

@@ -9,21 +9,20 @@ import (
 	"github.com/koffeinsource/kaffeeshare/data"
 )
 
-func garfield(i *data.Item, sourceURL string, doc *goquery.Document) {
-	if !strings.Contains(sourceURL, "www.gocomics.com/garfield") {
+func littlegamers(i *data.Item, sourceURL string, doc *goquery.Document) {
+	if !strings.Contains(sourceURL, "www.little-gamers.com") {
 		return
 	}
 
-	fmt.Println("Running Garfield plugin.")
+	fmt.Println("Running little-gamers plugin.")
 
-	// update title
+	selection := doc.Find("img#comic")
 
-	selection := doc.Find(".strip")
 	if len(selection.Nodes) == 0 {
-		fmt.Println("Garfield plugin found no .strip. " + sourceURL)
+		fmt.Println("little-gamers plugin found no img#comic. " + sourceURL)
 	} else {
 		if len(selection.Nodes) > 1 {
-			fmt.Println("Garfield plugin found >1 .strip. " + sourceURL)
+			fmt.Println("little-gamers plugin found >1 img#comic. ??? " + sourceURL)
 		}
 		m := htmlAttributeToMap(selection.Nodes[0].Attr)
 
@@ -33,7 +32,7 @@ func garfield(i *data.Item, sourceURL string, doc *goquery.Document) {
 			i.Description += "\" />"
 			i.ImageURL = ""
 		} else {
-			fmt.Println("Garfield plugin invalid url. " + m["src"])
+			fmt.Println("little-gamers plugin invalid url. " + m["src"])
 		}
 	}
 

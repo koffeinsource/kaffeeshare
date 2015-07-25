@@ -91,14 +91,18 @@ func ItemFromURL(sourceURL string, r *http.Request) data.Item {
 
 		// TODO pass in appengine context for logging!
 		amazon(&returnee, sourceURL, doc)
+
 		imgurl(&returnee, sourceURL, doc)
-		dilbert(&returnee, sourceURL, doc)
 		fefe(&returnee, sourceURL, doc)
-		garfield(&returnee, sourceURL, doc)
+
 		gfycat(&returnee, sourceURL, doc)
-		xkcd(&returnee, sourceURL, doc)
 		youtube(&returnee, sourceURL, doc)
 		vimeo(&returnee, sourceURL, doc)
+
+		dilbert(&returnee, sourceURL, doc)
+		garfield(&returnee, sourceURL, doc)
+		xkcd(&returnee, sourceURL, doc)
+		littlegamers(&returnee, sourceURL, doc)
 
 	default:
 	}

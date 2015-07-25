@@ -38,11 +38,18 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 
 	for _, i := range is {
 		rssI := feeds.Item{
-			Title:       i.Caption,
-			Link:        &feeds.Link{Href: i.URL},
-			Description: i.Description,
-			Created:     i.CreatedAt,
+			Title:   i.Caption,
+			Link:    &feeds.Link{Href: i.URL},
+			Created: i.CreatedAt,
 		}
+
+		if i.ImageURL != "" {
+			rssI.Description += "<div style=\"float:left; margin-right:16px; margin-bottom:16px;\"><img width=\"200\" src=\"" + i.ImageURL + "\" alt=\"\"/></div>"
+		}
+
+		rssI.Description += "<p>" + i.Description + "</p>"
+		rssI.Description += "<a href=\"" + i.URL + "\">&raquo; " + i.URL + "</a>"
+
 		feed.Items = append(feed.Items, &rssI)
 	}
 

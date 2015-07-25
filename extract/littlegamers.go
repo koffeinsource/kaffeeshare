@@ -22,6 +22,7 @@ func littlegamers(i *data.Item, sourceURL string, doc *goquery.Document) {
 		fmt.Println("little-gamers plugin found no img#comic. " + sourceURL)
 	} else {
 		if len(selection.Nodes) > 1 {
+			// that should actually never happen
 			fmt.Println("little-gamers plugin found >1 img#comic. ??? " + sourceURL)
 		}
 		m := htmlAttributeToMap(selection.Nodes[0].Attr)

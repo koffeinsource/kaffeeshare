@@ -16,8 +16,6 @@ func garfield(i *data.Item, sourceURL string, doc *goquery.Document) {
 
 	fmt.Println("Running Garfield plugin.")
 
-	// update title
-
 	selection := doc.Find(".strip")
 	if len(selection.Nodes) == 0 {
 		fmt.Println("Garfield plugin found no .strip. " + sourceURL)

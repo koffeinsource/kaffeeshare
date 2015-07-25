@@ -93,9 +93,10 @@ func ItemFromURL(sourceURL string, r *http.Request) data.Item {
 		amazon(&returnee, sourceURL, doc)
 
 		imgurl(&returnee, sourceURL, doc)
+		gfycat(&returnee, sourceURL, doc)
+
 		fefe(&returnee, sourceURL, doc)
 
-		gfycat(&returnee, sourceURL, doc)
 		youtube(&returnee, sourceURL, doc)
 		vimeo(&returnee, sourceURL, doc)
 
@@ -104,6 +105,7 @@ func ItemFromURL(sourceURL string, r *http.Request) data.Item {
 		xkcd(&returnee, sourceURL, doc)
 		littlegamers(&returnee, sourceURL, doc)
 
+		pastebin(&returnee, sourceURL, doc)
 	default:
 	}
 

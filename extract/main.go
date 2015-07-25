@@ -73,7 +73,7 @@ func ItemFromURL(sourceURL string, r *http.Request) data.Item {
 		body = append(body, temp...)
 	}
 
-	//log.Println(contentType)
+	//  log.Println(contentType)
 	switch {
 	case strings.Contains(contentType, "image/"):
 		image(&returnee, sourceURL, contentType)

@@ -20,8 +20,11 @@ func imgurl(i *data.Item, sourceURL string, doc *goquery.Document) {
 	selection := doc.Find("meta[property*='og']")
 
 	if selection.Length() != 0 {
-		i.ImageURL = ""
+		set := make(map[string]bool)
+
 		i.Description = ""
+		i.ImageURL = ""
+
 		for _, e := range selection.Nodes {
 			m := htmlAttributeToMap(e.Attr)
 
@@ -30,10 +33,18 @@ func imgurl(i *data.Item, sourceURL string, doc *goquery.Document) {
 					log.Println("Invalid url in og:image. " + sourceURL)
 					continue
 				}
-				i.Description += "<img src =\""
-				i.Description += m["content"]
-				i.Description += "\" /><br/>"
+				if _, in := set[m["content"]]; !in {
+					i.Description += "<img src =\""
+					i.Description += m["content"]
+					i.Description += "\" /><br/>"
+					set[m["content"]] = true
+				}
+			}
+			if m["property"] == "og:title" {
+				fmt.Println("FOOOOOOUUUUUN " + m["content"])
+				i.Caption = m["content"]
 			}
 		}
+
 	}
 }

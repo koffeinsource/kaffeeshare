@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/kaffeeshare/data"
 )
 
 func image(i *data.Item, sourceURL string, contentType string) {

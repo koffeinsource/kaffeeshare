@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/kaffeeshare/data"
 
 	"appengine"
 )

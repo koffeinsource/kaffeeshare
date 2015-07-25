@@ -6,7 +6,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
-	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/kaffeeshare/data"
 )
 
 func imgurl(i *data.Item, sourceURL string, doc *goquery.Document) {

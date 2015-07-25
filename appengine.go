@@ -5,11 +5,11 @@ package main
 import (
 	"net/http"
 
-	"github.com/koffeinsource/notreddit/targets/check"
-	"github.com/koffeinsource/notreddit/targets/email"
-	"github.com/koffeinsource/notreddit/targets/share"
-	"github.com/koffeinsource/notreddit/targets/show"
-	"github.com/koffeinsource/notreddit/targets/startpage"
+	"github.com/koffeinsource/kaffeeshare/targets/check"
+	"github.com/koffeinsource/kaffeeshare/targets/email"
+	"github.com/koffeinsource/kaffeeshare/targets/share"
+	"github.com/koffeinsource/kaffeeshare/targets/show"
+	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 
 	"github.com/gorilla/mux"
 )

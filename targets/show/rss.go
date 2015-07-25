@@ -3,7 +3,7 @@ package show
 import (
 	"net/http"
 
-	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/kaffeeshare/data"
 
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"

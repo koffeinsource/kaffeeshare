@@ -10,6 +10,7 @@ import (
 	"github.com/koffeinsource/kaffeeshare/targets/share"
 	"github.com/koffeinsource/kaffeeshare/targets/show"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
+	"github.com/koffeinsource/kaffeeshare/targets/update"
 
 	"github.com/gorilla/mux"
 )
@@ -28,8 +29,14 @@ func init() {
 	router.HandleFunc("/", startpage.Dispatch)
 	router.HandleFunc("/k/check/json/{namespace}/", check.DispatchJSON)
 	router.HandleFunc("/k/check/json/{namespace}", check.DispatchJSON)
+
+	// should actually be shar/get as we don't do json here
 	router.HandleFunc("/k/share/json/{namespace}/", share.DispatchJSON)
 	router.HandleFunc("/k/share/json/{namespace}", share.DispatchJSON)
+
+	router.HandleFunc("/k/update/json/{namespace}/", update.DispatchJSON)
+	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
+
 	router.HandleFunc("/k/show/json/{namespace}/", show.DispatchJSON)
 	router.HandleFunc("/k/show/json/{namespace}", show.DispatchJSON)
 	router.HandleFunc("/k/show/www/{namespace}/", show.DispatchWWW)

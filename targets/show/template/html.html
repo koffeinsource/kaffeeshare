@@ -86,7 +86,9 @@ function createItems(items) {
 			returnee += "</a>";
 		}
 
-		returnee += "<blockquote>" + items[i].description + "</blockquote>";
+		if (items[i].description && items[i].description != "") {
+			returnee += "<blockquote>" + items[i].description + "</blockquote>";
+		}
 		returnee += "<p><cite><a href='" + items[i].url + "'>&raquo; " + items[i].url + "</a></cite></p>";
 
 		returnee += "</div>"

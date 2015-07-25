@@ -32,7 +32,7 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c.Infof("items: %v", is)
 
 	feed := &feeds.Feed{
-		Title: namespace + " - notRedd.it",
+		Title: namespace + " - Kaffeeshare",
 		Link:  &feeds.Link{Href: r.URL.String()},
 	}
 

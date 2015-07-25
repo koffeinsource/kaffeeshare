@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/koffeinsource/notreddit/data"
-	"github.com/koffeinsource/notreddit/targets/startpage"
+	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 
 	"appengine"
 )

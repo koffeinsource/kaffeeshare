@@ -5,8 +5,8 @@ import (
 	"net/mail"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/koffeinsource/notreddit/data"
-	"github.com/koffeinsource/notreddit/extract"
+	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/extract"
 
 	"appengine"
 )

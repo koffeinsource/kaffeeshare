@@ -5,7 +5,7 @@ import (
 	"text/template"
 
 	"github.com/gorilla/mux"
-	"github.com/koffeinsource/notreddit/targets/startpage"
+	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 )
 
 type wwwTemplateValues struct {

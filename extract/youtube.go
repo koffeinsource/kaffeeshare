@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/kaffeeshare/data"
 )
 
 func youtube(i *data.Item, sourceURL string, doc *goquery.Document) {

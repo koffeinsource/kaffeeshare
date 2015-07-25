@@ -3,7 +3,7 @@ package show
 import (
 	"net/http"
 
-	"github.com/koffeinsource/notreddit/data"
+	"github.com/koffeinsource/kaffeeshare/data"
 
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"
@@ -32,17 +32,24 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c.Infof("items: %v", is)
 
 	feed := &feeds.Feed{
-		Title: namespace + " - notRedd.it",
+		Title: namespace + " - Kaffeeshare",
 		Link:  &feeds.Link{Href: r.URL.String()},
 	}
 
 	for _, i := range is {
 		rssI := feeds.Item{
-			Title:       i.Caption,
-			Link:        &feeds.Link{Href: i.URL},
-			Description: i.Description,
-			Created:     i.CreatedAt,
+			Title:   i.Caption,
+			Link:    &feeds.Link{Href: i.URL},
+			Created: i.CreatedAt,
 		}
+
+		if i.ImageURL != "" {
+			rssI.Description += "<div style=\"float:left; margin-right:16px; margin-bottom:16px;\"><img width=\"200\" src=\"" + i.ImageURL + "\" alt=\"\"/></div>"
+		}
+
+		rssI.Description += "<p>" + i.Description + "</p>"
+		rssI.Description += "<a href=\"" + i.URL + "\">&raquo; " + i.URL + "</a>"
+
 		feed.Items = append(feed.Items, &rssI)
 	}
 

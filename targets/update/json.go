@@ -35,7 +35,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 
 	var returnee jsonReturn
 	if len(is) == 0 {
-		returnee.LastUpdate = time.Date(1982, time.May, 14, 0, 0, 0, 0, time.UTC).Unix()
+		returnee.LastUpdate = time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC).Unix()
 	} else {
 		returnee.LastUpdate = is[0].CreatedAt.Unix()
 	}
@@ -46,6 +46,8 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	c.Infof("returning: %v", returnee)
 
 	w.Write(s)
 }

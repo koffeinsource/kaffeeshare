@@ -1,7 +1,8 @@
 package config
 
-// TODO add config options and use them!
 const (
-	ConfigMailDomain = "asd"
-	AmazonAdID       = "gschaftshuonl-21"
+	// ConfigMailDomain is the domain on which the kshare instances listens
+	ConfigMailDomain = "kaffeeshare.appspotmail.com"
+	// AmazonAdID is the ad id added to all amazon links
+	AmazonAdID = "gschaftshuonl-21"
 )

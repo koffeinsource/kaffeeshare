@@ -47,7 +47,7 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 			rssI.Description += "<div style=\"float:left; margin-right:16px; margin-bottom:16px;\"><img width=\"200\" src=\"" + i.ImageURL + "\" alt=\"\"/></div>"
 		}
 
-		rssI.Description += "<p>" + i.Description + "</p>"
+		rssI.Description += "<p>" + i.Description + "</p><br/><br/>"
 		rssI.Description += "<a href=\"" + i.URL + "\">&raquo; " + i.URL + "</a>"
 
 		feed.Items = append(feed.Items, &rssI)

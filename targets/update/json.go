@@ -1,8 +1,9 @@
-package show
+package update
 
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/koffeinsource/kaffeeshare/data"
@@ -11,8 +12,7 @@ import (
 )
 
 type jsonReturn struct {
-	Items  []data.Item
-	Cursor string
+	LastUpdate int64 `json:"last_update"`
 }
 
 //DispatchJSON returns the json view of a namespace
@@ -26,32 +26,28 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := r.ParseForm(); err != nil {
-		c.Errorf("Error at in /show/json @ ParseForm. Error: %v", err)
+	is, _, err := data.GetNewestItems(c, namespace, 1, "")
+	if err != nil {
+		c.Errorf("Error while getting 1 item for update/json. Error %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	cursor := r.FormValue("cursor")
 
 	var returnee jsonReturn
-	var err error
-
-	returnee.Items, returnee.Cursor, err = data.GetNewestItems(c, namespace, 20, cursor)
-	if err != nil {
-		c.Errorf("Error at in /show/json @ GetNewestItem. Error: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	if len(is) == 0 {
+		returnee.LastUpdate = time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC).Unix()
+	} else {
+		returnee.LastUpdate = is[0].CreatedAt.Unix()
 	}
-
-	c.Infof("items: %v", returnee.Items)
-	c.Infof("cursor: %v", returnee.Cursor)
 
 	s, err := json.Marshal(returnee)
 	if err != nil {
-		c.Errorf("Error at mashaling in www.json.dispatch. Error: %v", err)
+		c.Errorf("Error at mashaling in update/json. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	c.Infof("returning: %v", returnee)
 
 	w.Write(s)
 }

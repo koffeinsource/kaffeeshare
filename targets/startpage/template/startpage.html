@@ -197,7 +197,7 @@
 	});
 
 	function resetNamespace() {
-		message = "<div class='alert alert-error'>Please choose a namespace.</div>";
+		message = "<div class='alert alert-error'>Please select a namespace.</div>";
 		$('#namespace-message').html(message);
 		$('#namespace-control').removeClass( 'error' );
 		$('#namespace-control').removeClass( 'info' );
@@ -256,7 +256,7 @@
 		$('#namespace-control').removeClass( 'info' );
 		$('#namespace-control').removeClass( 'success' );
 		$('#namespace-control').addClass( 'error' );
-		$('#namespace-status').html("Invalid namespace. Please choose a different one!");
+		$('#namespace-status').html("Invalid namespace. Please select a different one!");
 		message ="<div class='alert alert-error'>Please enter a valid namespace.</div>";
 
 		$('#namespace-message').html(message);
@@ -336,7 +336,7 @@
 	<h2>How to use it / configuration</h2>
 
 	<div id="namespace-message" >
-		<div class="alert alert-error">Please choose a namespace.</div>
+		<div class="alert alert-error">Please select a namespace.</div>
 	</div>
 
 

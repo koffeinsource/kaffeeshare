@@ -25,7 +25,7 @@ func getNamespaces(msg *mail.Message) ([]string, error) {
 		for _, addr := range addresses {
 			// kaffeeshare@mail.com
 			// strs[0]    |strs[1]
-			strs := strings.split(addr.Address, "@")
+			strs := strings.Split(addr.Address, "@")
 			// Check for the receiver domain
 			if strs[1] != config.ConfigMailDomain {
 				continue

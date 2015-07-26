@@ -3,6 +3,8 @@ package email
 import (
 	"net/mail"
 	"strings"
+
+	"github.com/koffeinsource/kaffeeshare/config"
 )
 
 func getNamespaces(msg *mail.Message) ([]string, error) {
@@ -21,9 +23,15 @@ func getNamespaces(msg *mail.Message) ([]string, error) {
 		}
 
 		for _, addr := range addresses {
-			// TODO we should actually check for the receiver domain
-			temp := addr.Address[:strings.Index(addr.Address, "@")]
-			set[temp] = true
+			// kaffeeshare@mail.com
+			// strs[0]    |strs[1]
+			strs := strings.split(addr.Address, "@")
+			// Check for the receiver domain
+			if strs[1] != config.ConfigMailDomain {
+				continue
+			}
+
+			set[strs[0]] = true
 		}
 	}
 

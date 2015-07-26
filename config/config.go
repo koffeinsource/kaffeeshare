@@ -1,7 +1,6 @@
 package config
 
-// TODO add config options and use them!
 const (
-	ConfigMailDomain = "asd"
+	ConfigMailDomain = "kaffeeshare.appspotmail.com"
 	AmazonAdID       = "gschaftshuonl-21"
 )

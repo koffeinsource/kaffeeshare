@@ -12,6 +12,7 @@ func pastebin(i *data.Item, sourceURL string, doc *goquery.Document, log logger)
 		return
 	}
 
+	// TODO replace the logic below with a query to http://pastebin.com/raw.php?i=
 	log.Infof("Running pastebin plugin.")
 
 	selection := doc.Find("#paste_code")

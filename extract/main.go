@@ -54,6 +54,7 @@ func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
 		CreatedAt: time.Now(),
 	}
 
+	// TODO refactor the http get code into functions that can be used by the other plugins
 	client := getHTTPClient(r)
 
 	// Make a request to the sorceURL

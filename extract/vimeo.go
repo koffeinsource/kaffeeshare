@@ -1,19 +1,18 @@
 package extract
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/data"
 )
 
-func vimeo(i *data.Item, sourceURL string, doc *goquery.Document) {
+func vimeo(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 	if !strings.Contains(sourceURL, "vimeo.com") {
 		return
 	}
 
-	fmt.Println("Running Vimeo plugin.")
+	log.Infof("Running Vimeo plugin.")
 
 	// remove trailing '/' of the url, if any
 	if string(sourceURL[len(sourceURL)-1]) == "/" {
@@ -21,7 +20,7 @@ func vimeo(i *data.Item, sourceURL string, doc *goquery.Document) {
 	}
 	videoIDstart := strings.LastIndex(sourceURL, "/")
 	if videoIDstart == -1 {
-		fmt.Println("Vimeo plugin found no '/' ??? " + sourceURL)
+		log.Infof("Vimeo plugin found no '/' ??? " + sourceURL)
 		return
 	}
 

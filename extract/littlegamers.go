@@ -1,7 +1,6 @@
 package extract
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -9,21 +8,21 @@ import (
 	"github.com/koffeinsource/kaffeeshare/data"
 )
 
-func littlegamers(i *data.Item, sourceURL string, doc *goquery.Document) {
+func littlegamers(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 	if !strings.Contains(sourceURL, "www.little-gamers.com") {
 		return
 	}
 
-	fmt.Println("Running little-gamers plugin.")
+	log.Infof("Running little-gamers plugin.")
 
 	selection := doc.Find("img#comic")
 
 	if len(selection.Nodes) == 0 {
-		fmt.Println("little-gamers plugin found no img#comic. " + sourceURL)
+		log.Infof("little-gamers plugin found no img#comic. " + sourceURL)
 	} else {
 		if len(selection.Nodes) > 1 {
 			// that should actually never happen
-			fmt.Println("little-gamers plugin found >1 img#comic. ??? " + sourceURL)
+			log.Errorf("little-gamers plugin found >1 img#comic. ??? " + sourceURL)
 		}
 		m := htmlAttributeToMap(selection.Nodes[0].Attr)
 
@@ -33,7 +32,7 @@ func littlegamers(i *data.Item, sourceURL string, doc *goquery.Document) {
 			i.Description += "\" />"
 			i.ImageURL = ""
 		} else {
-			fmt.Println("little-gamers plugin invalid url. " + m["src"])
+			log.Errorf("little-gamers plugin invalid url. " + m["src"])
 		}
 	}
 

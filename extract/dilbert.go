@@ -1,7 +1,6 @@
 package extract
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -10,23 +9,23 @@ import (
 	"golang.org/x/net/html"
 )
 
-func dilbert(i *data.Item, sourceURL string, doc *goquery.Document) {
+func dilbert(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 	if !(strings.Contains(sourceURL, "feed.dilbert.com/") ||
 		strings.Contains(sourceURL, "dilbert.com/strips/")) {
 		return
 	}
 
-	fmt.Println("Running Dilbert plugin.")
+	log.Infof("Running Dilbert plugin.")
 
 	selection := doc.Find(".STR_Image").Find("img")
 
 	if len(selection.Nodes) == 0 {
-		fmt.Println("Dilbert plugin found no .STR_Image. " + sourceURL)
+		log.Errorf("Dilbert plugin found no .STR_Image. " + sourceURL)
 		return
 	}
 
 	if len(selection.Nodes) > 1 {
-		fmt.Println("Dilbert plugin found >1 .STR_Image. " + sourceURL)
+		log.Infof("Dilbert plugin found >1 .STR_Image. " + sourceURL)
 	}
 
 	e := selection.Nodes[0]
@@ -43,12 +42,11 @@ func dilbert(i *data.Item, sourceURL string, doc *goquery.Document) {
 			i.Description += u
 			i.Description += "\" />"
 		} else {
-			fmt.Println("Dilbert plugin invalid url. " + u)
+			log.Errorf("Dilbert plugin invalid url. " + u)
 		}
 
 	} else {
-		fmt.Println("Dilbert plugin no image tag where we expect one.")
-		fmt.Println(e)
+		log.Errorf("Dilbert plugin no image tag where we expect one.")
 	}
 
 	i.ImageURL = ""

@@ -2,7 +2,6 @@ package extract
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -11,27 +10,27 @@ import (
 	"golang.org/x/net/html"
 )
 
-func fefe(i *data.Item, sourceURL string, doc *goquery.Document) {
+func fefe(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 	if !strings.Contains(sourceURL, "blog.fefe.de/?ts") {
 		return
 	}
-	fmt.Println("Running Fefes Blog plugin.")
+	log.Infof("Running Fefes Blog plugin.")
 
 	selection := doc.Find("li")
 
 	if len(selection.Nodes) == 0 {
-		fmt.Println("Fefes Blog plugin found no li. " + sourceURL)
+		log.Errorf("Fefes Blog plugin found no li. " + sourceURL)
 		return
 	}
 
 	if len(selection.Nodes) > 1 {
-		fmt.Println("Fefes Blog plugin found >1 li. " + sourceURL)
+		log.Infof("Fefes Blog plugin found >1 li. " + sourceURL)
 	}
 
 	buf := new(bytes.Buffer)
 	err := html.Render(buf, selection.Nodes[0])
 	if err != nil {
-		fmt.Println("Fefes Blog plugin error while rendering. " + sourceURL + "- " + err.Error())
+		log.Errorf("Fefes Blog plugin error while rendering. " + sourceURL + "- " + err.Error())
 		return
 	}
 	i.Description = buf.String()

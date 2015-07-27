@@ -1,7 +1,6 @@
 package extract
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -11,21 +10,21 @@ import (
 	"golang.org/x/net/html"
 )
 
-func amazon(i *data.Item, sourceURL string, doc *goquery.Document) {
+func amazon(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 	if !strings.Contains(sourceURL, "www.amazon.") {
 		return
 	}
 
-	fmt.Println("Running Amazon plugin.")
+	log.Infof("Running Amazon plugin.")
 
 	// find picture
 	{
 		selection := doc.Find("#landingImage")
 		if len(selection.Nodes) == 0 {
-			fmt.Println("Amazon plugin found no #landingImage. " + sourceURL)
+			log.Infof("Amazon plugin found no #landingImage. " + sourceURL)
 		} else {
 			if len(selection.Nodes) > 1 {
-				fmt.Println("Amazon plugin found >1 #landingImage. " + sourceURL)
+				log.Infof("Amazon plugin found >1 #landingImage. " + sourceURL)
 			}
 			for _, e := range selection.Nodes {
 				if e.Type == html.ElementNode && e.Data == "img" {
@@ -33,7 +32,7 @@ func amazon(i *data.Item, sourceURL string, doc *goquery.Document) {
 					if govalidator.IsRequestURL(m["data-old-hires"]) {
 						i.ImageURL = m["data-old-hires"]
 					} else {
-						fmt.Println("Amazon plugin imgURL invalid. " + m["data-old-hires"])
+						log.Infof("Amazon plugin imgURL invalid. " + m["data-old-hires"])
 					}
 				}
 			}
@@ -61,10 +60,10 @@ func amazon(i *data.Item, sourceURL string, doc *goquery.Document) {
 	{
 		selection := doc.Find("#productTitle")
 		if len(selection.Nodes) == 0 {
-			fmt.Println("Amazon plugin found no #productTitle. " + sourceURL)
+			log.Infof("Amazon plugin found no #productTitle. " + sourceURL)
 		} else {
 			if len(selection.Nodes) > 1 {
-				fmt.Println("Amazon plugin found >1 #productTitle. " + sourceURL)
+				log.Infof("Amazon plugin found >1 #productTitle. " + sourceURL)
 			}
 			for _, e := range selection.Nodes {
 				if e.Type == html.ElementNode && e.Data == "span" {

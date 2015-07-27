@@ -1,25 +1,24 @@
 package extract
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/data"
 )
 
-func youtube(i *data.Item, sourceURL string, doc *goquery.Document) {
+func youtube(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 	if !strings.Contains(sourceURL, "www.youtube.com") {
 		return
 	}
 
-	fmt.Println("Running Youtube plugin.")
+	log.Infof("Running Youtube plugin.")
 
 	// update title
 
 	videoIDstart := strings.Index(i.URL, "v=")
 	if videoIDstart == -1 {
-		fmt.Println("Youtube plugin found no video ID. " + sourceURL)
+		log.Infof("Youtube plugin found no video ID. " + sourceURL)
 		return
 	}
 	videoIDstart += 2 // ID is after 'v='

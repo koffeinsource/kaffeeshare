@@ -2,7 +2,6 @@ package extract
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -10,28 +9,28 @@ import (
 	"golang.org/x/net/html"
 )
 
-func gfycat(i *data.Item, sourceURL string, doc *goquery.Document) {
+func gfycat(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 	if !strings.Contains(sourceURL, "gfycat.com/") {
 		return
 	}
 
-	fmt.Println("Running Gfycat plugin.")
+	log.Infof("Running Gfycat plugin.")
 
 	i.ImageURL = ""
 
 	selection := doc.Find(".gfyVid")
 
 	if len(selection.Nodes) == 0 {
-		fmt.Println("Gfycat plugin found no .gfyVid. " + sourceURL)
+		log.Errorf("Gfycat plugin found no .gfyVid. " + sourceURL)
 		return
 	}
 	if len(selection.Nodes) > 1 {
-		fmt.Println("Gfycat plugin found >1 .gfyVid. " + sourceURL)
+		log.Infof("Gfycat plugin found >1 .gfyVid. " + sourceURL)
 	}
 	buf := new(bytes.Buffer)
 	err := html.Render(buf, selection.Nodes[0])
 	if err != nil {
-		fmt.Println("Gfycat plugin error while rendering. " + sourceURL + "- " + err.Error())
+		log.Errorf("Gfycat plugin error while rendering. " + sourceURL + "- " + err.Error())
 		return
 	}
 
@@ -39,11 +38,11 @@ func gfycat(i *data.Item, sourceURL string, doc *goquery.Document) {
 
 	selection = doc.Find(".gfyTitle")
 	if len(selection.Nodes) == 0 {
-		fmt.Println("Gfycat plugin found no .gfyTitle. " + sourceURL)
+		log.Infof("Gfycat plugin found no .gfyTitle. " + sourceURL)
 		return
 	}
 	if len(selection.Nodes) > 1 {
-		fmt.Println("Gfycat plugin found >1 .gfyTitle. " + sourceURL)
+		log.Infof("Gfycat plugin found >1 .gfyTitle. " + sourceURL)
 	}
 	if len(selection.Nodes) != 0 && selection.Nodes[0].FirstChild != nil {
 		i.Caption = selection.Nodes[0].FirstChild.Data

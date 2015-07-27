@@ -37,7 +37,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	i := extract.ItemFromURL(shareURL, r)
+	i := extract.ItemFromURL(shareURL, r, c)
 	i.Namespace = namespace
 
 	c.Infof("Item: %v", i)

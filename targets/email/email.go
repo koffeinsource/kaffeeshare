@@ -59,7 +59,7 @@ func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		i := extract.ItemFromURL(shareURL, r)
+		i := extract.ItemFromURL(shareURL, r, c)
 
 		for _, namespace := range namespaces {
 			i.Namespace = namespace

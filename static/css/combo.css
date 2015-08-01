@@ -580,9 +580,15 @@ pre {
 
 
 /* ----- base elements ----- */
+img.thumbnail {
+	max-width: 200px;
+	min-width: 10%;
+	height: auto;
+}
+
 
 img {
-  max-width:100%!important;
+  max-width:100%;/*!important;*/
   height:auto;
   vertical-align:middle;
 }

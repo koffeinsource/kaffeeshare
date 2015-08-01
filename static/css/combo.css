@@ -81,8 +81,8 @@
 	small { font-size: 80%; }
 
 /*	Blockquotes  */
-	blockquote, blockquote p { font-size: 17px; line-height: 24px; color: #777; font-style: italic; }
-	blockquote { margin: 0 0 20px; padding: 9px 20px 0 19px; border-left: 1px solid #ddd; }
+	blockquote, blockquote p { font-size: 17px; line-height: 24px; color: #312C2C; font-style: italic; }
+	blockquote { margin: 0 0 20px; padding: 9px 20px 0 19px; border-left: 1px solid #312C2C; }
 	blockquote cite { display: block; font-size: 12px; color: #555; }
 	blockquote cite:before { content: "\2014 \0020"; }
 	blockquote cite a, blockquote cite a:visited, blockquote cite a:visited { color: #555; }
@@ -95,6 +95,16 @@
 	a, a:visited { text-decoration: underline; outline: 0; }
 	a:hover, a:focus { }
 	p a, p a:visited { line-height: inherit; }
+	.ksharelink {
+		position: relative;
+    }
+	.ksharelink:before {
+	    font-weight: normal;
+	    font-style: normal;
+	    display: inline-block;
+	    text-decoration: inherit;
+        content: "» \00a0";
+    }
 
 
 /* #Lists
@@ -395,18 +405,25 @@ span.lineno {
     .container .half.column  { width: 364px; }
     .container .big.column   { width: 488px; }
     .container .full.column  { width: 748px; }
+
+	#forkongithub { display: none; }
   }
 
 
 /* ----- Mobile (Portrait) ----- */
   @media only screen and (max-width: 767px) {
-    .container                { width:  96%; }
+    .container                { width:  100%; }
     .container .column        { margin:  1%; }
 
     .container .small.column { width: 48%; }
     .container .half.column  { width: 48%; }
     .container .big.column   { width: 98%; }
     .container .full.column  { width: 98%; }
+
+	#forkongithub { display: none; }
+	.ksharelink:before {
+		content: "" !important;
+	}
   }
 
 
@@ -419,6 +436,8 @@ span.lineno {
     .container .half.column  { width: 46%; }
     .container .big.column   { width: 96%; }
     .container .full.column  { width: 96%; }
+
+	#forkongithub { display: none; }
   }
 
 
@@ -580,9 +599,15 @@ pre {
 
 
 /* ----- base elements ----- */
+img.thumbnail {
+	max-width: 200px;
+	min-width: 10%;
+	height: auto;
+}
+
 
 img {
-  max-width:100%!important;
+  max-width:100%;/*!important;*/
   height:auto;
   vertical-align:middle;
 }

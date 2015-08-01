@@ -9,6 +9,8 @@ import (
 	"mime/multipart"
 
 	"appengine"
+
+	"gopkg.in/alexcesaro/quotedprintable.v3"
 )
 
 // Required to be able to pass different kind of headers in the following functions
@@ -107,11 +109,15 @@ func extractTextBody(c appengine.Context, header emailHeader, bodyReader io.Read
 
 	if encoding == "quoted-printable" {
 		// https://stackoverflow.com/questions/24883742/how-to-decode-mail-body-in-go
-		// looks like it will be in go 1.5
-		// maybe wait until then?
-		// TODO
+		dec := new(quotedprintable.WordDecoder)
+		b, err := dec.Decode(string(s))
+		if err != nil {
+			return nil, err
+		}
+		returnee.Body = string(b)
+		returnee.ContentType = header.Get("Content-Type")
+		return &returnee, nil
 	}
-
 
 	// ok, let's guess this is just plain text and put it into a string
 	returnee.Body = string(s)

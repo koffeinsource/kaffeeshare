@@ -23,7 +23,7 @@ func youtube(i *data.Item, sourceURL string, doc *goquery.Document, log logger) 
 	}
 	videoIDstart += 2 // ID is after 'v='
 	videoID := i.URL[videoIDstart:]
-	i.Description += "<br/><br/><br/><iframe width=\"560\" height=\"315\" src=\"http://www.youtube.com/embed/"
+	i.Description += "<br/><br/><br/><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/"
 	i.Description += videoID
 	i.Description += "\" frameborder=\"0\" allowfullscreen></iframe>"
 

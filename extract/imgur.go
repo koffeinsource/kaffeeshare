@@ -33,7 +33,8 @@ func imgurl(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
 				}
 				if _, in := set[m["content"]]; !in {
 					i.Description += "<img src =\""
-					i.Description += m["content"]
+					temp := strings.Replace(m["content"], "http://", "https://", 1)
+					i.Description += temp
 					i.Description += "\" /><br/>"
 					set[m["content"]] = true
 				}

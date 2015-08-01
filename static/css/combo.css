@@ -95,6 +95,16 @@
 	a, a:visited { text-decoration: underline; outline: 0; }
 	a:hover, a:focus { }
 	p a, p a:visited { line-height: inherit; }
+	.ksharelink {
+		position: relative;
+    }
+	.ksharelink:before {
+	    font-weight: normal;
+	    font-style: normal;
+	    display: inline-block;
+	    text-decoration: inherit;
+        content: "» \00a0";
+    }
 
 
 /* #Lists
@@ -395,18 +405,25 @@ span.lineno {
     .container .half.column  { width: 364px; }
     .container .big.column   { width: 488px; }
     .container .full.column  { width: 748px; }
+
+	#forkongithub { display: none; }
   }
 
 
 /* ----- Mobile (Portrait) ----- */
   @media only screen and (max-width: 767px) {
-    .container                { width:  96%; }
+    .container                { width:  100%; }
     .container .column        { margin:  1%; }
 
     .container .small.column { width: 48%; }
     .container .half.column  { width: 48%; }
     .container .big.column   { width: 98%; }
     .container .full.column  { width: 98%; }
+
+	#forkongithub { display: none; }
+	.ksharelink:before {
+		content: "" !important;
+	}
   }
 
 
@@ -419,6 +436,8 @@ span.lineno {
     .container .half.column  { width: 46%; }
     .container .big.column   { width: 96%; }
     .container .full.column  { width: 96%; }
+
+	#forkongithub { display: none; }
   }
 
 

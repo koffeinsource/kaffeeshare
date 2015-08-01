@@ -34,6 +34,9 @@ func init() {
 	router.HandleFunc("/k/share/json/{namespace}/", share.DispatchJSON)
 	router.HandleFunc("/k/share/json/{namespace}", share.DispatchJSON)
 
+	router.HandleFunc("/k/share/firefox/{namespace}/", share.DispatchFirefox)
+	router.HandleFunc("/k/share/firefox/{namespace}", share.DispatchFirefox)
+
 	router.HandleFunc("/k/update/json/{namespace}/", update.DispatchJSON)
 	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
 

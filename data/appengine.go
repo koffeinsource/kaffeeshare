@@ -21,7 +21,7 @@ func StoreItem(c appengine.Context, i Item) error {
 
 // GetNewestItems returns the latest number elements for a specific namespace
 func GetNewestItems(c appengine.Context, namespace string, limit int, cursor string) ([]Item, string, error) {
-
+	// TODO lower all characters for namespace!!!!
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
 		Order("-CreatedAt").

@@ -57,14 +57,15 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 
 // DeleteAllItems deletes all items from datastore
 func DeleteAllItems(c appengine.Context) error {
-	q := datastore.NewQuery("Item").KeysOnly()
+	panic("Are you sure????!!!!")
+	/*q := datastore.NewQuery("Item").KeysOnly()
 
 	k, err := q.GetAll(c, nil)
 	if err != nil {
 		return nil
 	}
 
-	return datastore.DeleteMulti(c, k)
+	return datastore.DeleteMulti(c, k)*/
 }
 
 // NamespaceIsEmpty checks if there is already an item in a namespace

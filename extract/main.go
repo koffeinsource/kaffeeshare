@@ -82,21 +82,21 @@ func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
 		}
 	}
 
-	// Read the whole body
-	{
-		temp, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			log.Errorf("Problem reading the body for " + sourceURL + " - " + err.Error())
-			return returnee
-		}
-		body = append(body, temp...)
-	}
-
 	//  log.Infof(contentType)
 	switch {
 	case strings.Contains(contentType, "image/"):
 		image(&returnee, sourceURL, contentType, log)
 	case strings.Contains(contentType, "text/html"):
+		// Read the whole body
+		{
+			temp, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				log.Errorf("Problem reading the body for " + sourceURL + " - " + err.Error())
+				return returnee
+			}
+			body = append(body, temp...)
+		}
+
 		// TODO Good check if page is UTF-8 and convert with go-iconv
 
 		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))

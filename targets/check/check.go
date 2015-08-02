@@ -17,7 +17,7 @@ var (
 	statusInUse = []byte("{\"status\":\"use\"}")
 )
 
-// DispatchJSON executes all commands for the www target
+// DispatchJSON is called when a json request with an url is posted
 func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 

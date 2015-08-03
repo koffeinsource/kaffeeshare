@@ -307,8 +307,7 @@
 								return;
 							}
 							var namespace = $('#namespace').val();
-							var loc = location.href;
-							var baseurl = {{.URL}};
+							var baseurl = "{{.URL}}";
 
 							var data = {
 							  // required
@@ -322,7 +321,7 @@
 							  // should be available for display purposes
 							  "description": "This is a kaffeeshare namespace",
 							  "author": "Jens Breitbart",
-							  "homepageURL": {{.URL}},
+							  "homepageURL": baseurl,
 
 							  // optional
 							  "version": "0.1"

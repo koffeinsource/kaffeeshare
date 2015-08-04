@@ -301,13 +301,15 @@
 			<div>
 					<p><strong><em>Firefox:</em></strong> Add as a share service.</p>
 					<script>
+						var event = new CustomEvent("ActivateSocialFeature");
 						function firefox_activate(node) {
 							if (!$('#namespace').val()) {
 								alert("please enter namespace first.")
 								return;
 							}
 							var namespace = $('#namespace').val();
-							var baseurl = "{{.URL}}";
+							var baseurl = "https://kaffeeshare.appspot.com/";
+							//"{{.URL}}";
 
 							var data = {
 							  // required
@@ -320,18 +322,17 @@
 
 							  // should be available for display purposes
 							  "description": "This is a kaffeeshare namespace",
-							  "author": "Jens Breitbart",
 							  "homepageURL": baseurl,
 
 							  // optional
 							  "version": "0.1"
 							}
-						  var event = new CustomEvent("ActivateSocialFeature");
+						  console.log(JSON.stringify(data));
 						  node.setAttribute("data-service", JSON.stringify(data));
-						  node.dispatchEvent(event);
+						  console.log(node.dispatchEvent(event));
 						}
 					</script>
-				<p><a onclick="return firefox_activate(this);" class="btn btn-primary">Install</a></p>
+				<p><a onclick="firefox_activate(this);" class="btn btn-primary">Install</a></p>
 			</div>
 		</li>
 	</ul>

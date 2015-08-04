@@ -10,7 +10,7 @@ import (
 var templateWWW = template.Must(template.ParseFiles("template/base.html", "targets/startpage/template/startpage.html"))
 
 type startpageTemplateValues struct {
-	URL template.HTML
+	URL string
 }
 
 // Dispatch executes all commands for the www target

@@ -1,7 +1,61 @@
 <html>
-<body>
-  <div>
-    <h3>{{.Message}}</h3>
+<head>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="/static/css/combo.css">
+      <link href='//fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script>
+function parse(val) {
+    var result = "Not found",
+        tmp = [];
+    location.search
+    .substr(1)
+        .split("&")
+        .forEach(function (item) {
+        tmp = item.split("=");
+        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+    });
+    return result;
+}
+
+function create() {
+    var url = parse("url");
+    $('#url').html("<em>"+url+"</em>");
+}
+
+function share() {
+    $.ajax({
+        type: "GET",
+        url: parse(url),
+        dataType: 'json'
+    }).done(function(msg) {
+        if (msg.status=="ok") {
+            $('#url').html("Shared!");
+            $('#header').html("");
+            $('#button').disabled = true;
+        } else {
+            $('#url').html("Sharing failed! Please try again later.");
+            $('#header').html("");
+            $('#button').html("Try again?");
+        }
+    }).fail(function() {
+        $('#url').html("Sharing failed! Please try again later.");
+        $('#header').html("");
+        $('#button').html("Try again?");
+    }).always(function(msg) {
+    });
+}
+</script>
+</head>
+<body onload="create()">
+  <div id="intro" class="section p-intro center" style="padding:0px;">
+    <h3 id="header">Do you want to share</h3>
+    <h3 id="url"></h3>
+    <button id="button" onclick="share()">Share!</button>
   </div>
 </body>
 </html>

@@ -8,8 +8,7 @@ import (
 	"mime"
 	"mime/multipart"
 
-	"appengine"
-
+	"github.com/koffeinsource/kaffeeshare/request"
 	"gopkg.in/alexcesaro/quotedprintable.v3"
 )
 
@@ -19,7 +18,7 @@ type emailHeader interface {
 }
 
 // extracts the body of an email
-func extractBody(c appengine.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
+func extractBody(c request.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
 	contentType := header.Get("Content-Type")
 	mediaType, params, err := mime.ParseMediaType(contentType)
 	if err != nil {
@@ -40,7 +39,7 @@ func extractBody(c appengine.Context, header emailHeader, bodyReader io.Reader) 
 }
 
 // read through the varios multiple parts
-func extractMimeBody(c appengine.Context, boundary string, bodyReader io.Reader) (*email, error) {
+func extractMimeBody(c request.Context, boundary string, bodyReader io.Reader) (*email, error) {
 	var withError *email // stores an email parse with error
 
 	mimeReader := multipart.NewReader(bodyReader, boundary)
@@ -78,7 +77,7 @@ func extractMimeBody(c appengine.Context, boundary string, bodyReader io.Reader)
 }
 
 // Decode body text and store it in a string
-func extractTextBody(c appengine.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
+func extractTextBody(c request.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
 	var returnee email
 
 	s, err := ioutil.ReadAll(bodyReader)

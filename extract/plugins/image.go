@@ -1,12 +1,14 @@
-package extract
+package plugins
 
 import (
 	"strings"
 
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 )
 
-func image(i *data.Item, sourceURL string, contentType string, log logger) {
+// Image is called for links directly to images
+func Image(i *data.Item, sourceURL string, contentType string, log request.Context) {
 	if !(strings.Index(contentType, "image/") == 0) {
 		return
 	}

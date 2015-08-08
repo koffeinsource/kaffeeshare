@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"bytes"
@@ -7,10 +7,12 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/kennygrant/sanitize"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 	"golang.org/x/net/html"
 )
 
-func fefe(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
+// Fefe gets the text from a fefe blog entry
+func Fefe(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "blog.fefe.de/?ts") {
 		return
 	}

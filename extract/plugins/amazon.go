@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"strings"
@@ -7,10 +7,12 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 	"golang.org/x/net/html"
 )
 
-func amazon(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
+// Amazon webpage plugin
+func Amazon(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "www.amazon.") {
 		return
 	}

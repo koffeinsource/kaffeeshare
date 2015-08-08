@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"bytes"
@@ -6,10 +6,12 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 	"golang.org/x/net/html"
 )
 
-func xkcd(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
+// Xkcd extract the comic from an XKCD page
+func Xkcd(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "xkcd.com") {
 		return
 	}

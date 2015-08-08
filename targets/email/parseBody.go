@@ -6,8 +6,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-
-	"appengine"
+	"github.com/koffeinsource/kaffeeshare/request"
 )
 
 // TODO update long (>2 characters) top level domains
@@ -22,7 +21,7 @@ var urlRegEx = regexp.MustCompile("\\b((http(s?)\\:\\/\\/|~\\/|\\/)|www.)" +
 	"([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*" +
 	"(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b")
 
-func parseBody(c appengine.Context, mail *email) ([]string, error) {
+func parseBody(c request.Context, mail *email) ([]string, error) {
 	if mail.ContentType[:4] == "html" {
 		return parseHTMLBody(c, mail.Body)
 	}
@@ -34,7 +33,7 @@ func parseBody(c appengine.Context, mail *email) ([]string, error) {
 	return nil, fmt.Errorf("Unsupported content type: %s", mail.ContentType)
 }
 
-func parseHTMLBody(c appengine.Context, body string) ([]string, error) {
+func parseHTMLBody(c request.Context, body string) ([]string, error) {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
 	if err != nil {
 		return nil, err
@@ -62,7 +61,7 @@ func parseHTMLBody(c appengine.Context, body string) ([]string, error) {
 	return links, nil
 }
 
-func parseTextBody(c appengine.Context, body string) ([]string, error) {
+func parseTextBody(c request.Context, body string) ([]string, error) {
 	links := urlRegEx.FindAllString(body, -1)
 	c.Infof("Text found %v", links)
 

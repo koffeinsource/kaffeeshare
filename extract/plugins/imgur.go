@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"strings"
@@ -6,9 +6,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 )
 
-func imgurl(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
+// Imgurl extract all images from an imgurl album
+func Imgurl(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "imgur.com/") {
 		return
 	}

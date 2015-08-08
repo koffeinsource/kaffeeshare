@@ -2,6 +2,7 @@ package extract
 
 import (
 	"bytes"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -44,24 +45,13 @@ func match(u, startwith string) bool {
 	return true
 }
 
-// ItemFromURL creates an Item from the passed url
-func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
-
-	// Create return value with default values
-	returnee := data.Item{
-		Caption:   sourceURL,
-		URL:       sourceURL,
-		CreatedAt: time.Now(),
-	}
-
-	// TODO refactor the http get code into functions that can be used by the other plugins
+func getURL(sourceURL string, r *http.Request) (string, []byte, error) {
 	client := getHTTPClient(r)
 
 	// Make a request to the sorceURL
 	res, err := client.Get(sourceURL)
 	if err != nil {
-		log.Infof("Could not get " + sourceURL + " - " + err.Error())
-		return returnee
+		return "", nil, errors.New("Could not get " + sourceURL + " - " + err.Error())
 	}
 	defer res.Body.Close()
 
@@ -78,8 +68,39 @@ func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
 		} else {
 			// Ok we give up, we cannot access the url
 			contentType = "application/octet-stream"
-			log.Errorf("Error while reading from the body reader: " + sourceURL + "- " + err.Error())
+			return contentType, nil, nil
 		}
+	}
+
+	if strings.Contains(contentType, "image/") {
+		return contentType, nil, nil
+	}
+
+	// Read the whole body
+	temp, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", nil, errors.New("Problem reading the body for " + sourceURL + " - " + err.Error())
+	}
+	body = append(body, temp...)
+
+	return contentType, body, nil
+
+}
+
+// ItemFromURL creates an Item from the passed url
+func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
+
+	// Create return value with default values
+	returnee := data.Item{
+		Caption:   sourceURL,
+		URL:       sourceURL,
+		CreatedAt: time.Now(),
+	}
+
+	contentType, body, err := getURL(sourceURL, r)
+	if err != nil {
+		log.Errorf(err.Error())
+		return returnee
 	}
 
 	//  log.Infof(contentType)
@@ -87,15 +108,6 @@ func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
 	case strings.Contains(contentType, "image/"):
 		image(&returnee, sourceURL, contentType, log)
 	case strings.Contains(contentType, "text/html"):
-		// Read the whole body
-		{
-			temp, err := ioutil.ReadAll(res.Body)
-			if err != nil {
-				log.Errorf("Problem reading the body for " + sourceURL + " - " + err.Error())
-				return returnee
-			}
-			body = append(body, temp...)
-		}
 
 		// TODO Good check if page is UTF-8 and convert with go-iconv
 

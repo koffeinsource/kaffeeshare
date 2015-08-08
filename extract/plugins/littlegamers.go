@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"strings"
@@ -9,7 +9,8 @@ import (
 	"github.com/koffeinsource/kaffeeshare/request"
 )
 
-func littlegamers(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+// Littlegamers extract a comic from a littlegamers page
+func Littlegamers(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "www.little-gamers.com") {
 		return
 	}

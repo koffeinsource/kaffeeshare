@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"strings"
@@ -10,7 +10,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func dilbert(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+// Dilbert extracts the comic from a dilbert page
+func Dilbert(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !(strings.Contains(sourceURL, "feed.dilbert.com/") ||
 		strings.Contains(sourceURL, "dilbert.com/strips/")) {
 		return

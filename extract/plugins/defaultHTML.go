@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"github.com/PuerkitoBio/goquery"
@@ -7,8 +7,8 @@ import (
 	"github.com/koffeinsource/kaffeeshare/request"
 )
 
-// ogtags extracts the og:title, og:image, ... tags from a webpage
-func defaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+// DefaultHTML extracts the og:title, og:image, ... tags from a webpage
+func DefaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	log.Infof("Running OG extract. " + sourceURL)
 
 	selection := doc.Find("title")

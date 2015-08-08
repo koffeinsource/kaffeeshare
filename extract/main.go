@@ -8,6 +8,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/extract/plugins"
 	"github.com/koffeinsource/kaffeeshare/request"
 )
 
@@ -30,7 +31,7 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.It
 	//  log.Infof(contentType)
 	switch {
 	case strings.Contains(contentType, "image/"):
-		image(&returnee, sourceURL, contentType, log)
+		plugins.Image(&returnee, sourceURL, contentType, log)
 	case strings.Contains(contentType, "text/html"):
 
 		// TODO Good check if page is UTF-8 and convert with go-iconv
@@ -42,24 +43,24 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.It
 		}
 
 		// Make sure to call this one first
-		defaultHTML(&returnee, sourceURL, doc, log)
+		plugins.DefaultHTML(&returnee, sourceURL, doc, log)
 
-		amazon(&returnee, sourceURL, doc, log)
+		plugins.Amazon(&returnee, sourceURL, doc, log)
 
-		imgurl(&returnee, sourceURL, doc, log)
-		gfycat(&returnee, sourceURL, doc, log)
+		plugins.Imgurl(&returnee, sourceURL, doc, log)
+		plugins.Gfycat(&returnee, sourceURL, doc, log)
 
-		fefe(&returnee, sourceURL, doc, log)
+		plugins.Fefe(&returnee, sourceURL, doc, log)
 
-		youtube(&returnee, sourceURL, doc, log)
-		vimeo(&returnee, sourceURL, doc, log)
+		plugins.Youtube(&returnee, sourceURL, doc, log)
+		plugins.Vimeo(&returnee, sourceURL, doc, log)
 
-		dilbert(&returnee, sourceURL, doc, log)
-		garfield(&returnee, sourceURL, doc, log)
-		xkcd(&returnee, sourceURL, doc, log)
-		littlegamers(&returnee, sourceURL, doc, log)
+		plugins.Dilbert(&returnee, sourceURL, doc, log)
+		plugins.Garfield(&returnee, sourceURL, doc, log)
+		plugins.Xkcd(&returnee, sourceURL, doc, log)
+		plugins.Littlegamers(&returnee, sourceURL, doc, log)
 
-		pastebin(&returnee, sourceURL, doc, log)
+		plugins.Pastebin(&returnee, sourceURL, doc, log)
 	default:
 	}
 

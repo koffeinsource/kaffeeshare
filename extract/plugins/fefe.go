@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"bytes"
@@ -11,7 +11,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func fefe(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+// Fefe gets the text from a fefe blog entry
+func Fefe(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "blog.fefe.de/?ts") {
 		return
 	}

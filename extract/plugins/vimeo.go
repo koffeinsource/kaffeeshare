@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"strings"
@@ -8,7 +8,8 @@ import (
 	"github.com/koffeinsource/kaffeeshare/request"
 )
 
-func vimeo(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+// Vimeo extracts the video from a vimeo page
+func Vimeo(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "vimeo.com") {
 		return
 	}

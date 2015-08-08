@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"strings"
@@ -8,7 +8,8 @@ import (
 	"github.com/koffeinsource/kaffeeshare/request"
 )
 
-func youtube(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+// Youtube extracts the video from an youtube url
+func Youtube(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "www.youtube.com") {
 		return
 	}

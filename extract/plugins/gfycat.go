@@ -1,4 +1,4 @@
-package extract
+package plugins
 
 import (
 	"bytes"
@@ -10,7 +10,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func gfycat(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+// Gfycat extacts the animation from a gfycat page
+func Gfycat(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "gfycat.com/") {
 		return
 	}

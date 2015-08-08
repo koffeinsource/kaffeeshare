@@ -120,7 +120,6 @@ func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
 		// Make sure to call this one first
 		defaultHTML(&returnee, sourceURL, doc, log)
 
-		// TODO pass in appengine context for logging!
 		amazon(&returnee, sourceURL, doc, log)
 
 		imgurl(&returnee, sourceURL, doc, log)

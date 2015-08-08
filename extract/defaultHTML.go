@@ -4,10 +4,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 )
 
 // ogtags extracts the og:title, og:image, ... tags from a webpage
-func defaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
+func defaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	log.Infof("Running OG extract. " + sourceURL)
 
 	selection := doc.Find("title")

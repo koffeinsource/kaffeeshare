@@ -6,9 +6,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 )
 
-func imgurl(i *data.Item, sourceURL string, doc *goquery.Document, log logger) {
+func imgurl(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
 	if !strings.Contains(sourceURL, "imgur.com/") {
 		return
 	}

@@ -16,8 +16,6 @@ var templateWWW = template.Must(template.ParseFiles("template/base.html", "targe
 
 //DispatchWWW returns the HTML view of a namespace
 func DispatchWWW(w http.ResponseWriter, r *http.Request) {
-	//c := appengine.NewContext(r)
-
 	var value wwwTemplateValues
 	value.Namespace = mux.Vars(r)["namespace"]
 

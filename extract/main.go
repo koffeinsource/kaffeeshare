@@ -10,27 +10,9 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/request"
 	"golang.org/x/net/html"
 )
-
-// TODO use in most of our code where logging is all we need from a appengine context
-type logger interface {
-	// Debugf formats its arguments according to the format, analogous to fmt.Printf,
-	// and records the text as a log message at Debug level.
-	Debugf(format string, args ...interface{})
-
-	// Infof is like Debugf, but at Info level.
-	Infof(format string, args ...interface{})
-
-	// Warningf is like Debugf, but at Warning level.
-	Warningf(format string, args ...interface{})
-
-	// Errorf is like Debugf, but at Error level.
-	Errorf(format string, args ...interface{})
-
-	// Criticalf is like Debugf, but at Critical level.
-	Criticalf(format string, args ...interface{})
-}
 
 func htmlAttributeToMap(e []html.Attribute) map[string]string {
 	m := make(map[string]string)
@@ -88,7 +70,7 @@ func getURL(sourceURL string, r *http.Request) (string, []byte, error) {
 }
 
 // ItemFromURL creates an Item from the passed url
-func ItemFromURL(sourceURL string, r *http.Request, log logger) data.Item {
+func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.Item {
 
 	// Create return value with default values
 	returnee := data.Item{

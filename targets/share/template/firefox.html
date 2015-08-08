@@ -9,7 +9,7 @@
       <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script>
-function parse(val) {
+function parseURLParam(val) {
     var result = "Not found",
         tmp = [];
     location.search
@@ -23,15 +23,21 @@ function parse(val) {
 }
 
 function create() {
-    var url = parse("url");
+    var url = parseURLParam("url");
     $('#url').html("<em>"+url+"</em>");
 }
 
 function share() {
+    // example pathname /k/share/firefox/test/
+    parts = window.location.pathname.split("/");
+    url   = window.location.protocol + "://" + window.location.host;
+    url  +="/k/share/json/" + parts[3] + "/?url=";
+    url  += parseURLParam("url");
+
     $.ajax({
         type: "GET",
-        url: parse(url),
-        dataType: 'json'
+        url: url,
+        dataType: 'json',
     }).done(function(msg) {
         if (msg.status=="ok") {
             $('#url').html("Shared!");

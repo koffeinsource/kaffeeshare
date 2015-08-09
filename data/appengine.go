@@ -55,19 +55,6 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 	return nil, "", err
 }
 
-// DeleteAllItems deletes all items from datastore
-func DeleteAllItems(c appengine.Context) error {
-	panic("Are you sure????!!!!")
-	/*q := datastore.NewQuery("Item").KeysOnly()
-
-	k, err := q.GetAll(c, nil)
-	if err != nil {
-		return nil
-	}
-
-	return datastore.DeleteMulti(c, k)*/
-}
-
 // NamespaceIsEmpty checks if there is already an item in a namespace
 func NamespaceIsEmpty(c appengine.Context, namespace string) (bool, error) {
 	q := datastore.NewQuery("Item").
@@ -79,4 +66,17 @@ func NamespaceIsEmpty(c appengine.Context, namespace string) (bool, error) {
 	b := len(k) == 0
 
 	return b, err
+}
+
+// DeleteAllItems deletes all items from datastore
+func DeleteAllItems(c appengine.Context) error {
+	panic("Are you sure????!!!!")
+	/*q := datastore.NewQuery("Item").KeysOnly()
+
+	k, err := q.GetAll(c, nil)
+	if err != nil {
+		return nil
+	}
+
+	return datastore.DeleteMulti(c, k)*/
 }

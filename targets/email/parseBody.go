@@ -63,7 +63,7 @@ func parseHTMLBody(c request.Context, body string) ([]string, error) {
 
 func parseTextBody(c request.Context, body string) ([]string, error) {
 	links := urlRegEx.FindAllString(body, -1)
-	c.Infof("Text found %v", links)
+	c.Infof("Found urls in body %v,  %v", body, links)
 
 	set := make(map[string]bool)
 	for _, l := range links {

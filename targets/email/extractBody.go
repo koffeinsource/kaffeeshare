@@ -109,6 +109,7 @@ func extractTextBody(c request.Context, header emailHeader, bodyReader io.Reader
 	if encoding == "quoted-printable" {
 		// https://stackoverflow.com/questions/24883742/how-to-decode-mail-body-in-go
 		dec := new(quotedprintable.WordDecoder)
+		c.Infof("quoted printable input: %v", string(s))
 		b, err := dec.DecodeHeader(string(s))
 		if err != nil {
 			return nil, err

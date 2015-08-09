@@ -30,7 +30,7 @@
         function share() {
             // example pathname /k/share/firefox/test/
             parts = window.location.pathname.split("/");
-            url   ="/k/share/json/" + parts[3] + "/?url=";
+            url   ="/k/share/json/" + parts[5] + "/?url=";
             url  += parseURLParam("url");
             console.log(url);
 

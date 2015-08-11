@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-func getURL(sourceURL string, r *http.Request) (string, []byte, error) {
+// GetURL returns the content type, body and error
+func GetURL(sourceURL string, r *http.Request) (string, []byte, error) {
 	client := getHTTPClient(r)
 
 	// Make a request to the sorceURL

@@ -1,6 +1,7 @@
 package email
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -108,8 +109,8 @@ func extractTextBody(c request.Context, header emailHeader, bodyReader io.Reader
 
 	if encoding == "quoted-printable" {
 		// https://stackoverflow.com/questions/24883742/how-to-decode-mail-body-in-go
-		dec := new(quotedprintable.WordDecoder)
-		b, err := dec.DecodeHeader(string(s))
+		r := quotedprintable.NewReader(bytes.NewReader(s))
+		b, err := ioutil.ReadAll(r)
 		if err != nil {
 			return nil, err
 		}

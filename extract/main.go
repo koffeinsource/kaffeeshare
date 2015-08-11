@@ -22,7 +22,7 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.It
 		CreatedAt: time.Now(),
 	}
 
-	contentType, body, err := getURL(sourceURL, r)
+	contentType, body, err := GetURL(sourceURL, r)
 	if err != nil {
 		log.Errorf(err.Error())
 		return returnee

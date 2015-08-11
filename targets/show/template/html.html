@@ -86,12 +86,12 @@ function createItems(items) {
 			returnee += "</a>";
 		}
 
-		if (items[i].description && items[i].description != "") {
+		if (items[i].description && items[i].description !== "") {
 			returnee += "<blockquote>" + items[i].description + "</blockquote>";
 		}
 		returnee += "<p class='ksharelink'><cite><a href='" + items[i].url + "'>" + items[i].url + "</a></cite></p>";
 
-		returnee += "</div>"
+		returnee += "</div>";
 		returnee += "</li>";
 	}
 

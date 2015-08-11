@@ -2,24 +2,12 @@ package email
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/request"
+	"github.com/mvdan/xurls"
 )
-
-// TODO update long (>2 characters) top level domains
-var urlRegEx = regexp.MustCompile("\\b((http(s?)\\:\\/\\/|~\\/|\\/)|www.)" +
-	"(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov" +
-	"|mil|biz|info|mobi|name|aero|jobs|museum" +
-	"|travel|[a-z]{2}))(:[\\d]{1,5})?" +
-	"(((\\/([-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?" +
-	"((\\?([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
-	"([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)" +
-	"(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
-	"([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*" +
-	"(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b")
 
 func parseBody(c request.Context, mail *email) ([]string, error) {
 	if mail.ContentType[:4] == "html" {
@@ -62,8 +50,8 @@ func parseHTMLBody(c request.Context, body string) ([]string, error) {
 }
 
 func parseTextBody(c request.Context, body string) ([]string, error) {
-	links := urlRegEx.FindAllString(body, -1)
-	c.Infof("Text found %v", links)
+	links := xurls.Relaxed.FindAllString(body, -1)
+	c.Infof("Found urls in body %v,  %v", body, links)
 
 	set := make(map[string]bool)
 	for _, l := range links {

@@ -31,7 +31,7 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 		q = q.Start(cursor)
 	}
 
-	var is []Item
+	var is = make([]Item, 0, limit)
 	var err error
 	t := q.Run(c)
 	for {

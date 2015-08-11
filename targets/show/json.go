@@ -33,6 +33,17 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	cursor := r.FormValue("cursor")
 
+	// no cursos == first elements, may be in the cache
+	if cursor == "" {
+		cache, err := data.ReadJSONCache(c, namespace)
+		if err == nil {
+			w.Write(cache)
+			return
+		}
+
+		c.Infof("Error at in json.dispatch while reading the cache. Error: %v", err)
+	}
+
 	var returnee jsonReturn
 	var err error
 
@@ -51,6 +62,13 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		c.Errorf("Error at mashaling in www.json.dispatch. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+
+	// only store values in cache for the first entries
+	if cursor == "" {
+		if err := data.CacheJSON(c, namespace, s); err != nil {
+			c.Errorf("Error at storing the JSON in the cache. Error: %v", err)
+		}
 	}
 
 	w.Write(s)

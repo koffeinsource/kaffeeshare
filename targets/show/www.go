@@ -5,11 +5,13 @@ import (
 	"text/template"
 
 	"github.com/gorilla/mux"
+	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 )
 
 type wwwTemplateValues struct {
 	Namespace string
+	URL       string
 }
 
 var templateWWW = template.Must(template.ParseFiles("template/base.html", "targets/show/template/html.html"))
@@ -18,6 +20,7 @@ var templateWWW = template.Must(template.ParseFiles("template/base.html", "targe
 func DispatchWWW(w http.ResponseWriter, r *http.Request) {
 	var value wwwTemplateValues
 	value.Namespace = mux.Vars(r)["namespace"]
+	value.URL = config.URL
 
 	if value.Namespace == "" {
 		startpage.Dispatch(w, r)

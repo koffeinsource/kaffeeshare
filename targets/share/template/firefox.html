@@ -28,9 +28,10 @@
         }
 
         function share() {
-            // example pathname /k/share/firefox/test/
-            parts = window.location.pathname.split("/");
-            url   ="/k/share/json/" + parts[5] + "/?url=";
+            // example pathname /k/share/firefox/test/?url=abc.com
+            namespace = window.location.pathname.replace("/k/share/firefox/", '');
+            if (namespace.slice(-1)=="/") namespace = namespace.substring(0, namespace.length - 1);
+            url   ="/k/share/json/" + namespace + "/?url=";
             url  += parseURLParam("url");
             console.log(url);
 

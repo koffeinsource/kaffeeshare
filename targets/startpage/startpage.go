@@ -15,7 +15,8 @@ type startpageTemplateValues struct {
 
 // Dispatch executes all commands for the www target
 func Dispatch(w http.ResponseWriter, r *http.Request) {
-	value := startpageTemplateValues{URL: config.URL}
+	var value startpageTemplateValues
+	value.URL = config.URL
 	if err := templateWWW.Execute(w, value); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

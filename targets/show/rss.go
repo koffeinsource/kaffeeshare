@@ -15,12 +15,22 @@ import (
 func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
+	w.Header().Set("Content-Type", "application/rss+xml")
+
 	// get namespace
 	namespace := mux.Vars(r)["namespace"]
 	if namespace == "" {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	cache, err := data.ReadRSSCache(c, namespace)
+	if err == nil {
+		w.Write([]byte(cache))
+		return
+	}
+
+	c.Infof("Error at in rss.dispatch while reading the cache. Error: %v", err)
 
 	is, _, err := data.GetNewestItems(c, namespace, 20, "")
 	if err != nil {
@@ -53,12 +63,16 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 		feed.Items = append(feed.Items, &rssI)
 	}
 
-	if s, err := feed.ToRss(); err == nil {
-		w.Header().Set("Content-Type", "application/rss+xml")
-		w.Write([]byte(s))
-	} else {
+	s, err := feed.ToRss()
+	if err != nil {
 		c.Errorf("Error at mashaling in www.dispatch. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	if err := data.CacheRSS(c, namespace, s); err != nil {
+		c.Errorf("Error at storing the RSS Feed in the cache. Error: %v", err)
+	}
+
+	w.Write([]byte(s))
 }

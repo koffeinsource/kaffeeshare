@@ -11,12 +11,17 @@ import (
 func StoreItem(c appengine.Context, i Item) error {
 	k := datastore.NewKey(c, "Item", i.Namespace+i.URL, 0, nil)
 	_, err := datastore.Put(c, k, &i)
-	c.Infof("Stored item %v", i)
 	if err != nil {
 		c.Errorf("Error while storing item in datastore. Item: %v. Error: %v", i, err)
+		return err
+	}
+	c.Infof("Stored item %v", i)
+
+	if err := clearCache(c, i.Namespace); err != nil {
+		c.Errorf("Error clearing cache for namespace %v. Error: %v", i.Namespace, err)
 	}
 
-	return err
+	return nil
 }
 
 // GetNewestItems returns the latest number elements for a specific namespace

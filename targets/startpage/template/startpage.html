@@ -140,7 +140,7 @@
 			$('#namespace-status').html("");
 		}).always(function( msg ) {
 		});
-	};
+	}
 
 	// parse the return message of namespacecheck
 	function parseResult(value) {
@@ -161,7 +161,7 @@
 			return;
 		}
 
-		alert ("Should never happen! Please report the bug!")
+		alert ("Should never happen! Please report the bug!");
 	}
 
 	$('#randomizer').click(function(e) {
@@ -304,7 +304,7 @@
 						var event = new CustomEvent("ActivateSocialFeature");
 						function firefox_activate(node) {
 							if (!$('#namespace').val()) {
-								alert("please enter namespace first.")
+								alert("please enter namespace first.");
 								return;
 							}
 							var namespace = $('#namespace').val();
@@ -326,10 +326,8 @@
 
 							  // optional
 							  "version": "0.1"
-							}
-						  console.log(JSON.stringify(data));
+						  };
 						  node.setAttribute("data-service", JSON.stringify(data));
-						  console.log(node.dispatchEvent(event));
 						}
 					</script>
 				<p><a onclick="firefox_activate(this);" class="btn btn-primary">Install</a></p>

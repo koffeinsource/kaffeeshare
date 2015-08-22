@@ -1,0 +1,4 @@
+cron:
+- description: clear test namespace
+  url: /cron/clear_test
+  schedule: every 12 hours

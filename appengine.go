@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/koffeinsource/kaffeeshare/targets/check"
+	"github.com/koffeinsource/kaffeeshare/targets/cron"
 	"github.com/koffeinsource/kaffeeshare/targets/email"
 	"github.com/koffeinsource/kaffeeshare/targets/share"
 	"github.com/koffeinsource/kaffeeshare/targets/show"
@@ -46,6 +47,9 @@ func init() {
 	router.HandleFunc("/k/show/www/{namespace}", show.DispatchWWW)
 	router.HandleFunc("/k/show/rss/{namespace}/", show.DispatchRSS)
 	router.HandleFunc("/k/show/rss/{namespace}", show.DispatchRSS)
+
+	router.HandleFunc("/cron/clear_test/", cron.ClearTest)
+	router.HandleFunc("/cron/clear_test", cron.ClearTest)
 
 	// TODO move to router
 	http.HandleFunc("/_ah/mail/", email.DispatchEmail)

@@ -86,10 +86,12 @@ func ClearNamespace(c appengine.Context, namespace string) error {
 
 	k, err := q.GetAll(c, nil)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	clearCache(c, namespace)
+
+	c.Infof("Going to delete %v items in the namespace %v", len(k), namespace)
 
 	return datastore.DeleteMulti(c, k)
 }
@@ -101,7 +103,7 @@ func DeleteAllItems(c appengine.Context) error {
 
 	k, err := q.GetAll(c, nil)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	return datastore.DeleteMulti(c, k)*/

@@ -18,9 +18,6 @@ import (
 
 var router = mux.NewRouter()
 
-//<domain>/k/check/json/<namespace> <- check namespace status
-//<domain>/k/show/www/<namespace> <- html ansicht
-//<domain>/k/show/rss/<namespace> <- rss feed
 //<domain>/k/twitter/connect/<namespace>
 //<domain>/k/twitter/disconnect/<namespace>
 //<domain>/k/email/connect/<namespace>
@@ -31,7 +28,7 @@ func init() {
 	router.HandleFunc("/k/check/json/{namespace}/", check.DispatchJSON)
 	router.HandleFunc("/k/check/json/{namespace}", check.DispatchJSON)
 
-	// should actually be shar/get as we don't do json here
+	// should actually be share/get as we don't do json here
 	router.HandleFunc("/k/share/json/{namespace}/", share.DispatchJSON)
 	router.HandleFunc("/k/share/json/{namespace}", share.DispatchJSON)
 

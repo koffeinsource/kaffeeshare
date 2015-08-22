@@ -3,12 +3,15 @@
 package data
 
 import (
+	"strings"
+
 	"appengine"
 	"appengine/datastore"
 )
 
 // StoreItem stores an item in the datastore
 func StoreItem(c appengine.Context, i Item) error {
+	i.Namespace = strings.ToLower(i.Namespace)
 	k := datastore.NewKey(c, "Item", i.Namespace+i.URL, 0, nil)
 	_, err := datastore.Put(c, k, &i)
 	if err != nil {
@@ -26,7 +29,7 @@ func StoreItem(c appengine.Context, i Item) error {
 
 // GetNewestItems returns the latest number elements for a specific namespace
 func GetNewestItems(c appengine.Context, namespace string, limit int, cursor string) ([]Item, string, error) {
-	// TODO lower all characters for namespace!!!!
+	namespace = strings.ToLower(namespace)
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
 		Order("-CreatedAt").
@@ -62,6 +65,7 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 
 // NamespaceIsEmpty checks if there is already an item in a namespace
 func NamespaceIsEmpty(c appengine.Context, namespace string) (bool, error) {
+	namespace = strings.ToLower(namespace)
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
 		Limit(1).
@@ -71,6 +75,23 @@ func NamespaceIsEmpty(c appengine.Context, namespace string) (bool, error) {
 	b := len(k) == 0
 
 	return b, err
+}
+
+// ClearNamespace deletes every entry in a namespace
+func ClearNamespace(c appengine.Context, namespace string) error {
+	namespace = strings.ToLower(namespace)
+	q := datastore.NewQuery("Item").
+		Filter("Namespace =", namespace).
+		KeysOnly()
+
+	k, err := q.GetAll(c, nil)
+	if err != nil {
+		return nil
+	}
+
+	clearCache(c, namespace)
+
+	return datastore.DeleteMulti(c, k)
 }
 
 // DeleteAllItems deletes all items from datastore

@@ -107,6 +107,7 @@
 			</strong>
 		</p>
 		<p>Everybody who knows the namespace can read and post to it. Want to keep it hidden? Create a random one!</p>
+		<p align="center"><em>Namespaces are not(!) case sensitive.</em></p>
 
 		<form role="form">
 			<div id="namespace-control" class="input-group">
@@ -133,6 +134,10 @@
 				jQuery(this).data('timeout', setTimeout(checkNamespace, 300));
 			});
 
+		$('#namespace').focusout(function() {
+			lowcasenamespace();
+		});
+
 		// called to process #namespace
 		function checkNamespace() {
 			// if there is an active request: stop it
@@ -146,6 +151,7 @@
 				return;
 			}
 
+			lowcasenamespace();
 			var namespace = $('#namespace').val();
 
 			// TODO use regex to check for invalid namespaces
@@ -189,7 +195,7 @@
 		$('#randomizer').click(function(e) {
 			resetInput();
 
-			var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_";
+			var possible = "abcdefghijklmnopqrstuvwxyz0123456789.-_";
 
 			var text = possible.charAt(Math.floor(Math.random() * (possible.length - 3)));
 			for (var i = 1; i < 63; i++) {
@@ -205,15 +211,13 @@
 		});
 
 		function lowcasenamespace() {
-			resetInput();
-
 			$('#namespace').val($('#namespace').val().toLowerCase());
-			checkNamespace();
 		}
 
 		// ignore return
 		$('#namespace').keydown(function(event) {
 			if (event.which == 13) {
+				lowcasenamespace();
 				event.preventDefault();
 			}
 		});

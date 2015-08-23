@@ -22,6 +22,38 @@ func parseBody(c request.Context, mail *email) ([]string, error) {
 }
 
 func parseHTMLBody(c request.Context, body string) ([]string, error) {
+	return firstURLFromHTML(c, body)
+}
+
+func firstURLFromHTML(c request.Context, body string) ([]string, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+
+	// use a 'set' to remove duplicates
+	set := make(map[string]bool)
+	doc.Find("a").First().Each(func(i int, s *goquery.Selection) {
+		link, exists := s.Attr("href")
+		if !exists {
+			return
+		}
+		set[link] = true
+
+		c.Infof("HTML found %v", link)
+	})
+
+	links := make([]string, len(set))
+	i := 0
+	for k := range set {
+		links[i] = k
+		i++
+	}
+
+	return links, nil
+}
+
+func allURLsFromHTML(c request.Context, body string) ([]string, error) {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
 	if err != nil {
 		return nil, err
@@ -50,6 +82,18 @@ func parseHTMLBody(c request.Context, body string) ([]string, error) {
 }
 
 func parseTextBody(c request.Context, body string) ([]string, error) {
+	return firstURLFromText(c, body)
+}
+
+func firstURLFromText(c request.Context, body string) ([]string, error) {
+	links := make([]string, 1)
+	links[0] = xurls.Relaxed.FindString(body)
+	c.Infof("Found urls in body %v,  %v", body, links)
+
+	return links, nil
+}
+
+func allURLsFromText(c request.Context, body string) ([]string, error) {
 	links := xurls.Relaxed.FindAllString(body, -1)
 	c.Infof("Found urls in body %v,  %v", body, links)
 

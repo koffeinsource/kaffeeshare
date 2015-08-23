@@ -1,24 +1,30 @@
 {{define "content"}}
-<nav><ul>
-	<li class="p-intro"><a href="#intro">Kaffeeshare</a></li>
-	<li class="p-why"><a href="#why">Why</a></li>
-	<li class="p-details"><a href="#details">Namespace</a></li>
-	<li class="p-usage"><a href="#usage">Browser Extension</a></li>
-	<li class="p-updating"><a href="#updating">Configuration</a></li>
-</ul></nav>
+<nav>
+	<ul>
+		<li class="p-intro"><a href="#intro">Kaffeeshare</a></li>
+		<li class="p-why"><a href="#why">Why</a></li>
+		<li class="p-details"><a href="#details">Namespace</a></li>
+		<li class="p-usage"><a href="#usage">Browser Extension</a></li>
+		<li class="p-updating"><a href="#updating">Configuration</a></li>
+	</ul>
+</nav>
 
 <div id="intro" class="section p-intro">
 	<div class="container center">
-		<h3 class="text-purple"><em>whoa, an open-source link sharing platform</em></h3>
+		<h3 class="text-purple">
+			<em>whoa, an open-source link sharing platform</em>
+		</h3>
 
-		<p><span class="fa-stack subtlecircle" style="font-size:100px; background:rgba(255,166,0,0.1)">
-			<i class="fa fa-circle fa-stack-2x text-white"></i>
-			<i class="fa fa-share-alt fa-stack-1x text-orange"></i>
-		</span>
-		<span class="fa-stack subtlecircle" style="font-size:100px; background:rgba(255,166,0,0.1)">
-			<i class="fa fa-circle fa-stack-2x text-white"></i>
-			<i class="fa fa-code-fork fa-stack-1x text-orange"></i>
-		</span></p>
+		<p>
+			<span class="fa-stack subtlecircle" style="font-size:100px; background:rgba(255,166,0,0.1)">
+				<i class="fa fa-circle fa-stack-2x text-white"></i>
+				<i class="fa fa-share-alt fa-stack-1x text-orange"></i>
+			</span>
+			<span class="fa-stack subtlecircle" style="font-size:100px; background:rgba(255,166,0,0.1)">
+				<i class="fa fa-circle fa-stack-2x text-white"></i>
+				<i class="fa fa-code-fork fa-stack-1x text-orange"></i>
+			</span>
+		</p>
 
 
 		<h1 class="text-purple">Kaffeeshare</h1>
@@ -45,20 +51,32 @@
 
 		<h1 id="this-theme-rocks">open source information sharing rocks.</h1>
 
-		<p>It's <strong><em>easy to use</em></strong></p>
+		<p>It's
+			<strong>
+				<em>easy to use</em>
+			</strong>
+		</p>
 		<ul>
 			<li>Just one click/email to share a link with your friends.</li>
 			<li>Read the shared items with any RSS reader.</li>
 			<li>No need to search the share button.</li>
 		</ul>
 
-		<p>provides a <strong><em>less cluttered web</em></strong></p>
+		<p>provides a
+			<strong>
+				<em>less cluttered web</em>
+			</strong>
+		</p>
 		<ul>
 			<li>You can block all like/+1/... buttons and still share.</li>
 			<li>No account required.</li>
 		</ul>
 
-		<p><strong><em>better privacy</em></strong></p>
+		<p>
+			<strong>
+				<em>better privacy</em>
+			</strong>
+		</p>
 		<ul>
 			<li>We don't track you!</li>
 			<li>Check our source code to be sure!</li>
@@ -83,8 +101,13 @@
 	<div class="container ">
 		<h2 id="setup-as-user-homepage">Setup your namespace</h2>
 
-		<p><strong><em>Check your namespace</em></strong></p>
+		<p>
+			<strong>
+				<em>Check your namespace</em>
+			</strong>
+		</p>
 		<p>Everybody who knows the namespace can read and post to it. Want to keep it hidden? Create a random one!</p>
+		<p align="center"><em>Namespaces are not(!) case sensitive.</em></p>
 
 		<form role="form">
 			<div id="namespace-control" class="input-group">
@@ -94,184 +117,188 @@
 					</button>
 				</span>
 				<input id="namespace" type="text" class="form-control" placeholder="Check your namespace">
-			</div><!-- /input-group -->
+			</div>
+			<!-- /input-group -->
 		</form>
 
 		<p id="namespace-status" class="help-inline" align="center"></p>
 	</div>
 
 	<script type="text/javascript">
-	// use a timeout so we don't make the ajax call every keypress.
-	$('#namespace')
-	.data('timeout', null)
-	.keyup(function(){
-		resetInput();
-		clearTimeout(jQuery(this).data('timeout'));
-		jQuery(this).data('timeout', setTimeout(checkNamespace, 300));
-	});
+		// use a timeout so we don't make the ajax call every keypress.
+		$('#namespace')
+			.data('timeout', null)
+			.keyup(function() {
+				resetInput();
+				clearTimeout(jQuery(this).data('timeout'));
+				jQuery(this).data('timeout', setTimeout(checkNamespace, 300));
+			});
 
-	// called to process #namespace
-	function checkNamespace() {
-		// if there is an active request: stop it
-		if(request && request.readyState != 4){
-			request.abort();
-		}
-
-		// namespace field is empty? reset everything
-		if( !$('#namespace').val() ) {
-			resetNamespace();
-			return;
-		}
-
-		var namespace = $('#namespace').val();
-
-		// TODO use regex to check for invalid namespaces
-
-		$('#namespace-status').html("<i class='fa fa-refresh fa-spin'></i>");
-		// start the request
-		request = $.ajax({
-			type: "POST",
-			url: "/k/check/json/"+namespace,
-			dataType: 'json'
-		}).done(function( msg ) {
-			parseResult(msg);
-		}).fail(function(jqXHR, textStatus) {
-			// also called if request is aborted
-			$('#namespace-status').html("");
-		}).always(function( msg ) {
+		$('#namespace').focusout(function() {
+			lowcasenamespace();
 		});
-	}
 
-	// parse the return message of namespacecheck
-	function parseResult(value) {
-		var namespace = $('#namespace').val();
+		// called to process #namespace
+		function checkNamespace() {
+			// if there is an active request: stop it
+			if (request && request.readyState != 4) {
+				request.abort();
+			}
 
-		if( value.status == "error" ) {
-			errorNamespace(namespace);
-			return;
+			// namespace field is empty? reset everything
+			if (!$('#namespace').val()) {
+				resetNamespace();
+				return;
+			}
+
+			lowcasenamespace();
+			var namespace = $('#namespace').val();
+
+			// TODO use regex to check for invalid namespaces
+
+			$('#namespace-status').html("<i class='fa fa-refresh fa-spin'></i>");
+			// start the request
+			request = $.ajax({
+				type: "POST",
+				url: "/k/check/json/" + namespace,
+				dataType: 'json'
+			}).done(function(msg) {
+				parseResult(msg);
+			}).fail(function(jqXHR, textStatus) {
+				// also called if request is aborted
+				$('#namespace-status').html("");
+			}).always(function(msg) {});
 		}
 
-		if( value.status == "use" ) {
-			inuseNamespace(namespace);
-			return;
+		// parse the return message of namespacecheck
+		function parseResult(value) {
+			var namespace = $('#namespace').val();
+
+			if (value.status == "error") {
+				errorNamespace(namespace);
+				return;
+			}
+
+			if (value.status == "use") {
+				inuseNamespace(namespace);
+				return;
+			}
+
+			if (value.status == "ok") {
+				successNamespace(namespace);
+				return;
+			}
+
+			alert("Should never happen! Please report the bug!");
 		}
 
-		if( value.status == "ok" ) {
-			successNamespace(namespace);
-			return;
+		$('#randomizer').click(function(e) {
+			resetInput();
+
+			var possible = "abcdefghijklmnopqrstuvwxyz0123456789.-_";
+
+			var text = possible.charAt(Math.floor(Math.random() * (possible.length - 3)));
+			for (var i = 1; i < 63; i++) {
+				text += possible.charAt(Math.floor(Math.random() * possible.length));
+			}
+
+			text += possible.charAt(Math.floor(Math.random() * possible.length - 3));
+
+			$('#namespace').val(text);
+			checkNamespace();
+
+			e.preventDefault();
+		});
+
+		function lowcasenamespace() {
+			$('#namespace').val($('#namespace').val().toLowerCase());
 		}
 
-		alert ("Should never happen! Please report the bug!");
-	}
+		// ignore return
+		$('#namespace').keydown(function(event) {
+			if (event.which == 13) {
+				lowcasenamespace();
+				event.preventDefault();
+			}
+		});
 
-	$('#randomizer').click(function(e) {
-		resetInput();
-
-		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_";
-
-		var text = possible.charAt(Math.floor(Math.random() * (possible.length-3)));
-		for( var i=1; i < 63; i++ ) {
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
+		function resetNamespace() {
+			message = "<div class='alert alert-error'>Please select a namespace.</div>";
+			$('#namespace-message').html(message);
+			$('#namespace-control').removeClass('error');
+			$('#namespace-control').removeClass('info');
+			$('#namespace-control').removeClass('success');
+			$('#namespace-status').html("");
 		}
 
-		text += possible.charAt(Math.floor(Math.random() * possible.length-3));
-
-		$('#namespace').val(text);
-		checkNamespace();
-
-		e.preventDefault();
-	});
-
-	function lowcasenamespace() {
-		resetInput();
-
-		$('#namespace').val( $('#namespace').val().toLowerCase() );
-		checkNamespace();
-	}
-
-	// ignore return
-	$('#namespace').keydown(function(event) {
-		if (event.which == 13) {
-			event.preventDefault();
+		function resetInput() {
+			$('#namespace-control').removeClass('error');
+			$('#namespace-control').removeClass('info');
+			$('#namespace-control').removeClass('success');
+			$('#namespace-status').html("");
 		}
-	});
-
-	function resetNamespace() {
-		message = "<div class='alert alert-error'>Please select a namespace.</div>";
-		$('#namespace-message').html(message);
-		$('#namespace-control').removeClass( 'error' );
-		$('#namespace-control').removeClass( 'info' );
-		$('#namespace-control').removeClass( 'success' );
-		$('#namespace-status').html("");
-	}
-
-	function resetInput() {
-		$('#namespace-control').removeClass( 'error' );
-		$('#namespace-control').removeClass( 'info' );
-		$('#namespace-control').removeClass( 'success' );
-		$('#namespace-status').html("");
-	}
 
 
-	function generateNamespaceMessage(namespace) {
-		message  = "<ul><li><strong><i class='fa fa-puzzle-piece'></i> <em>Browser extension</em></strong>";
-		message += "<div>";
-		message += "<p><strong>Server: </strong>"+location.hostname+"</p>";
-		message += "<p><strong>Namespace: </strong>" + namespace + "</p>";
-		message += "<p><em>Put this information in your browser extension preferences dialog and click the share button.</em></p>";
-		message += "</div>";
-		message += "</li><li><strong><i class='fa fa-envelope-o'></i> <em>Email</em></strong>";
-		message += "<div>";
-		message += "<p><strong>Address: </strong> <a href='mailto:" + namespace + "@kaffeeshare.appspotmail.com'>"+ namespace + "@kaffeeshare.appspotmail.com</a></p>";
-		message += "<p><em>Just sent a link to the email address and it will be shared.</em></p>";
-		message += "</div>";
-		message += "</li><li><strong><i class='fa fa-newspaper-o'></i> <em>WWW</em></strong>";
-		message += "<div>";
-		message += "<p><strong>Address: </strong> <a href='https://" + location.hostname+ "/k/show/www/" + namespace + "'>"+ location.protocol + '//' + location.hostname+"/k/show/www/"+ namespace + "</a></p>";
-		message += "<p><em>Just bookmark this url to read the shares in your browser.</em></p>";
-		message += "</div>";
-		message += "</li><li><strong><i class='fa fa-rss'></i> <em>RSS Feed</em></strong>";
-		message += "<div>";
-		var RSSFeedURL = getNamespaceRSS(namespace);
-		message += "<p><strong>Address: </strong> <a href='" + RSSFeedURL + "'>"+ RSSFeedURL +"</a></p>";
-		message += "<p><em>This feed will contain all your shared items. Share it with.</em></p>";
-		message += "</div></li></ul>";
+		function generateNamespaceMessage(namespace) {
+			message = "<ul><li><strong><i class='fa fa-puzzle-piece'></i> <em>Browser extension</em></strong>";
+			message += "<div>";
+			message += "<p><strong>Server: </strong>" + location.hostname + "</p>";
+			message += "<p><strong>Namespace: </strong>" + namespace + "</p>";
+			message += "<p><em>Put this information in your browser extension preferences dialog and click the share button.</em></p>";
+			message += "</div>";
+			message += "</li><li><strong><i class='fa fa-envelope-o'></i> <em>Email</em></strong>";
+			message += "<div>";
+			message += "<p><strong>Address: </strong> <a href='mailto:" + namespace + "@kaffeeshare.appspotmail.com'>" + namespace + "@kaffeeshare.appspotmail.com</a></p>";
+			message += "<p><em>Just sent a link to the email address and it will be shared.</em></p>";
+			message += "</div>";
+			message += "</li><li><strong><i class='fa fa-newspaper-o'></i> <em>WWW</em></strong>";
+			message += "<div>";
+			message += "<p><strong>Address: </strong> <a href='https://" + location.hostname + "/k/show/www/" + namespace + "'>" + location.protocol + '//' + location.hostname + "/k/show/www/" + namespace + "</a></p>";
+			message += "<p><em>Just bookmark this url to read the shares in your browser.</em></p>";
+			message += "</div>";
+			message += "</li><li><strong><i class='fa fa-rss'></i> <em>RSS Feed</em></strong>";
+			message += "<div>";
+			var RSSFeedURL = getNamespaceRSS(namespace);
+			message += "<p><strong>Address: </strong> <a href='" + RSSFeedURL + "'>" + RSSFeedURL + "</a></p>";
+			message += "<p><em>This feed will contain all your shared items. Share it with.</em></p>";
+			message += "</div></li></ul>";
 
-		return message;
-	}
+			return message;
+		}
 
-	function successNamespace(namespace) {
-		message = generateNamespaceMessage(namespace);
+		function successNamespace(namespace) {
+			message = generateNamespaceMessage(namespace);
 
-		message += "<div class='alert alert-info'>Reserve your namespace now by sharing your first item!</div>";
-		$('#namespace-control').removeClass( 'error' );
-		$('#namespace-control').removeClass( 'info' );
-		$('#namespace-control').addClass( 'success' );
-		$('#namespace-status').html("This namespace is free. Feel free to use it!");
+			message += "<div class='alert alert-info'>Reserve your namespace now by sharing your first item!</div>";
+			$('#namespace-control').removeClass('error');
+			$('#namespace-control').removeClass('info');
+			$('#namespace-control').addClass('success');
+			$('#namespace-status').html("This namespace is free. Feel free to use it!");
 
-		$('#namespace-message').html(message);
-	}
+			$('#namespace-message').html(message);
+		}
 
-	function errorNamespace(namespace) {
-		$('#namespace-control').removeClass( 'info' );
-		$('#namespace-control').removeClass( 'success' );
-		$('#namespace-control').addClass( 'error' );
-		$('#namespace-status').html("Invalid namespace. Please select a different one!");
-		message ="<div class='alert alert-error'>Please enter a valid namespace.</div>";
+		function errorNamespace(namespace) {
+			$('#namespace-control').removeClass('info');
+			$('#namespace-control').removeClass('success');
+			$('#namespace-control').addClass('error');
+			$('#namespace-status').html("Invalid namespace. Please select a different one!");
+			message = "<div class='alert alert-error'>Please enter a valid namespace.</div>";
 
-		$('#namespace-message').html(message);
-	}
+			$('#namespace-message').html(message);
+		}
 
-	function inuseNamespace(namespace) {
-		message = generateNamespaceMessage(namespace);
+		function inuseNamespace(namespace) {
+			message = generateNamespaceMessage(namespace);
 
-		$('#namespace-control').removeClass( 'error' );
-		$('#namespace-control').removeClass( 'success' );
-		$('#namespace-control').addClass( 'info' );
-		$('#namespace-status').html("This namespace is already in use by someone else.");
+			$('#namespace-control').removeClass('error');
+			$('#namespace-control').removeClass('success');
+			$('#namespace-control').addClass('info');
+			$('#namespace-status').html("This namespace is already in use by someone else.");
 
-		$('#namespace-message').html(message);
-	}
+			$('#namespace-message').html(message);
+		}
+
 	</script>
 
 </div>
@@ -279,29 +306,36 @@
 
 <div id="usage" class="section p-usage">
 
-<div class="subtlecircle sectiondivider faicon">
-	<span class="fa-stack">
-	<i class="fa fa-circle fa-stack-2x"></i>
-	<i class="fa fa-puzzle-piece fa-stack-1x"></i>
-	</span>
-	<h5 class="icon-title">Browser addon</h5>
-</div>
+	<div class="subtlecircle sectiondivider faicon">
+		<span class="fa-stack">
+			<i class="fa fa-circle fa-stack-2x"></i>
+			<i class="fa fa-puzzle-piece fa-stack-1x"></i>
+		</span>
+		<h5 class="icon-title">Browser addon</h5>
+	</div>
 
-<div class="container ">
-	<h2>Install browser extension</h2>
-	<ul>
-		<li>
-		<div>
-				<p><strong><em>Chrome:</em></strong> Install our extension from the Chrome Store!</p>
-				<p>
-				<a target="_blank" href="https://chrome.google.com/webstore/detail/kaffeeshare/bandplnfdmdhhbnahljgnkdhgailfeod" class="btn btn-primary">Chrome store</a>
-		</div>
-		</li>
-		<li>
-			<div>
-					<p><strong><em>Firefox:</em></strong> Add as a share service.</p>
+	<div class="container ">
+		<h2>Install browser extension</h2>
+		<ul>
+			<li>
+				<div>
+					<p>
+						<strong>
+							<em>Chrome:</em>
+						</strong> Install our extension from the Chrome Store!</p>
+					<p>
+						<a target="_blank" href="https://chrome.google.com/webstore/detail/kaffeeshare/bandplnfdmdhhbnahljgnkdhgailfeod" class="btn btn-primary">Chrome store</a>
+				</div>
+			</li>
+			<li>
+				<div>
+					<p>
+						<strong>
+							<em>Firefox:</em>
+						</strong> Add as a share service.</p>
 					<script>
 						var event = new CustomEvent("ActivateSocialFeature");
+
 						function firefox_activate(node) {
 							if (!$('#namespace').val()) {
 								alert("please enter namespace first.");
@@ -311,65 +345,70 @@
 							var baseurl = "{{.URL}}";
 
 							var data = {
-							  // required
-							  "name": namespace + " - kaffeeshare",
-							  "iconURL": baseurl   + "/favicon.ico",
-							  "icon32URL": baseurl + "/favicon.ico",
-							  "icon64URL": baseurl + "/favicon.ico",
+								// required
+								"name": namespace + " - kaffeeshare",
+								"iconURL": baseurl + "/favicon.ico",
+								"icon32URL": baseurl + "/favicon.ico",
+								"icon64URL": baseurl + "/favicon.ico",
 
-							  "shareURL": baseurl+"/k/share/firefox/"+namespace+"/?url=%{url}",
+								"shareURL": baseurl + "/k/share/firefox/" + namespace + "/?url=%{url}",
 
-							  // should be available for display purposes
-							  "description": "This is a kaffeeshare namespace",
-							  "homepageURL": baseurl,
+								// should be available for display purposes
+								"description": "This is a kaffeeshare namespace",
+								"homepageURL": baseurl,
 
-							  // optional
-							  "version": "0.1"
-						  };
-						  node.setAttribute("data-service", JSON.stringify(data));
+								// optional
+								"version": "0.1"
+							};
+							node.setAttribute("data-service", JSON.stringify(data));
 						}
+
 					</script>
-				<p><a onclick="firefox_activate(this);" class="btn btn-primary">Install</a></p>
-			</div>
-		</li>
-	</ul>
+					<p><a onclick="firefox_activate(this);" class="btn btn-primary">Install</a></p>
+				</div>
+			</li>
+		</ul>
 
-	<script type="application/javascript">
-	// firefox extension install script
-	function install (aEvent) {
-		var params = {
-			"Kaffeeshare": { URL: aEvent.target.href,
-				toString: function () { return this.URL; }
+		<script type="application/javascript">
+			// firefox extension install script
+			function install(aEvent) {
+				var params = {
+					"Kaffeeshare": {
+						URL: aEvent.target.href,
+						toString: function() {
+							return this.URL;
+						}
+					}
+				};
+				InstallTrigger.install(params);
+
+				return false;
 			}
-		};
-		InstallTrigger.install(params);
 
-		return false;
-	}
-	</script>
+		</script>
 
-</div>
+	</div>
 </div>
 
 
 <div id="updating" class="section p-updating">
 
-<div class="subtlecircle sectiondivider faicon">
-	<span class="fa-stack">
-	<i class="fa fa-circle fa-stack-2x"></i>
-	<i class="fa fa-wrench fa-stack-1x"></i>
-	</span>
-	<h5 class="icon-title">setup</h5>
-</div>
-<div class="container ">
-	<h2>How to use it / configuration</h2>
-
-	<div id="namespace-message" >
-		<div class="alert alert-error">Please select a namespace.</div>
+	<div class="subtlecircle sectiondivider faicon">
+		<span class="fa-stack">
+			<i class="fa fa-circle fa-stack-2x"></i>
+			<i class="fa fa-wrench fa-stack-1x"></i>
+		</span>
+		<h5 class="icon-title">setup</h5>
 	</div>
+	<div class="container ">
+		<h2>How to use it / configuration</h2>
+
+		<div id="namespace-message">
+			<div class="alert alert-error">Please select a namespace.</div>
+		</div>
 
 
-</div>
+	</div>
 </div>
 
 {{end}}

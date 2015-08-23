@@ -1,6 +1,7 @@
 function getNamespaceRSS(namespace) {
-    var RSSFeedURL = "https://kaffeeshare.appspot.com/k/show/rss/"+ encodeURIComponent(namespace);
-    return RSSFeedURL;
+  var RSSFeedURL = "https://kaffeeshare.appspot.com/k/show/rss/" +
+                   encodeURIComponent(namespace);
+  return RSSFeedURL;
 }
 
 var language = window.navigator.userLanguage || window.navigator.language;

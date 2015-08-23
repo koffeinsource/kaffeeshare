@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,27 +13,26 @@
             var result = "Not found",
                 tmp = [];
             location.search
-            .substr(1)
+                .substr(1)
                 .split("&")
-                .forEach(function (item) {
+                .forEach(function(item) {
                     tmp = item.split("=");
                     if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
-                })
-            ;
+                });
             return result;
         }
 
         function create() {
             var url = parseURLParam("url");
-            $('#url').html("<em>"+url+"</em>");
+            $('#url').html("<em>" + url + "</em>");
         }
 
         function share() {
             // example pathname /k/share/firefox/test/?url=abc.com
             namespace = window.location.pathname.replace("/k/share/firefox/", '');
-            if (namespace.slice(-1)=="/") namespace = namespace.substring(0, namespace.length - 1);
-            url   ="/k/share/json/" + namespace + "/?url=";
-            url  += parseURLParam("url");
+            if (namespace.slice(-1) == "/") namespace = namespace.substring(0, namespace.length - 1);
+            url = "/k/share/json/" + namespace + "/?url=";
+            url += parseURLParam("url");
             console.log(url);
 
             $.ajax({
@@ -40,7 +40,7 @@
                 url: url,
                 dataType: 'json',
             }).done(function(msg) {
-                if (msg.status=="ok") {
+                if (msg.status == "ok") {
                     $('#url').html("Shared!");
                     $('#header').html("");
                     $('#button').disabled = true;
@@ -53,16 +53,18 @@
                 $('#url').html("Sharing failed! Please try again later.");
                 $('#header').html("");
                 $('#button').html("Try again?");
-            }).always(function(msg) {
-            });
+            }).always(function(msg) {});
         }
+
     </script>
 </head>
+
 <body onload="create()">
-  <div id="intro" class="section p-intro center" style="padding:0px;">
-    <h3 id="header">Do you want to share</h3>
-    <h3 id="url"></h3>
-    <button id="button" onclick="share()">Share!</button>
-  </div>
+    <div id="intro" class="section p-intro center" style="padding:0px;">
+        <h3 id="header">Do you want to share</h3>
+        <h3 id="url"></h3>
+        <button id="button" onclick="share()">Share!</button>
+    </div>
 </body>
+
 </html>

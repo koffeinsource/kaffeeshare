@@ -21,7 +21,7 @@ func StoreItem(c appengine.Context, i Item) error {
 	c.Infof("Stored item %v", i)
 
 	if err := clearCache(c, i.Namespace); err != nil {
-		c.Errorf("Error clearing cache for namespace %v. Error: %v", i.Namespace, err)
+		c.Infof("Error clearing cache for namespace %v. Error: %v", i.Namespace, err)
 	}
 
 	return nil

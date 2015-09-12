@@ -110,7 +110,7 @@
 			returnee += "<li style='margin-bottom:55px;'>";
 			returnee += "<div>";
 
-			returnee += "<h4 style='overflow: visible'>" + items[i].caption + "</h4>";
+			returnee += "<h4 style='overflow: visible; padding: 0'>" + items[i].caption + "</h4>";
 
 			returnee += "<p><small><em>" + moment(items[i].createdat).format("LLLL") + "</em></small></p>";
 
@@ -121,9 +121,9 @@
 			}
 
 			if (items[i].description && items[i].description !== "") {
-				returnee += "<blockquote>" + items[i].description + "</blockquote>";
+				returnee += "<blockquote style='text-align: justify;'>" + items[i].description + "</blockquote>";
 			}
-			returnee += "<p class='ksharelink'><cite><a href='" + items[i].url + "'>" + items[i].url + "</a></cite></p>";
+			returnee += "<p class='ksharelink'><cite><a href='" + items[i].url + "'>" + items[i].url + "</a></cite><hr/></p>";
 
 			returnee += "</div>";
 			returnee += "</li>";

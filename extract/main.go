@@ -10,6 +10,7 @@ import (
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/extract/plugins"
 	"github.com/koffeinsource/kaffeeshare/request"
+	"golang.org/x/net/html/charset"
 )
 
 // ItemFromURL creates an Item from the passed url
@@ -34,9 +35,15 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.It
 		plugins.Image(&returnee, sourceURL, contentType, log)
 	case strings.Contains(contentType, "text/html"):
 
-		// TODO Good check if page is UTF-8 and convert with go-iconv
+		var doc *goquery.Document
 
-		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+		charsetReader, err := charset.NewReader(bytes.NewReader(body), contentType)
+		if err == nil {
+			doc, err = goquery.NewDocumentFromReader(charsetReader)
+		} else {
+			doc, err = goquery.NewDocumentFromReader(bytes.NewReader(body))
+		}
+
 		if err != nil {
 			log.Errorf("Problem parsing body. " + sourceURL + " - " + err.Error())
 			return returnee

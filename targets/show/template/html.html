@@ -69,6 +69,8 @@
 
 
 <script type="text/javascript">
+	var counter = 0;
+	var current = -1;
 	// get GET URL parameter
 	function getURLParameter(name) {
 		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
@@ -103,12 +105,47 @@
 		}
 	});
 
+	// define a handler
+	function key_shortcuts(e) {
+	    if (e.keyCode == 74) { // j
+	        next();
+	    }
+		if (e.keyCode == 75) { // j
+	        prev();
+	    }
+	}
+	// register the handler
+	document.addEventListener('keyup', key_shortcuts, false);
+
+	function next() {
+		if (current == counter-1) return;
+
+		++current;
+		$(window).scrollTo($("#"+current.toString()).offset().top-70, {duration:'fast'});
+
+		if (current > 0) {
+			$("#"+(current-1).toString()).css("background-color", "");
+		}
+		$("#"+current.toString()).css("background-color", "#319de9");
+	}
+
+	function prev() {
+		if (current <= 0) return;
+
+		--current;
+		$(window).scrollTo($("#"+current.toString()).offset().top-70, {duration:'fast'});
+
+		$("#"+(current+1).toString()).css("background-color", "");
+		$("#"+current.toString()).css("background-color", "#319de9");
+	}
+
 	function createItems(items) {
 		returnee = "<ul class='media-list'>";
 
 		for (i = 0; i < items.length; ++i) {
 			returnee += "<li style='margin-bottom:55px;'>";
-			returnee += "<div>";
+			returnee += "<div id='" + counter + "'>";
+			++counter;
 
 			returnee += "<h4 style='overflow: visible; padding: 0'>" + items[i].caption + "</h4>";
 

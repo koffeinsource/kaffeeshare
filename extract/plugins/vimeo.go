@@ -28,7 +28,7 @@ func Vimeo(i *data.Item, sourceURL string, doc *goquery.Document, log request.Co
 
 	videoIDstart++
 	videoID := sourceURL[videoIDstart:]
-	i.Description += "<br/><br/><br/><iframe src=\"http://player.vimeo.com/video/"
+	i.Description += "<br/><br/><br/><iframe src=\"https://player.vimeo.com/video/"
 	i.Description += videoID
 	i.Description += "?title=0&amp;byline=0&amp;portrait=0\" width=\"400\" height=\"225\" frameborder=\"0\" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
 

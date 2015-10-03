@@ -69,6 +69,13 @@
 
 
 <script type="text/javascript">
+	var d = new Date();
+	var n = d.getTime();
+	var lastVisit = Cookies.get('lastVisit'+"{{.Namespace}}");
+	Cookies.set("lastVisit"+"{{.Namespace}}", n, { expires: 7 });
+
+	var counter = 0;
+	var current = -1;
 	// get GET URL parameter
 	function getURLParameter(name) {
 		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
@@ -103,12 +110,67 @@
 		}
 	});
 
+	// define a handler
+	function key_shortcuts(e) {
+	    if (e.keyCode == 74) { // j
+	        next();
+	    }
+		if (e.keyCode == 75) { // j
+	        prev();
+	    }
+	}
+	// register the handler
+	document.addEventListener('keyup', key_shortcuts, false);
+
+	function next() {
+		if (current == counter-1) return;
+
+		++current;
+		$(window).scrollTo($("#"+current.toString()).offset().top-70, {duration:'fast'});
+
+		if (current > 0) {
+			$("#"+(current-1).toString()).css("background-color", "");
+		}
+		$("#"+current.toString()).css("background-color", "#319de9");
+	}
+
+	function prev() {
+		if (current <= 0) return;
+
+		--current;
+		$(window).scrollTo($("#"+current.toString()).offset().top-70, {duration:'fast'});
+
+		// TODO refactor the css into a class...
+
+		$("#"+(current+1).toString()).css("background-color", "");
+		$("#"+current.toString()).css("background-color", "#319de9");
+	}
+
+	$(document).scroll(function() {
+	    var cutoff = $(window).scrollTop() + 150;
+
+	    $('#allItems li div').each(function(){
+	        if($(this).offset().top + $(this).height() > cutoff){
+
+	            $('div').css("background-color", "");
+	            $(this).css("background-color", "#319de9");
+				current = parseInt($(this).attr('id'), 10);
+	            return false; // stops the iteration after the first one visible
+	        }
+	    });
+	});
+
 	function createItems(items) {
-		returnee = "<ul class='media-list'>";
+		returnee = "<ul class='media-list' id='allItems'>";
 
 		for (i = 0; i < items.length; ++i) {
 			returnee += "<li style='margin-bottom:55px;'>";
-			returnee += "<div>";
+			returnee += "<div id='" + counter + "'";
+			if (moment(items[i].createdat).valueOf() < lastVisit) {
+				returnee += " style='color: lightgray !important;' ";
+			}
+			returnee += ">";
+			++counter;
 
 			returnee += "<h4 style='overflow: visible; padding: 0'>" + items[i].caption + "</h4>";
 
@@ -116,14 +178,26 @@
 
 			if (items[i].imageURL) {
 				returnee += "<a class='pull-right' href='" + items[i].url + "' style='padding-left: 15px;'>";
-				returnee += "<img class='media-object, thumbnail' src='" + items[i].imageURL + "' alt=''>";
+				returnee += "<img class='media-object, thumbnail' src='" + items[i].imageURL + "' alt=''";
+				if (moment(items[i].createdat).valueOf() < lastVisit) {
+					returnee += " style='filter: grayscale(1); -webkit-filter: grayscale(1);' ";
+				}
+				returnee += ">";
 				returnee += "</a>";
 			}
 
 			if (items[i].description && items[i].description !== "") {
-				returnee += "<blockquote style='text-align: justify;'>" + items[i].description + "</blockquote>";
+				returnee += "<blockquote style='text-align: justify;";
+				if (moment(items[i].createdat).valueOf() < lastVisit) {
+					returnee += " filter: grayscale(1); -webkit-filter: grayscale(1); color: lightgray !important; border-left-color: lightgray;";
+				}
+				returnee += "'>" + items[i].description + "</blockquote>";
 			}
-			returnee += "<p class='ksharelink'><cite><a href='" + items[i].url + "'>" + items[i].url + "</a></cite><hr/></p>";
+			returnee += "<p class='ksharelink'><cite><a href='" + items[i].url + "'";
+			if (moment(items[i].createdat).valueOf() < lastVisit) {
+				returnee += " style='color: lightgray !important;' ";
+			}
+			returnee += ">" + items[i].url + "</a></cite><hr/></p>";
 
 			returnee += "</div>";
 			returnee += "</li>";
@@ -133,8 +207,6 @@
 
 		return returnee;
 	}
-
-	$(window).scroll();
 
 </script>
 {{end}}

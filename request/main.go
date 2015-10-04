@@ -1,6 +1,7 @@
 package request
 
-// Context is an abstraction of the appengine context. It allows us to reduce the appengine dependencies in the rest of the code.
+// Context is an abstraction of the appengine context.
+// It allows us to reduce the appengine dependencies in the rest of the code.
 type Context interface {
 	// Debugf formats its arguments according to the format, analogous to fmt.Printf,
 	// and records the text as a log message at Debug level.

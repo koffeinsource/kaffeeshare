@@ -3,10 +3,8 @@ package share
 import (
 	"net/http"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/gorilla/mux"
-	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/extract"
+	"github.com/koffeinsource/kaffeeshare/share"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 
 	"appengine"
@@ -31,19 +29,8 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 
 	shareURL := r.URL.Query().Get("url")
 
-	if !govalidator.IsRequestURL(shareURL) {
-		c.Errorf("Error at unmarshalling for share/json. Namespace: %v. Error: %v", namespace, shareURL)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	i := extract.ItemFromURL(shareURL, r, c)
-	i.Namespace = namespace
-
-	c.Infof("Item: %v", i)
-
-	if err := data.StoreItem(c, i); err != nil {
-		c.Errorf("Error at in StoreItem. Item: %v. Error: %v", i, err)
+	if err := share.URL(shareURL, namespace, c, r); err != nil {
+		c.Errorf("Error while sharing an URL. URL: %v. Error: %v", shareURL, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

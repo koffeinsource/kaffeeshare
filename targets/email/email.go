@@ -4,9 +4,7 @@ import (
 	"net/http"
 	"net/mail"
 
-	"github.com/asaskevich/govalidator"
-	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/extract"
+	"github.com/koffeinsource/kaffeeshare/share"
 
 	"appengine"
 )
@@ -53,23 +51,11 @@ func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 	urls, err := parseBody(c, body)
 	c.Infof("Found urls: %v", urls)
 
-	for _, shareURL := range urls {
-		if !govalidator.IsRequestURL(shareURL) {
-			c.Errorf("Invalid URL. Error: %v", shareURL)
-			continue
-		}
-
-		i := extract.ItemFromURL(shareURL, r, c)
-
-		for _, namespace := range namespaces {
-			i.Namespace = namespace
-			c.Infof("Item: %v", i)
-
-			if err := data.StoreItem(c, i); err != nil {
-				c.Errorf("Error at in StoreItem. Item: %v. Error: %v", i, err)
-				continue
-			}
-		}
+	if err := share.URLsNamespaces(urls, namespaces, c, r); err != nil {
+		c.Errorf("Error while sharing URLs. Error: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 }

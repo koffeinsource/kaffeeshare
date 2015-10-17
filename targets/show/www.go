@@ -27,6 +27,9 @@ func DispatchWWW(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Cache-Control", "public, max-age=86400") // 1 day
+	w.Header().Set("Pragma", "Public")
+
 	if err := templateWWW.Execute(w, value); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

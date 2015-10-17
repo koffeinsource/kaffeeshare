@@ -19,6 +19,8 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	w.Header().Set("Content-Type", "application/rss+xml")
+	w.Header().Set("Cache-Control", "public, max-age=1800") // 30 minutes
+	w.Header().Set("Pragma", "Public")
 
 	// get namespace
 	namespace := mux.Vars(r)["namespace"]

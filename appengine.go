@@ -25,25 +25,19 @@ var router = mux.NewRouter()
 //<domain>/k/share/<namespace> <- extension url
 
 func init() {
+	router.StrictSlash(true)
+
 	router.HandleFunc("/", startpage.Dispatch)
-	router.HandleFunc("/k/check/json/{namespace}/", check.DispatchJSON)
 	router.HandleFunc("/k/check/json/{namespace}", check.DispatchJSON)
 
 	// should actually be share/get as we don't do json here
-	router.HandleFunc("/k/share/json/{namespace}/", share.DispatchJSON)
 	router.HandleFunc("/k/share/json/{namespace}", share.DispatchJSON)
-
-	router.HandleFunc("/k/share/firefox/{namespace}/", share.DispatchFirefox)
 	router.HandleFunc("/k/share/firefox/{namespace}", share.DispatchFirefox)
 
-	router.HandleFunc("/k/update/json/{namespace}/", update.DispatchJSON)
 	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
 
-	router.HandleFunc("/k/show/json/{namespace}/", show.DispatchJSON)
 	router.HandleFunc("/k/show/json/{namespace}", show.DispatchJSON)
-	router.HandleFunc("/k/show/www/{namespace}/", show.DispatchWWW)
 	router.HandleFunc("/k/show/www/{namespace}", show.DispatchWWW)
-	router.HandleFunc("/k/show/rss/{namespace}/", show.DispatchRSS)
 	router.HandleFunc("/k/show/rss/{namespace}", show.DispatchRSS)
 
 	router.HandleFunc("/cron/clear_test/", cron.ClearTest)

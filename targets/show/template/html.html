@@ -71,8 +71,6 @@
 <script type="text/javascript">
 	var d = new Date();
 	var n = d.getTime();
-	var lastVisit = Cookies.get('lastVisit'+"{{.Namespace}}");
-	Cookies.set("lastVisit"+"{{.Namespace}}", n, { expires: 7 });
 
 	var counter = 0;
 	var current = -1;
@@ -166,9 +164,6 @@
 		for (i = 0; i < items.length; ++i) {
 			returnee += "<li style='margin-bottom:55px;'>";
 			returnee += "<div id='" + counter + "'";
-			if (moment(items[i].createdat).valueOf() < lastVisit) {
-				returnee += " style='color: lightgray !important;' ";
-			}
 			returnee += ">";
 			++counter;
 
@@ -179,24 +174,15 @@
 			if (items[i].imageURL) {
 				returnee += "<a class='pull-right' href='" + items[i].url + "' style='padding-left: 15px;'>";
 				returnee += "<img class='media-object, thumbnail' src='" + items[i].imageURL + "' alt=''";
-				if (moment(items[i].createdat).valueOf() < lastVisit) {
-					returnee += " style='filter: grayscale(1); -webkit-filter: grayscale(1);' ";
-				}
 				returnee += ">";
 				returnee += "</a>";
 			}
 
 			if (items[i].description && items[i].description !== "") {
 				returnee += "<blockquote style='text-align: justify;";
-				if (moment(items[i].createdat).valueOf() < lastVisit) {
-					returnee += " filter: grayscale(1); -webkit-filter: grayscale(1); color: lightgray !important; border-left-color: lightgray;";
-				}
 				returnee += "'>" + items[i].description + "</blockquote>";
 			}
 			returnee += "<p class='ksharelink'><cite><a href='" + items[i].url + "'";
-			if (moment(items[i].createdat).valueOf() < lastVisit) {
-				returnee += " style='color: lightgray !important;' ";
-			}
 			returnee += ">" + items[i].url + "</a></cite><hr/></p>";
 
 			returnee += "</div>";

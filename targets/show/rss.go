@@ -2,13 +2,16 @@ package show
 
 import (
 	"net/http"
+	"time"
 
+	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
 
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"
 
 	"appengine"
+	"appengine/memcache"
 )
 
 //DispatchRSS returns the rss feed of namespace
@@ -29,10 +32,15 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(cache))
 		return
 	}
+	if err == memcache.ErrCacheMiss {
+		c.Infof("Cache miss for namespace %v", namespace)
+	} else {
+		c.Errorf("Error at in rss.dispatch while reading the cache. Error: %v", err)
+	}
 
-	c.Infof("Error at in rss.dispatch while reading the cache. Error: %v", err)
-
-	is, _, err := data.GetNewestItems(c, namespace, 20, "")
+	t := time.Now()
+	t = t.Add(-24 * time.Hour * config.RSSTimeRangeinDays)
+	is, _, err := data.GetNewestItemsByTime(c, namespace, 100, t, "")
 	if err != nil {
 		c.Errorf("Error at in rss.dispatch @ GetNewestItem. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)

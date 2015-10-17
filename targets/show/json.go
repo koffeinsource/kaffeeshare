@@ -8,6 +8,7 @@ import (
 	"github.com/koffeinsource/kaffeeshare/data"
 
 	"appengine"
+	"appengine/memcache"
 )
 
 type jsonReturn struct {
@@ -41,7 +42,11 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		c.Infof("Error at in json.dispatch while reading the cache. Error: %v", err)
+		if err == memcache.ErrCacheMiss {
+			c.Infof("Cache miss for namespace %v", namespace)
+		} else {
+			c.Errorf("Error at in rss.dispatch while reading the cache. Error: %v", err)
+		}
 	}
 
 	var returnee jsonReturn

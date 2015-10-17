@@ -8,6 +8,7 @@ import (
 	"github.com/koffeinsource/kaffeeshare/targets/check"
 	"github.com/koffeinsource/kaffeeshare/targets/cron"
 	"github.com/koffeinsource/kaffeeshare/targets/email"
+	"github.com/koffeinsource/kaffeeshare/targets/search"
 	"github.com/koffeinsource/kaffeeshare/targets/share"
 	"github.com/koffeinsource/kaffeeshare/targets/show"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
@@ -47,6 +48,8 @@ func init() {
 
 	router.HandleFunc("/cron/clear_test/", cron.ClearTest)
 	router.HandleFunc("/cron/clear_test", cron.ClearTest)
+
+	router.HandleFunc("/search/add_to_index", search.DispatchAddToIndex)
 
 	// TODO move to router
 	http.HandleFunc("/_ah/mail/", email.DispatchEmail)

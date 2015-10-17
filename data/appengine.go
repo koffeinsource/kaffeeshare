@@ -4,6 +4,7 @@ package data
 
 import (
 	"strings"
+	"time"
 
 	"appengine"
 	"appengine/datastore"
@@ -35,6 +36,23 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 		Order("-CreatedAt").
 		Limit(limit)
 
+	return getQuery(c, q, limit, cursor)
+}
+
+// GetNewestItemsByTime returns up to limit numbers of items stored >= the
+// give time
+func GetNewestItemsByTime(c appengine.Context, namespace string, limit int, t time.Time, cursor string) ([]Item, string, error) {
+	namespace = strings.ToLower(namespace)
+	q := datastore.NewQuery("Item").
+		Filter("Namespace =", namespace).
+		Filter("CreatedAt >=", t).
+		Order("-CreatedAt").
+		Limit(limit)
+
+	return getQuery(c, q, limit, cursor)
+}
+
+func getQuery(c appengine.Context, q *datastore.Query, limit int, cursor string) ([]Item, string, error) {
 	if cursor, err := datastore.DecodeCursor(cursor); err == nil {
 		q = q.Start(cursor)
 	}
@@ -51,7 +69,7 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 
 		is = append(is, i)
 		if err != nil {
-			c.Errorf("Error fetching next item for namespace %v: %v", namespace, err)
+			c.Errorf("Error fetching next item: %v", err)
 			return nil, "", err
 		}
 	}

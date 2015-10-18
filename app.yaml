@@ -27,9 +27,13 @@ handlers:
 
 - url: /.*
   script: _go_app
-
 - url: /_ah/mail/
   script: _go_app
 - url: /cron/clear_test
   script: _go_app
   login: admin
+
+# Just to prevent the queries to the old RSS feed URL hitting the app
+- url: /feed
+  static_dir: static
+  expiration: "48h"

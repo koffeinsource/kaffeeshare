@@ -2,11 +2,13 @@ package extract
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/extract/plugins"
 	"github.com/koffeinsource/kaffeeshare/request"
@@ -14,7 +16,7 @@ import (
 )
 
 // ItemFromURL creates an Item from the passed url
-func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.Item {
+func ItemFromURL(sourceURL string, r *http.Request, log request.Context) (data.Item, error) {
 
 	// Create return value with default values
 	returnee := data.Item{
@@ -23,10 +25,17 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.It
 		CreatedAt: time.Now(),
 	}
 
+	// Check if the URL is valid
+	// TODO Think if we should handle this differently. Could result in spam?
+	if !govalidator.IsRequestURL(sourceURL) {
+		errReturn := fmt.Errorf("Invalid URL: %v", sourceURL)
+		log.Errorf(errReturn.Error())
+		return returnee, errReturn
+	}
+
 	contentType, body, err := GetURL(sourceURL, r)
 	if err != nil {
-		log.Errorf(err.Error())
-		return returnee
+		return returnee, err
 	}
 
 	//  log.Infof(contentType)
@@ -46,7 +55,7 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.It
 
 		if err != nil {
 			log.Errorf("Problem parsing body. " + sourceURL + " - " + err.Error())
-			return returnee
+			return returnee, err
 		}
 
 		// Make sure to call this one first
@@ -71,5 +80,5 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) data.It
 	default:
 	}
 
-	return returnee
+	return returnee, nil
 }

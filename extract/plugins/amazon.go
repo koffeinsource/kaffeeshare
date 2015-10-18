@@ -73,6 +73,14 @@ func Amazon(i *data.Item, sourceURL string, doc *goquery.Document, log request.C
 				}
 			}
 		}
+	}
 
+	// Store HTML for the search
+	{
+		if s, err := doc.Find(".a-container").Html(); err != nil {
+			log.Errorf("Error finding .a-container in HTML: %v", err)
+		} else {
+			i.HTMLforSearch = s
+		}
 	}
 }

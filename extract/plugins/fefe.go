@@ -47,4 +47,5 @@ func Fefe(i *data.Item, sourceURL string, doc *goquery.Document, log request.Con
 	}
 	i.Caption = "Fefes Blog - " + strings.TrimSpace(i.Caption) + "..."
 	i.ImageURL = ""
+	i.HTMLforSearch = ""
 }

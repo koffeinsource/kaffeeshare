@@ -1,0 +1,6 @@
+# https://cloud.google.com/appengine/docs/go/config/queue
+total_storage_limit: 100M # default is 500M for free apps
+queue:
+- name: search-index
+  rate: 10/s
+  max_concurrent_requests: 10

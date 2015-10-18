@@ -10,16 +10,17 @@ import (
 	"appengine/datastore"
 )
 
-// StoreItem stores an item in the datastore
-func StoreItem(c appengine.Context, i Item) error {
+// Store stores an item in the datastore
+func (i *Item) Store(c appengine.Context) error {
 	i.Namespace = strings.ToLower(i.Namespace)
 	k := datastore.NewKey(c, "Item", i.Namespace+i.URL, 0, nil)
-	_, err := datastore.Put(c, k, &i)
+	_, err := datastore.Put(c, k, i)
 	if err != nil {
 		c.Errorf("Error while storing item in datastore. Item: %v. Error: %v", i, err)
 		return err
 	}
-	c.Infof("Stored item %v", i)
+	i.DSKey = k.String()
+	c.Debugf("Stored item %+v", i)
 
 	if err := clearCache(c, i.Namespace); err != nil {
 		c.Infof("Error clearing cache for namespace %v. Error: %v", i.Namespace, err)
@@ -36,7 +37,7 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 		Order("-CreatedAt").
 		Limit(limit)
 
-	return getQuery(c, q, limit, cursor)
+	return executeQuery(c, q, limit, cursor)
 }
 
 // GetNewestItemsByTime returns up to limit numbers of items stored >= the
@@ -49,10 +50,10 @@ func GetNewestItemsByTime(c appengine.Context, namespace string, limit int, t ti
 		Order("-CreatedAt").
 		Limit(limit)
 
-	return getQuery(c, q, limit, cursor)
+	return executeQuery(c, q, limit, cursor)
 }
 
-func getQuery(c appengine.Context, q *datastore.Query, limit int, cursor string) ([]Item, string, error) {
+func executeQuery(c appengine.Context, q *datastore.Query, limit int, cursor string) ([]Item, string, error) {
 	if cursor, err := datastore.DecodeCursor(cursor); err == nil {
 		q = q.Start(cursor)
 	}

@@ -42,4 +42,13 @@ func DefaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log requ
 			i.Description = m["content"]
 		}
 	}
+
+	// Store HTML for the search
+	{
+		if s, err := doc.Find("body").Html(); err != nil {
+			log.Errorf("Error finding body in HTML: %v", err)
+		} else {
+			i.HTMLforSearch = s
+		}
+	}
 }

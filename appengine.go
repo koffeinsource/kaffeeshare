@@ -43,7 +43,7 @@ func init() {
 	router.HandleFunc("/cron/clear_test/", cron.ClearTest)
 	router.HandleFunc("/cron/clear_test", cron.ClearTest)
 
-	router.HandleFunc("/search/add_to_index", search.DispatchAddToIndex)
+	router.HandleFunc("/t/search/add_to_index", search.DispatchAddToIndex)
 
 	// TODO move to router
 	http.HandleFunc("/_ah/mail/", email.DispatchEmail)

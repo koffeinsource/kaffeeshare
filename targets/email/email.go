@@ -19,8 +19,6 @@ type email struct {
 func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
-	defer r.Body.Close()
-
 	msg, err := mail.ReadMessage(r.Body)
 	if err != nil {
 		c.Errorf("Error at mail.ReadMessage in DispatchEmail. Error: %v", err)

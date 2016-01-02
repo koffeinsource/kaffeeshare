@@ -22,5 +22,7 @@ func ClearTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO clear search index!
+
 	w.WriteHeader(http.StatusOK)
 }

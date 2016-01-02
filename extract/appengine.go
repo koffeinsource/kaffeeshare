@@ -1,5 +1,3 @@
-
-
 package extract
 
 import (

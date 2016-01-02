@@ -31,7 +31,7 @@ handlers:
 - url: /_ah/mail/
   script: _go_app
 
-- url: /cron/clear_test
+- url: /c/clear_test
   script: _go_app
   login: admin
 - url: /t/search/add_to_index

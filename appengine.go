@@ -38,8 +38,8 @@ func init() {
 	router.HandleFunc("/k/show/www/{namespace}", show.DispatchWWW)
 	router.HandleFunc("/k/show/rss/{namespace}", show.DispatchRSS)
 
-	router.HandleFunc("/cron/clear_test/", cron.ClearTest)
-	router.HandleFunc("/cron/clear_test", cron.ClearTest)
+	router.HandleFunc("/c/clear_test/", cron.ClearTest)
+	router.HandleFunc("/c/clear_test", cron.ClearTest)
 
 	router.HandleFunc("/t/search/add_to_index", search.DispatchAddToIndex)
 

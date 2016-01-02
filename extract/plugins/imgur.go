@@ -6,16 +6,17 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/request"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/log"
 )
 
 // Imgurl extract all images from an imgurl album
-func Imgurl(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+func Imgurl(i *data.Item, sourceURL string, doc *goquery.Document, c context.Context) {
 	if !strings.Contains(sourceURL, "imgur.com/") {
 		return
 	}
 
-	log.Infof("Running imgurl plugin.")
+	log.Infof(c, "Running imgurl plugin.")
 
 	selection := doc.Find("meta[property*='og']")
 
@@ -30,7 +31,7 @@ func Imgurl(i *data.Item, sourceURL string, doc *goquery.Document, log request.C
 
 			if m["property"] == "og:image" {
 				if !govalidator.IsRequestURL(m["content"]) {
-					log.Infof("Invalid url in og:image. " + sourceURL)
+					log.Infof(c, "Invalid url in og:image. "+sourceURL)
 					continue
 				}
 				if _, in := set[m["content"]]; !in {

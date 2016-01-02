@@ -1,5 +1,3 @@
-// +build appengine
-
 package share
 
 import (
@@ -7,14 +5,15 @@ import (
 
 	"github.com/koffeinsource/kaffeeshare/extract"
 
-	"appengine"
-	"appengine/memcache"
-	"appengine/taskqueue"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/log"
+	"google.golang.org/appengine/memcache"
+	"google.golang.org/appengine/taskqueue"
 )
 
 // URL shares an URL, i.e. stores it in the datastore and everything
 // else that must be done.
-func URL(shareURL string, namespace string, c appengine.Context, r *http.Request) error {
+func URL(shareURL string, namespace string, c context.Context, r *http.Request) error {
 
 	var urls []string
 	urls = append(urls, shareURL)
@@ -30,7 +29,7 @@ func URL(shareURL string, namespace string, c appengine.Context, r *http.Request
 }
 
 // URLsNamespaces shares multiple URLs in mutliple namespaces.
-func URLsNamespaces(shareURLs []string, namespaces []string, c appengine.Context, r *http.Request) error {
+func URLsNamespaces(shareURLs []string, namespaces []string, c context.Context, r *http.Request) error {
 	var errReturn error
 	errReturn = nil
 	for _, shareURL := range shareURLs {
@@ -38,17 +37,17 @@ func URLsNamespaces(shareURLs []string, namespaces []string, c appengine.Context
 		i, err := extract.ItemFromURL(shareURL, r, c)
 		if err != nil {
 			errReturn = err
-			c.Errorf("Error in extract.ItemFromURL(). Error: %v", err)
+			log.Errorf(c, "Error in extract.ItemFromURL(). Error: %v", err)
 			continue
 		}
 
 		for _, namespace := range namespaces {
 			i.Namespace = namespace
-			//c.Infof("Sharing item: %v", i)
+			//log.Infof(c, "Sharing item: %v", i)
 
 			if err := i.Store(c); err != nil {
 				errReturn = err
-				c.Errorf("Error in item.Store(). Item: %v. Error: %v", i, err)
+				log.Errorf(c, "Error in item.Store(). Item: %v. Error: %v", i, err)
 				continue
 			}
 
@@ -62,16 +61,16 @@ func URLsNamespaces(shareURLs []string, namespaces []string, c appengine.Context
 					Value: []byte(i.HTMLforSearch),
 				}
 				if err := memcache.Set(c, memI); err != nil {
-					c.Infof("Error while storing the search HTML in the memcache for URL %v", i.URL)
+					log.Infof(c, "Error while storing the search HTML in the memcache for URL %v", i.URL)
 				}
 			}
 
 			// SECOND: Put the search index update task in the queue
 			task := taskqueue.NewPOSTTask("/t/search/add_to_index", i.ItemToSearchIndexTask())
 			if _, err := taskqueue.Add(c, task, "search-index"); err != nil {
-				c.Errorf("Error while triggering the add to index: %v", err)
+				log.Errorf(c, "Error while triggering the add to index: %v", err)
 			} else {
-				c.Debugf("Added %v to search-index queue", i.URL)
+				log.Debugf(c, "Added %v to search-index queue", i.URL)
 			}
 		}
 	}

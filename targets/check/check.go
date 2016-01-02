@@ -7,7 +7,7 @@ import (
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 
-	"appengine"
+	"google.golang.org/appengine"
 )
 
 // JSON understood by the front page

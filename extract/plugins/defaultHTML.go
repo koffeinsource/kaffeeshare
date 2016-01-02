@@ -4,12 +4,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/request"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/log"
 )
 
 // DefaultHTML extracts the og:title, og:image, ... tags from a webpage
-func DefaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
-	log.Infof("Running OG extract. " + sourceURL)
+func DefaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, c context.Context) {
+	log.Infof(c, "Running OG extract. "+sourceURL)
 
 	selection := doc.Find("title")
 	if len(selection.Nodes) != 0 {
@@ -26,14 +27,14 @@ func DefaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log requ
 		}
 		if m["property"] == "og:image" {
 			if !govalidator.IsRequestURL(m["content"]) {
-				log.Infof("Invalid url in og:image. " + sourceURL)
+				log.Infof(c, "Invalid url in og:image. "+sourceURL)
 				continue
 			}
 			i.ImageURL = m["content"]
 		}
 		if m["property"] == "og:url" {
 			if !govalidator.IsRequestURL(m["content"]) {
-				log.Infof("Invalid url in og:url. " + sourceURL)
+				log.Infof(c, "Invalid url in og:url. "+sourceURL)
 				continue
 			}
 			i.URL = m["content"]
@@ -46,7 +47,7 @@ func DefaultHTML(i *data.Item, sourceURL string, doc *goquery.Document, log requ
 	// Store HTML for the search
 	{
 		if s, err := doc.Find("body").Html(); err != nil {
-			log.Errorf("Error finding body in HTML: %v", err)
+			log.Errorf(c, "Error finding body in HTML: %v", err)
 		} else {
 			i.HTMLforSearch = s
 		}

@@ -7,32 +7,34 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/kennygrant/sanitize"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/request"
+	"google.golang.org/appengine/log"
+
+	"golang.org/x/net/context"
 	"golang.org/x/net/html"
 )
 
 // Fefe gets the text from a fefe blog entry
-func Fefe(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+func Fefe(i *data.Item, sourceURL string, doc *goquery.Document, c context.Context) {
 	if !strings.Contains(sourceURL, "blog.fefe.de/?ts") {
 		return
 	}
-	log.Infof("Running Fefes Blog plugin.")
+	log.Infof(c, "Running Fefes Blog plugin.")
 
 	selection := doc.Find("li")
 
 	if len(selection.Nodes) == 0 {
-		log.Errorf("Fefes Blog plugin found no li. " + sourceURL)
+		log.Errorf(c, "Fefes Blog plugin found no li. "+sourceURL)
 		return
 	}
 
 	if len(selection.Nodes) > 1 {
-		log.Infof("Fefes Blog plugin found >1 li. " + sourceURL)
+		log.Infof(c, "Fefes Blog plugin found >1 li. "+sourceURL)
 	}
 
 	buf := new(bytes.Buffer)
 	err := html.Render(buf, selection.Nodes[0])
 	if err != nil {
-		log.Errorf("Fefes Blog plugin error while rendering. " + sourceURL + "- " + err.Error())
+		log.Errorf(c, "Fefes Blog plugin error while rendering. "+sourceURL+"- "+err.Error())
 		return
 	}
 	i.Description = buf.String()

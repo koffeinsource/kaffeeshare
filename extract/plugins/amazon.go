@@ -7,26 +7,27 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/request"
+	"golang.org/x/net/context"
 	"golang.org/x/net/html"
+	"google.golang.org/appengine/log"
 )
 
 // Amazon webpage plugin
-func Amazon(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+func Amazon(i *data.Item, sourceURL string, doc *goquery.Document, c context.Context) {
 	if !strings.Contains(sourceURL, "www.amazon.") {
 		return
 	}
 
-	log.Infof("Running Amazon plugin.")
+	log.Infof(c, "Running Amazon plugin.")
 
 	// find picture
 	{
 		selection := doc.Find("#landingImage")
 		if len(selection.Nodes) == 0 {
-			log.Infof("Amazon plugin found no #landingImage. " + sourceURL)
+			log.Infof(c, "Amazon plugin found no #landingImage. "+sourceURL)
 		} else {
 			if len(selection.Nodes) > 1 {
-				log.Infof("Amazon plugin found >1 #landingImage. " + sourceURL)
+				log.Infof(c, "Amazon plugin found >1 #landingImage. "+sourceURL)
 			}
 			for _, e := range selection.Nodes {
 				if e.Type == html.ElementNode && e.Data == "img" {
@@ -34,7 +35,7 @@ func Amazon(i *data.Item, sourceURL string, doc *goquery.Document, log request.C
 					if govalidator.IsRequestURL(m["data-old-hires"]) {
 						i.ImageURL = m["data-old-hires"]
 					} else {
-						log.Infof("Amazon plugin imgURL invalid. " + m["data-old-hires"])
+						log.Infof(c, "Amazon plugin imgURL invalid. "+m["data-old-hires"])
 					}
 				}
 			}
@@ -62,10 +63,10 @@ func Amazon(i *data.Item, sourceURL string, doc *goquery.Document, log request.C
 	{
 		selection := doc.Find("#productTitle")
 		if len(selection.Nodes) == 0 {
-			log.Infof("Amazon plugin found no #productTitle. " + sourceURL)
+			log.Infof(c, "Amazon plugin found no #productTitle. "+sourceURL)
 		} else {
 			if len(selection.Nodes) > 1 {
-				log.Infof("Amazon plugin found >1 #productTitle. " + sourceURL)
+				log.Infof(c, "Amazon plugin found >1 #productTitle. "+sourceURL)
 			}
 			for _, e := range selection.Nodes {
 				if e.Type == html.ElementNode && e.Data == "span" {
@@ -78,7 +79,7 @@ func Amazon(i *data.Item, sourceURL string, doc *goquery.Document, log request.C
 	// Store HTML for the search
 	{
 		if s, err := doc.Find(".a-container").Html(); err != nil {
-			log.Errorf("Error finding .a-container in HTML: %v", err)
+			log.Errorf(c, "Error finding .a-container in HTML: %v", err)
 		} else {
 			i.HTMLforSearch = s
 		}

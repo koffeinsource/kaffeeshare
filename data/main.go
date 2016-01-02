@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"time"
 
-	"appengine/search"
+	"google.golang.org/appengine/search"
 )
 
 // An Item is all the data we store from a website

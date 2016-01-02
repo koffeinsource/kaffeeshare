@@ -11,12 +11,14 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/extract/plugins"
-	"github.com/koffeinsource/kaffeeshare/request"
+
+	"golang.org/x/net/context"
 	"golang.org/x/net/html/charset"
+	"google.golang.org/appengine/log"
 )
 
 // ItemFromURL creates an Item from the passed url
-func ItemFromURL(sourceURL string, r *http.Request, log request.Context) (data.Item, error) {
+func ItemFromURL(sourceURL string, r *http.Request, c context.Context) (data.Item, error) {
 
 	// Create return value with default values
 	returnee := data.Item{
@@ -29,7 +31,7 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) (data.I
 	// TODO Think if we should handle this differently. Could result in spam?
 	if !govalidator.IsRequestURL(sourceURL) {
 		errReturn := fmt.Errorf("Invalid URL: %v", sourceURL)
-		log.Errorf(errReturn.Error())
+		log.Errorf(c, errReturn.Error())
 		return returnee, errReturn
 	}
 
@@ -41,7 +43,7 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) (data.I
 	//  log.Infof(contentType)
 	switch {
 	case strings.Contains(contentType, "image/"):
-		plugins.Image(&returnee, sourceURL, contentType, log)
+		plugins.Image(&returnee, sourceURL, contentType, c)
 	case strings.Contains(contentType, "text/html"):
 
 		var doc *goquery.Document
@@ -54,29 +56,29 @@ func ItemFromURL(sourceURL string, r *http.Request, log request.Context) (data.I
 		}
 
 		if err != nil {
-			log.Errorf("Problem parsing body. " + sourceURL + " - " + err.Error())
+			log.Errorf(c, "Problem parsing body. "+sourceURL+" - "+err.Error())
 			return returnee, err
 		}
 
 		// Make sure to call this one first
-		plugins.DefaultHTML(&returnee, sourceURL, doc, log)
+		plugins.DefaultHTML(&returnee, sourceURL, doc, c)
 
-		plugins.Amazon(&returnee, sourceURL, doc, log)
+		plugins.Amazon(&returnee, sourceURL, doc, c)
 
-		plugins.Imgurl(&returnee, sourceURL, doc, log)
-		plugins.Gfycat(&returnee, sourceURL, doc, log)
+		plugins.Imgurl(&returnee, sourceURL, doc, c)
+		plugins.Gfycat(&returnee, sourceURL, doc, c)
 
-		plugins.Fefe(&returnee, sourceURL, doc, log)
+		plugins.Fefe(&returnee, sourceURL, doc, c)
 
-		plugins.Youtube(&returnee, sourceURL, doc, log)
-		plugins.Vimeo(&returnee, sourceURL, doc, log)
+		plugins.Youtube(&returnee, sourceURL, doc, c)
+		plugins.Vimeo(&returnee, sourceURL, doc, c)
 
-		plugins.Dilbert(&returnee, sourceURL, doc, log)
-		plugins.Garfield(&returnee, sourceURL, doc, log)
-		plugins.Xkcd(&returnee, sourceURL, doc, log)
-		plugins.Littlegamers(&returnee, sourceURL, doc, log)
+		plugins.Dilbert(&returnee, sourceURL, doc, c)
+		plugins.Garfield(&returnee, sourceURL, doc, c)
+		plugins.Xkcd(&returnee, sourceURL, doc, c)
+		plugins.Littlegamers(&returnee, sourceURL, doc, c)
 
-		plugins.Pastebin(&returnee, sourceURL, doc, log)
+		plugins.Pastebin(&returnee, sourceURL, doc, c)
 	default:
 	}
 

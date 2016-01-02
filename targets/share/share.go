@@ -7,7 +7,8 @@ import (
 	"github.com/koffeinsource/kaffeeshare/share"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 
-	"appengine"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/log"
 )
 
 // JSON understood by the extensions
@@ -30,7 +31,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	shareURL := r.URL.Query().Get("url")
 
 	if err := share.URL(shareURL, namespace, c, r); err != nil {
-		c.Errorf("Error while sharing an URL. URL: %v. Error: %v", shareURL, err)
+		log.Errorf(c, "Error while sharing an URL. URL: %v. Error: %v", shareURL, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

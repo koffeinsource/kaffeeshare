@@ -2,12 +2,7 @@
 
 package extract
 
-import (
-	"net/http"
-	"sync"
-)
-
-var internalClient *http.Client
+/*var internalClient *http.Client
 
 func getHTTPClient(r *http.Request) http.Client {
 	var once sync.Once
@@ -18,4 +13,4 @@ func getHTTPClient(r *http.Request) http.Client {
 	once.Do(body)
 
 	return *internalClient
-}
+}*/

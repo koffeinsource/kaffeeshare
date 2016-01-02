@@ -10,9 +10,10 @@ import (
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/extract"
 
-	"appengine"
-	"appengine/memcache"
-	"appengine/search"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/log"
+	"google.golang.org/appengine/memcache"
+	"google.golang.org/appengine/search"
 )
 
 // DispatchAddToIndex creates the search index for an item passed vie POST
@@ -21,7 +22,7 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 
 	if err := r.ParseForm(); err != nil {
-		c.Errorf("Error at in DispatchAddToIndex @ ParseForm. Error: %v", err)
+		log.Errorf(c, "Error at in DispatchAddToIndex @ ParseForm. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -31,28 +32,28 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 	searchItem.DSKey = r.FormValue("DSKey")
 	// We can't do anything without a DSKey
 	if searchItem.DSKey == "" {
-		c.Errorf("There was an error when getting the DSKey")
+		log.Errorf(c, "There was an error when getting the DSKey")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	namespace := r.FormValue("Namespace")
 	if namespace == "" {
-		c.Errorf("Got an empty namespace!")
+		log.Errorf(c, "Got an empty namespace!")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	URL := r.FormValue("URL")
 	if URL == "" {
-		c.Errorf("There was no URL provided")
+		log.Errorf(c, "There was no URL provided")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	index, err := search.Open("items_" + namespace)
 	if err != nil {
-		c.Errorf("Error while opening the item index %v", err)
+		log.Errorf(c, "Error while opening the item index %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -67,7 +68,7 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 
 		i, err := extract.ItemFromURL(URL, r, c)
 		if err != nil {
-			c.Errorf("Error in extract.ItemFromURL(). Error: %v", err)
+			log.Errorf(c, "Error in extract.ItemFromURL(). Error: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -88,12 +89,12 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 
 	id, err := index.Put(c, strconv.QuoteToASCII(URL), &searchItem)
 	if err != nil {
-		c.Errorf("Error while puting the search item in the index %v", err)
+		log.Errorf(c, "Error while puting the search item in the index %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	c.Debugf("Search item id %v", id)
+	log.Debugf(c, "Search item id %v", id)
 
 	w.WriteHeader(http.StatusOK)
 }

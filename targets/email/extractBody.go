@@ -9,7 +9,8 @@ import (
 	"mime"
 	"mime/multipart"
 
-	"github.com/koffeinsource/kaffeeshare/request"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/log"
 	"gopkg.in/alexcesaro/quotedprintable.v3"
 )
 
@@ -19,7 +20,7 @@ type emailHeader interface {
 }
 
 // extracts the body of an email
-func extractBody(c request.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
+func extractBody(c context.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
 	contentType := header.Get("Content-Type")
 	mediaType, params, err := mime.ParseMediaType(contentType)
 	if err != nil {
@@ -27,12 +28,12 @@ func extractBody(c request.Context, header emailHeader, bodyReader io.Reader) (*
 	}
 
 	if mediaType[:4] == "text" {
-		c.Infof("extractBody: found text")
+		log.Infof(c, "extractBody: found text")
 		return extractTextBody(c, header, bodyReader)
 	}
 
 	if mediaType[:9] == "multipart" {
-		c.Infof("extractBody: multipart")
+		log.Infof(c, "extractBody: multipart")
 		return extractMimeBody(c, params["boundary"], bodyReader)
 	}
 
@@ -40,7 +41,7 @@ func extractBody(c request.Context, header emailHeader, bodyReader io.Reader) (*
 }
 
 // read through the varios multiple parts
-func extractMimeBody(c request.Context, boundary string, bodyReader io.Reader) (*email, error) {
+func extractMimeBody(c context.Context, boundary string, bodyReader io.Reader) (*email, error) {
 	var withError *email // stores an email parse with error
 
 	mimeReader := multipart.NewReader(bodyReader, boundary)
@@ -61,7 +62,7 @@ func extractMimeBody(c request.Context, boundary string, bodyReader io.Reader) (
 		// lets save this result and try the other parts before return this result
 		if result != nil && err != nil {
 			withError = result
-			c.Infof("extractMimeBody: email guess with error %v", err)
+			log.Infof(c, "extractMimeBody: email guess with error %v", err)
 			continue
 		}
 
@@ -78,7 +79,7 @@ func extractMimeBody(c request.Context, boundary string, bodyReader io.Reader) (
 }
 
 // Decode body text and store it in a string
-func extractTextBody(c request.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
+func extractTextBody(c context.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
 	var returnee email
 
 	s, err := ioutil.ReadAll(bodyReader)
@@ -87,7 +88,7 @@ func extractTextBody(c request.Context, header emailHeader, bodyReader io.Reader
 	}
 
 	encoding := header.Get("Content-Transfer-Encoding")
-	c.Infof("extractTextBody encoding: %v", encoding)
+	log.Infof(c, "extractTextBody encoding: %v", encoding)
 
 	if encoding == "base64" {
 		b, err := base64.StdEncoding.DecodeString(string(s))

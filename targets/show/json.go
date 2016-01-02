@@ -6,9 +6,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"google.golang.org/appengine/log"
 
-	"appengine"
-	"appengine/memcache"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/memcache"
 )
 
 type jsonReturn struct {
@@ -28,7 +29,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := r.ParseForm(); err != nil {
-		c.Errorf("Error at in /show/json @ ParseForm. Error: %v", err)
+		log.Errorf(c, "Error at in /show/json @ ParseForm. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -43,9 +44,9 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err == memcache.ErrCacheMiss {
-			c.Infof("Cache miss for namespace %v", namespace)
+			log.Infof(c, "Cache miss for namespace %v", namespace)
 		} else {
-			c.Errorf("Error at in rss.dispatch while reading the cache. Error: %v", err)
+			log.Errorf(c, "Error at in rss.dispatch while reading the cache. Error: %v", err)
 		}
 	}
 
@@ -54,17 +55,17 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 
 	returnee.Items, returnee.Cursor, err = data.GetNewestItems(c, namespace, 20, cursor)
 	if err != nil {
-		c.Errorf("Error at in /show/json @ GetNewestItem. Error: %v", err)
+		log.Errorf(c, "Error at in /show/json @ GetNewestItem. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	c.Infof("items: %v", returnee.Items)
-	c.Infof("cursor: %v", returnee.Cursor)
+	log.Infof(c, "items: %v", returnee.Items)
+	log.Infof(c, "cursor: %v", returnee.Cursor)
 
 	s, err := json.Marshal(returnee)
 	if err != nil {
-		c.Errorf("Error at mashaling in www.json.dispatch. Error: %v", err)
+		log.Errorf(c, "Error at mashaling in www.json.dispatch. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -72,7 +73,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 	// only store values in cache for the first entries
 	if cursor == "" {
 		if err := data.CacheJSON(c, namespace, s); err != nil {
-			c.Errorf("Error at storing the JSON in the cache. Error: %v", err)
+			log.Errorf(c, "Error at storing the JSON in the cache. Error: %v", err)
 		}
 	}
 

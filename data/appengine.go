@@ -1,36 +1,35 @@
-// +build appengine
-
 package data
 
 import (
 	"strings"
 	"time"
 
-	"appengine"
-	"appengine/datastore"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/datastore"
+	"google.golang.org/appengine/log"
 )
 
 // Store stores an item in the datastore
-func (i *Item) Store(c appengine.Context) error {
+func (i *Item) Store(c context.Context) error {
 	i.Namespace = strings.ToLower(i.Namespace)
 	k := datastore.NewKey(c, "Item", i.Namespace+i.URL, 0, nil)
 	_, err := datastore.Put(c, k, i)
 	if err != nil {
-		c.Errorf("Error while storing item in datastore. Item: %v. Error: %v", i, err)
+		log.Errorf(c, "Error while storing item in datastore. Item: %v. Error: %v", i, err)
 		return err
 	}
 	i.DSKey = k.String()
-	c.Debugf("Stored item %+v", i)
+	log.Debugf(c, "Stored item %+v", i)
 
 	if err := clearCache(c, i.Namespace); err != nil {
-		c.Infof("Error clearing cache for namespace %v. Error: %v", i.Namespace, err)
+		log.Infof(c, "Error clearing cache for namespace %v. Error: %v", i.Namespace, err)
 	}
 
 	return nil
 }
 
 // GetNewestItems returns the latest number elements for a specific namespace
-func GetNewestItems(c appengine.Context, namespace string, limit int, cursor string) ([]Item, string, error) {
+func GetNewestItems(c context.Context, namespace string, limit int, cursor string) ([]Item, string, error) {
 	namespace = strings.ToLower(namespace)
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
@@ -42,7 +41,7 @@ func GetNewestItems(c appengine.Context, namespace string, limit int, cursor str
 
 // GetNewestItemsByTime returns up to limit numbers of items stored >= the
 // give time
-func GetNewestItemsByTime(c appengine.Context, namespace string, limit int, t time.Time, cursor string) ([]Item, string, error) {
+func GetNewestItemsByTime(c context.Context, namespace string, limit int, t time.Time, cursor string) ([]Item, string, error) {
 	namespace = strings.ToLower(namespace)
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
@@ -53,7 +52,7 @@ func GetNewestItemsByTime(c appengine.Context, namespace string, limit int, t ti
 	return executeQuery(c, q, limit, cursor)
 }
 
-func executeQuery(c appengine.Context, q *datastore.Query, limit int, cursor string) ([]Item, string, error) {
+func executeQuery(c context.Context, q *datastore.Query, limit int, cursor string) ([]Item, string, error) {
 	if cursor, err := datastore.DecodeCursor(cursor); err == nil {
 		q = q.Start(cursor)
 	}
@@ -70,7 +69,7 @@ func executeQuery(c appengine.Context, q *datastore.Query, limit int, cursor str
 
 		is = append(is, i)
 		if err != nil {
-			c.Errorf("Error fetching next item: %v", err)
+			log.Errorf(c, "Error fetching next item: %v", err)
 			return nil, "", err
 		}
 	}
@@ -83,7 +82,7 @@ func executeQuery(c appengine.Context, q *datastore.Query, limit int, cursor str
 }
 
 // NamespaceIsEmpty checks if there is already an item in a namespace
-func NamespaceIsEmpty(c appengine.Context, namespace string) (bool, error) {
+func NamespaceIsEmpty(c context.Context, namespace string) (bool, error) {
 	namespace = strings.ToLower(namespace)
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
@@ -97,7 +96,7 @@ func NamespaceIsEmpty(c appengine.Context, namespace string) (bool, error) {
 }
 
 // ClearNamespace deletes every entry in a namespace
-func ClearNamespace(c appengine.Context, namespace string) error {
+func ClearNamespace(c context.Context, namespace string) error {
 	namespace = strings.ToLower(namespace)
 	q := datastore.NewQuery("Item").
 		Filter("Namespace =", namespace).
@@ -110,13 +109,13 @@ func ClearNamespace(c appengine.Context, namespace string) error {
 
 	clearCache(c, namespace)
 
-	c.Infof("Going to delete %v items in the namespace %v", len(k), namespace)
+	log.Infof(c, "Going to delete %v items in the namespace %v", len(k), namespace)
 
 	return datastore.DeleteMulti(c, k)
 }
 
 // DeleteAllItems deletes all items from datastore
-func DeleteAllItems(c appengine.Context) error {
+func DeleteAllItems(c context.Context) error {
 	panic("Are you sure????!!!!")
 	/*q := datastore.NewQuery("Item").KeysOnly()
 

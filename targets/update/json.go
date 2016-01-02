@@ -7,8 +7,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"google.golang.org/appengine/log"
 
-	"appengine"
+	"google.golang.org/appengine"
 )
 
 type jsonReturn struct {
@@ -28,7 +29,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 
 	is, _, err := data.GetNewestItems(c, namespace, 1, "")
 	if err != nil {
-		c.Errorf("Error while getting 1 item for update/json. Error %v", err)
+		log.Errorf(c, "Error while getting 1 item for update/json. Error %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -42,12 +43,12 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 
 	s, err := json.Marshal(returnee)
 	if err != nil {
-		c.Errorf("Error at mashaling in update/json. Error: %v", err)
+		log.Errorf(c, "Error at mashaling in update/json. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	c.Infof("returning: %v", returnee)
+	log.Infof(c, "returning: %v", returnee)
 
 	w.Write(s)
 }

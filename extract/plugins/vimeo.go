@@ -5,16 +5,17 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/request"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/log"
 )
 
 // Vimeo extracts the video from a vimeo page
-func Vimeo(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+func Vimeo(i *data.Item, sourceURL string, doc *goquery.Document, c context.Context) {
 	if !strings.Contains(sourceURL, "vimeo.com") {
 		return
 	}
 
-	log.Infof("Running Vimeo plugin.")
+	log.Infof(c, "Running Vimeo plugin.")
 
 	// remove trailing '/' of the url, if any
 	if string(sourceURL[len(sourceURL)-1]) == "/" {
@@ -22,7 +23,7 @@ func Vimeo(i *data.Item, sourceURL string, doc *goquery.Document, log request.Co
 	}
 	videoIDstart := strings.LastIndex(sourceURL, "/")
 	if videoIDstart == -1 {
-		log.Infof("Vimeo plugin found no '/' ??? " + sourceURL)
+		log.Infof(c, "Vimeo plugin found no '/' ??? "+sourceURL)
 		return
 	}
 

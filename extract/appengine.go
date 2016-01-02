@@ -1,4 +1,4 @@
-// +build appengine
+
 
 package extract
 
@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"sync"
 
-	"appengine"
-	"appengine/urlfetch"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/urlfetch"
 )
 
 var internalClient *http.Client

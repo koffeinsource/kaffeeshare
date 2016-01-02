@@ -1,5 +1,3 @@
-// +build !appengine
-
 package main
 
 import (
@@ -8,6 +6,7 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/koffeinsource/kaffeeshare/extract"
+	"golang.org/x/net/context"
 )
 
 func main() {
@@ -27,6 +26,6 @@ func main() {
 		return
 	}
 	fmt.Println(" success!")
-
-	fmt.Print(extract.ItemFromURL(*webaddr, nil))
+	var c context.Context
+	fmt.Print(extract.ItemFromURL(*webaddr, nil, c))
 }

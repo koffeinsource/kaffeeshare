@@ -9,9 +9,10 @@ import (
 
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"
+	"google.golang.org/appengine/log"
 
-	"appengine"
-	"appengine/memcache"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/memcache"
 )
 
 //DispatchRSS returns the rss feed of namespace
@@ -35,21 +36,21 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err == memcache.ErrCacheMiss {
-		c.Infof("Cache miss for namespace %v", namespace)
+		log.Infof(c, "Cache miss for namespace %v", namespace)
 	} else {
-		c.Errorf("Error at in rss.dispatch while reading the cache. Error: %v", err)
+		log.Errorf(c, "Error at in rss.dispatch while reading the cache. Error: %v", err)
 	}
 
 	t := time.Now()
 	t = t.Add(-24 * time.Hour * config.RSSTimeRangeinDays)
 	is, _, err := data.GetNewestItemsByTime(c, namespace, 100, t, "")
 	if err != nil {
-		c.Errorf("Error at in rss.dispatch @ GetNewestItem. Error: %v", err)
+		log.Errorf(c, "Error at in rss.dispatch @ GetNewestItem. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	c.Infof("items: %v", is)
+	log.Infof(c, "items: %v", is)
 
 	feed := &feeds.Feed{
 		Title: namespace + " - Kaffeeshare",
@@ -75,13 +76,13 @@ func DispatchRSS(w http.ResponseWriter, r *http.Request) {
 
 	s, err := feed.ToRss()
 	if err != nil {
-		c.Errorf("Error at mashaling in www.dispatch. Error: %v", err)
+		log.Errorf(c, "Error at mashaling in www.dispatch. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err := data.CacheRSS(c, namespace, s); err != nil {
-		c.Errorf("Error at storing the RSS Feed in the cache. Error: %v", err)
+		log.Errorf(c, "Error at storing the RSS Feed in the cache. Error: %v", err)
 	}
 
 	w.Write([]byte(s))

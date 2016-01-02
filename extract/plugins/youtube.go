@@ -5,22 +5,23 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/request"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/log"
 )
 
 // Youtube extracts the video from an youtube url
-func Youtube(i *data.Item, sourceURL string, doc *goquery.Document, log request.Context) {
+func Youtube(i *data.Item, sourceURL string, doc *goquery.Document, c context.Context) {
 	if !strings.Contains(sourceURL, "www.youtube.com") {
 		return
 	}
 
-	log.Infof("Running Youtube plugin.")
+	log.Infof(c, "Running Youtube plugin.")
 
 	// update title
 
 	videoIDstart := strings.Index(i.URL, "v=")
 	if videoIDstart == -1 {
-		log.Infof("Youtube plugin found no video ID. " + sourceURL)
+		log.Infof(c, "Youtube plugin found no video ID. "+sourceURL)
 		return
 	}
 	videoIDstart += 2 // ID is after 'v='

@@ -3,19 +3,19 @@ package data
 import (
 	"strings"
 
-	"appengine"
-	"appengine/memcache"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/memcache"
 )
 
 // CacheRSS stores the RSS for a specific namespace in a cache
-func CacheRSS(c appengine.Context, namespace string, value string) error {
+func CacheRSS(c context.Context, namespace string, value string) error {
 	namespace = strings.ToLower(namespace)
 	return memcacheStore(c, "RSS"+namespace, []byte(value))
 }
 
 // ReadRSSCache checks if there is an entry for the RSS feed of namespace and
 // returns it
-func ReadRSSCache(c appengine.Context, namespace string) (string, error) {
+func ReadRSSCache(c context.Context, namespace string) (string, error) {
 	namespace = strings.ToLower(namespace)
 	b, err := memcacheRead(c, "RSS"+namespace)
 	if err != nil {
@@ -26,25 +26,25 @@ func ReadRSSCache(c appengine.Context, namespace string) (string, error) {
 }
 
 // CacheJSON store the JSON for a specific namespace in a cache
-func CacheJSON(c appengine.Context, namespace string, value []byte) error {
+func CacheJSON(c context.Context, namespace string, value []byte) error {
 	namespace = strings.ToLower(namespace)
 	return memcacheStore(c, "JSON"+namespace, value)
 }
 
 // ReadJSONCache checks if there is an entry for the JOSN of namespace and
 // returns it
-func ReadJSONCache(c appengine.Context, namespace string) ([]byte, error) {
+func ReadJSONCache(c context.Context, namespace string) ([]byte, error) {
 	namespace = strings.ToLower(namespace)
 	return memcacheRead(c, "JSON"+namespace)
 }
 
 // clearCache removes all data for the given namespace from the cache
-func clearCache(c appengine.Context, namespace string) error {
+func clearCache(c context.Context, namespace string) error {
 	namespace = strings.ToLower(namespace)
 	return memcache.DeleteMulti(c, []string{"RSS" + namespace, "JSON" + namespace})
 }
 
-func memcacheStore(c appengine.Context, key string, value []byte) error {
+func memcacheStore(c context.Context, key string, value []byte) error {
 	i := &memcache.Item{
 		Key:   key,
 		Value: value,
@@ -53,7 +53,7 @@ func memcacheStore(c appengine.Context, key string, value []byte) error {
 	return err
 }
 
-func memcacheRead(c appengine.Context, key string) ([]byte, error) {
+func memcacheRead(c context.Context, key string) ([]byte, error) {
 	i, err := memcache.Get(c, key)
 	if err == memcache.ErrCacheMiss {
 		// cache miss

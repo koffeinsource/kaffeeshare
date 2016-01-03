@@ -50,7 +50,7 @@ func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 	urls, err := parseBody(c, body)
 	log.Infof(c, "Found urls: %v", urls)
 
-	if err := share.URLsNamespaces(urls, namespaces, c, r); err != nil {
+	if err := share.URLsNamespaces(urls, namespaces, c); err != nil {
 		log.Errorf(c, "Error while sharing URLs. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -27,5 +27,5 @@ func main() {
 	}
 	fmt.Println(" success!")
 	var c context.Context
-	fmt.Print(extract.ItemFromURL(*webaddr, nil, c))
+	fmt.Print(extract.ItemFromURL(*webaddr, c))
 }

@@ -1,15 +1,15 @@
 package search
 
 import (
+	"fmt"
 	"net/http"
-	"regexp"
+	"net/url"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/extract"
-
+	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 	"google.golang.org/appengine/memcache"
@@ -27,84 +27,60 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	searchItem := data.ItemSearch{}
+	namespace := r.Form["Namespace"][0]
+	URL := r.Form["URL"][0]
 
-	searchItem.DSKey = r.FormValue("DSKey")
-	// We can't do anything without a DSKey
-	if searchItem.DSKey == "" {
-		log.Errorf(c, "There was an error when getting the DSKey")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	namespace := r.FormValue("Namespace")
-	if namespace == "" {
-		log.Errorf(c, "Got an empty namespace!")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	URL := r.FormValue("URL")
-	if URL == "" {
-		log.Errorf(c, "There was no URL provided")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	index, err := search.Open("items_" + namespace)
+	si, err := createSearchItem(c, r.Form, namespace, URL)
 	if err != nil {
-		log.Errorf(c, "Error while opening the item index %v", err)
+		log.Errorf(c, "Error while creating data.SearchItem from URL parameters.")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	memI, err := memcache.Get(c, searchItem.DSKey)
-	_ = memcache.Delete(c, searchItem.DSKey) // ignore the error
+	err = data.AddToSearchIndexTask(c, si, namespace, URL)
+	if err != nil {
+		log.Errorf(c, "Error while adding the Item to the seach index %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func createSearchItem(c context.Context, values url.Values, namespace string, URL string) (*data.SearchItem, error) {
+	DSKey := values["DSKey"][0]
+
+	// We can't do anything without a DSKey
+	if DSKey == "" || namespace == "" || URL == "" {
+		log.Errorf(c, "Something is wrong with the input data. DSKey: %v, Namespace: %v, URL: %v.", DSKey, namespace, URL)
+		return nil, fmt.Errorf("Something is wrong with the input data. DSKey: %v, Namespace: %v, URL: %v.", DSKey, namespace, URL)
+	}
+
+	memI, err := memcache.Get(c, DSKey)
+	_ = memcache.Delete(c, DSKey) // ignore possible errors
+
+	var searchItem data.SearchItem
+	searchItem.Description = values["Caption"][0] + " " + values["Description"][0]
+
 	if err == nil {
 		searchItem.HTMLforSearch = search.HTML(string(memI.Value))
 	} else {
-		// ok, not data in the memcache.
+		// ok, no data in the memcache.
 		// we need to re-query the URL to get the HTML data
-
-		i, err := extract.ItemFromURL(URL, r, c)
+		i, err := extract.ItemFromURL(URL, c)
 		if err != nil {
 			log.Errorf(c, "Error in extract.ItemFromURL(). Error: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
+			return nil, err
 		}
 
 		searchItem.HTMLforSearch = search.HTML(i.HTMLforSearch)
 	}
-	searchItem.HTMLforSearch = search.HTML(optimizeString(string(searchItem.HTMLforSearch)))
 
-	searchItem.Description = r.FormValue("Caption")
-	searchItem.Description += " " + r.FormValue("Description")
-	searchItem.Description = optimizeString(searchItem.Description)
-
-	if s, err := strconv.ParseInt(r.FormValue("CreatedAt"), 10, 64); err == nil {
+	if s, err := strconv.ParseInt(values["CreatedAt"][0], 10, 64); err == nil {
 		searchItem.CreatedAt = time.Unix(s, 0)
 	} else {
 		searchItem.CreatedAt = time.Now()
 	}
 
-	id, err := index.Put(c, strconv.QuoteToASCII(URL), &searchItem)
-	if err != nil {
-		log.Errorf(c, "Error while puting the search item in the index %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	log.Debugf(c, "Search item id %v", id)
-
-	w.WriteHeader(http.StatusOK)
-}
-
-var htmlScriptRemover = regexp.MustCompile(`<script[^>]*>[\s\S]*?</script>`)
-var whiteSpaceCompactor = regexp.MustCompile(`\s+`)
-
-func optimizeString(s string) string {
-	s = strings.ToLower(s)
-	s = htmlScriptRemover.ReplaceAllString(s, "")
-	s = whiteSpaceCompactor.ReplaceAllString(s, " ")
-	return s
+	return &searchItem, nil
 }

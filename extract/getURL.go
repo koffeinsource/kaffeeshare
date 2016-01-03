@@ -5,11 +5,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"golang.org/x/net/context"
 )
 
 // GetURL returns the content type, body and error
-func GetURL(sourceURL string, r *http.Request) (string, []byte, error) {
-	client := getHTTPClient(r)
+func GetURL(sourceURL string, c context.Context) (string, []byte, error) {
+	client := getHTTPClient(c)
 
 	// Make a request to the sorceURL
 	res, err := client.Get(sourceURL)

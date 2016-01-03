@@ -3,7 +3,6 @@ package extract
 import (
 	"bytes"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
@@ -18,7 +17,7 @@ import (
 )
 
 // ItemFromURL creates an Item from the passed url
-func ItemFromURL(sourceURL string, r *http.Request, c context.Context) (data.Item, error) {
+func ItemFromURL(sourceURL string, c context.Context) (data.Item, error) {
 
 	// Create return value with default values
 	returnee := data.Item{
@@ -35,7 +34,7 @@ func ItemFromURL(sourceURL string, r *http.Request, c context.Context) (data.Ite
 		return returnee, errReturn
 	}
 
-	contentType, body, err := GetURL(sourceURL, r)
+	contentType, body, err := GetURL(sourceURL, c)
 	if err != nil {
 		return returnee, err
 	}

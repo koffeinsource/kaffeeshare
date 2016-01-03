@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/extract"
+	"github.com/koffeinsource/kaffeeshare/search"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 	"google.golang.org/appengine/memcache"
-	"google.golang.org/appengine/search"
+	gaesearch "google.golang.org/appengine/search"
 )
 
 // DispatchAddToIndex creates the search index for an item passed vie POST
@@ -32,12 +32,12 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 
 	si, err := createSearchItem(c, r.Form, namespace, URL)
 	if err != nil {
-		log.Errorf(c, "Error while creating data.SearchItem from URL parameters.")
+		log.Errorf(c, "Error while creating data.Search.Item from URL parameters.")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	err = data.AddToSearchIndexTask(c, si, namespace, URL)
+	err = search.AddToSearchIndexTask(c, si, namespace, URL)
 	if err != nil {
 		log.Errorf(c, "Error while adding the Item to the seach index %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -47,7 +47,7 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func createSearchItem(c context.Context, values url.Values, namespace string, URL string) (*data.SearchItem, error) {
+func createSearchItem(c context.Context, values url.Values, namespace string, URL string) (*search.Item, error) {
 	DSKey := values["DSKey"][0]
 
 	// We can't do anything without a DSKey
@@ -59,11 +59,11 @@ func createSearchItem(c context.Context, values url.Values, namespace string, UR
 	memI, err := memcache.Get(c, DSKey)
 	_ = memcache.Delete(c, DSKey) // ignore possible errors
 
-	var searchItem data.SearchItem
+	var searchItem search.Item
 	searchItem.Description = values["Caption"][0] + " " + values["Description"][0]
 
 	if err == nil {
-		searchItem.HTMLforSearch = search.HTML(string(memI.Value))
+		searchItem.HTMLforSearch = gaesearch.HTML(string(memI.Value))
 	} else {
 		// ok, no data in the memcache.
 		// we need to re-query the URL to get the HTML data
@@ -73,7 +73,7 @@ func createSearchItem(c context.Context, values url.Values, namespace string, UR
 			return nil, err
 		}
 
-		searchItem.HTMLforSearch = search.HTML(i.HTMLforSearch)
+		searchItem.HTMLforSearch = gaesearch.HTML(i.HTMLforSearch)
 	}
 
 	if s, err := strconv.ParseInt(values["CreatedAt"][0], 10, 64); err == nil {

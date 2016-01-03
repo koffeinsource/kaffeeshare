@@ -1,8 +1,8 @@
 package share
 
 import (
-	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/extract"
+	"github.com/koffeinsource/kaffeeshare/search"
 
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/log"
@@ -48,7 +48,7 @@ func URLsNamespaces(shareURLs []string, namespaces []string, c context.Context) 
 				continue
 			}
 
-			data.AddToSearchIndex(c, i)
+			search.AddToSearchIndex(c, i)
 		}
 	}
 

@@ -43,11 +43,11 @@ func AddToSearchIndexTask(c context.Context, searchItem *Item, namespace string,
 		return err
 	}
 
-	searchItem.HTMLforSearch = search.HTML(optimizeString(string(searchItem.HTMLforSearch)))
+	searchItem.HTMLforSearch = search.HTML(optimizeSearchInput(string(searchItem.HTMLforSearch)))
 
-	searchItem.Description = optimizeString(searchItem.Description)
+	searchItem.Description = optimizeSearchInput(searchItem.Description)
 
-	_, err = index.Put(c, strconv.QuoteToASCII(URL), &searchItem)
+	_, err = index.Put(c, strconv.QuoteToASCII(URL), searchItem)
 	if err != nil {
 		log.Errorf(c, "Error while puting the search item in the index %v", err)
 		return err

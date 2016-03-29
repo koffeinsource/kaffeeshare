@@ -4,10 +4,8 @@ import (
 	"net/http"
 	"net/mail"
 
+	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/share"
-
-	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 )
 
 // used as an return value
@@ -18,40 +16,43 @@ type email struct {
 
 // DispatchEmail parses incoming emails
 func DispatchEmail(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
+	con := data.MakeContext(r)
 
 	msg, err := mail.ReadMessage(r.Body)
 	if err != nil {
-		log.Errorf(c, "Error at mail.ReadMessage in DispatchEmail. Error: %v", err)
+		con.Log.Errorf("Error at mail.ReadMessage in DispatchEmail. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Infof(c, "header: %v", msg.Header)
+	con.Log.Infof("header: %v", msg.Header)
 
 	// get namespaces
 	namespaces, err := getNamespaces(msg)
 	if err != nil {
-		log.Errorf(c, "Error at parsing the receiver fields. Error: %v", err)
+		con.Log.Errorf("Error at parsing the receiver fields. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	log.Infof(c, "Detected namespaces: %v", namespaces)
+	con.Log.Infof("Detected namespaces: %v", namespaces)
 
 	// get body
-	body, err := extractBody(c, msg.Header, msg.Body)
+	body, err := extractBody(con, msg.Header, msg.Body)
 	if err != nil {
-		log.Errorf(c, "Error at parsing the body. Error: %v", err)
+		con.Log.Errorf("Error at extracting the body. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	log.Infof(c, "Received mail: %v", body)
+	con.Log.Infof("Received mail: %v", body)
 
-	urls, err := parseBody(c, body)
-	log.Infof(c, "Found urls: %v", urls)
+	urls, err := parseBody(con, body)
+	if err != nil {
+		con.Log.Errorf("Error at parsing the body. Error: %v", err)
+	}
+	con.Log.Infof("Found urls: %v", urls)
 
-	if err := share.URLsNamespaces(urls, namespaces, c); err != nil {
-		log.Errorf(c, "Error while sharing URLs. Error: %v", err)
+	if err := share.URLsNamespaces(urls, namespaces, con); err != nil {
+		con.Log.Errorf("Error while sharing URLs. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

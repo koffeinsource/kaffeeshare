@@ -1,4 +1,4 @@
-package main
+package kaffeeshare
 
 import (
 	"net/http"

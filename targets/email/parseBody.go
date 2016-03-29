@@ -5,29 +5,34 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"golang.org/x/net/context"
-	"google.golang.org/appengine/log"
+	"github.com/koffeinsource/kaffeeshare/data"
 
 	"github.com/mvdan/xurls"
 )
 
-func parseBody(c context.Context, mail *email) ([]string, error) {
-	if mail.ContentType[:4] == "html" {
-		return parseHTMLBody(c, mail.Body)
+const (
+	contentTypeText  = "text"
+	contentTypeHTML  = "html"
+	contentTypeMulti = "multipart"
+)
+
+func parseBody(con *data.Context, mail *email) ([]string, error) {
+	if mail.ContentType[:4] == contentTypeHTML {
+		return parseHTMLBody(con, mail.Body)
 	}
 
-	if mail.ContentType[:4] == "text" {
-		return parseTextBody(c, mail.Body)
+	if mail.ContentType[:4] == contentTypeText {
+		return parseTextBody(con, mail.Body)
 	}
 
 	return nil, fmt.Errorf("Unsupported content type: %s", mail.ContentType)
 }
 
-func parseHTMLBody(c context.Context, body string) ([]string, error) {
-	return firstURLFromHTML(c, body)
+func parseHTMLBody(con *data.Context, body string) ([]string, error) {
+	return firstURLFromHTML(con, body)
 }
 
-func firstURLFromHTML(c context.Context, body string) ([]string, error) {
+func firstURLFromHTML(con *data.Context, body string) ([]string, error) {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
 	if err != nil {
 		return nil, err
@@ -42,7 +47,7 @@ func firstURLFromHTML(c context.Context, body string) ([]string, error) {
 		}
 		set[link] = true
 
-		log.Infof(c, "HTML found %v", link)
+		con.Log.Infof("HTML found %v", link)
 	})
 
 	links := make([]string, len(set))
@@ -55,7 +60,7 @@ func firstURLFromHTML(c context.Context, body string) ([]string, error) {
 	return links, nil
 }
 
-func allURLsFromHTML(c context.Context, body string) ([]string, error) {
+func allURLsFromHTML(con *data.Context, body string) ([]string, error) {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
 	if err != nil {
 		return nil, err
@@ -70,7 +75,7 @@ func allURLsFromHTML(c context.Context, body string) ([]string, error) {
 		}
 		set[link] = true
 
-		log.Infof(c, "HTML found %v", link)
+		con.Log.Infof("HTML found %v", link)
 	})
 
 	links := make([]string, len(set))
@@ -83,21 +88,21 @@ func allURLsFromHTML(c context.Context, body string) ([]string, error) {
 	return links, nil
 }
 
-func parseTextBody(c context.Context, body string) ([]string, error) {
-	return firstURLFromText(c, body)
+func parseTextBody(con *data.Context, body string) ([]string, error) {
+	return firstURLFromText(con, body)
 }
 
-func firstURLFromText(c context.Context, body string) ([]string, error) {
+func firstURLFromText(con *data.Context, body string) ([]string, error) {
 	links := make([]string, 1)
 	links[0] = xurls.Relaxed.FindString(body)
-	log.Infof(c, "Found urls in body %v,  %v", body, links)
+	con.Log.Infof("Found urls in body %v,  %v", body, links)
 
 	return links, nil
 }
 
-func allURLsFromText(c context.Context, body string) ([]string, error) {
+func allURLsFromText(con *data.Context, body string) ([]string, error) {
 	links := xurls.Relaxed.FindAllString(body, -1)
-	log.Infof(c, "Found urls in body %v,  %v", body, links)
+	con.Log.Infof("Found urls in body %v,  %v", body, links)
 
 	set := make(map[string]bool)
 	for _, l := range links {

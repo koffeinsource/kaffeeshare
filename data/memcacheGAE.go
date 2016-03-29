@@ -3,21 +3,20 @@ package data
 import (
 	"strings"
 
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/memcache"
 )
 
 // CacheRSS stores the RSS for a specific namespace in a cache
-func CacheRSS(c context.Context, namespace string, value string) error {
+func CacheRSS(con *Context, namespace string, value string) error {
 	namespace = strings.ToLower(namespace)
-	return memcacheStore(c, "RSS"+namespace, []byte(value))
+	return memcacheStore(con, "RSS"+namespace, []byte(value))
 }
 
 // ReadRSSCache checks if there is an entry for the RSS feed of namespace and
 // returns it
-func ReadRSSCache(c context.Context, namespace string) (string, error) {
+func ReadRSSCache(con *Context, namespace string) (string, error) {
 	namespace = strings.ToLower(namespace)
-	b, err := memcacheRead(c, "RSS"+namespace)
+	b, err := memcacheRead(con, "RSS"+namespace)
 	if err != nil {
 		return "", err
 	}
@@ -26,35 +25,35 @@ func ReadRSSCache(c context.Context, namespace string) (string, error) {
 }
 
 // CacheJSON store the JSON for a specific namespace in a cache
-func CacheJSON(c context.Context, namespace string, value []byte) error {
+func CacheJSON(con *Context, namespace string, value []byte) error {
 	namespace = strings.ToLower(namespace)
-	return memcacheStore(c, "JSON"+namespace, value)
+	return memcacheStore(con, "JSON"+namespace, value)
 }
 
 // ReadJSONCache checks if there is an entry for the JOSN of namespace and
 // returns it
-func ReadJSONCache(c context.Context, namespace string) ([]byte, error) {
+func ReadJSONCache(con *Context, namespace string) ([]byte, error) {
 	namespace = strings.ToLower(namespace)
-	return memcacheRead(c, "JSON"+namespace)
+	return memcacheRead(con, "JSON"+namespace)
 }
 
 // clearCache removes all data for the given namespace from the cache
-func clearCache(c context.Context, namespace string) error {
+func clearCache(con *Context, namespace string) error {
 	namespace = strings.ToLower(namespace)
-	return memcache.DeleteMulti(c, []string{"RSS" + namespace, "JSON" + namespace})
+	return memcache.DeleteMulti(con.C, []string{"RSS" + namespace, "JSON" + namespace})
 }
 
-func memcacheStore(c context.Context, key string, value []byte) error {
+func memcacheStore(con *Context, key string, value []byte) error {
 	i := &memcache.Item{
 		Key:   key,
 		Value: value,
 	}
-	err := memcache.Set(c, i)
+	err := memcache.Set(con.C, i)
 	return err
 }
 
-func memcacheRead(c context.Context, key string) ([]byte, error) {
-	i, err := memcache.Get(c, key)
+func memcacheRead(con *Context, key string) ([]byte, error) {
+	i, err := memcache.Get(con.C, key)
 	if err == memcache.ErrCacheMiss {
 		// cache miss
 		return nil, err

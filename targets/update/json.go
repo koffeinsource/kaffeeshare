@@ -7,9 +7,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"google.golang.org/appengine/log"
-
-	"google.golang.org/appengine"
 )
 
 type jsonReturn struct {
@@ -18,7 +15,7 @@ type jsonReturn struct {
 
 //DispatchJSON returns the json view of a namespace
 func DispatchJSON(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
+	con := data.MakeContext(r)
 
 	// get namespace
 	namespace := mux.Vars(r)["namespace"]
@@ -27,9 +24,9 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	is, _, err := data.GetNewestItems(c, namespace, 1, "")
+	is, _, err := data.GetNewestItems(con, namespace, 1, "")
 	if err != nil {
-		log.Errorf(c, "Error while getting 1 item for update/json. Error %v", err)
+		con.Log.Errorf("Error while getting 1 item for update/json. Error %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -43,12 +40,12 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 
 	s, err := json.Marshal(returnee)
 	if err != nil {
-		log.Errorf(c, "Error at mashaling in update/json. Error: %v", err)
+		con.Log.Errorf("Error at mashaling in update/json. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Infof(c, "returning: %v", returnee)
+	con.Log.Infof("returning: %v", returnee)
 
 	w.Write(s)
 }

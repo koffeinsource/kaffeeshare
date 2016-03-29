@@ -1,6 +1,10 @@
 package data
 
-import "time"
+import (
+	"time"
+
+	"github.com/koffeinsource/go-URLextract/webpage"
+)
 
 // An Item is all the data we store from a website
 type Item struct {
@@ -13,6 +17,18 @@ type Item struct {
 	Namespace     string    `json:"-" datastore:"Namespace,index"`
 	HTMLforSearch string    `json:"-" datastore:"-"`
 	DSKey         string    `json:"-" datastore:"-"`
+}
+
+// ItemFromWebpageInfo converts the results returned from go-URLextract into our own Item struct
+func ItemFromWebpageInfo(info webpage.Info) Item {
+	var ret Item
+	ret.Caption = info.Caption
+	ret.Description = info.Description
+	ret.HTMLforSearch = info.HTML
+	ret.ImageURL = info.ImageURL
+	ret.URL = info.URL
+	ret.CreatedAt = time.Now()
+	return ret
 }
 
 // Data per namespace?

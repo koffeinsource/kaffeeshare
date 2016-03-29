@@ -4,11 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/share"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
-
-	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 )
 
 // JSON understood by the extensions
@@ -19,7 +17,7 @@ var (
 
 // DispatchJSON receives an extension json request
 func DispatchJSON(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
+	con := data.MakeContext(r)
 
 	// get namespace
 	namespace := mux.Vars(r)["namespace"]
@@ -30,8 +28,8 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 
 	shareURL := r.URL.Query().Get("url")
 
-	if err := share.URL(shareURL, namespace, c); err != nil {
-		log.Errorf(c, "Error while sharing an URL. URL: %v. Error: %v", shareURL, err)
+	if err := share.URL(shareURL, namespace, con); err != nil {
+		con.Log.Errorf("Error while sharing an URL. URL: %v. Error: %v", shareURL, err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

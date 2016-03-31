@@ -2,3 +2,4 @@ cron:
 - description: clear the test namespace
   url: /c/clear_test/
   schedule: every 12 hours
+#TODO imgur rate check!

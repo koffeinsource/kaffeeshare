@@ -2,3 +2,7 @@ language: go
 
 go:
     tip
+
+before_script:
+    cp config/private.go.sample config/private.go
+    

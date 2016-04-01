@@ -19,29 +19,28 @@ type emailHeader interface {
 }
 
 // extracts the body of an email
-func extractBody(con *data.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
+func extractBody(con *data.Context, header emailHeader, bodyReader io.Reader) (*body, error) {
 	contentType := header.Get("Content-Type")
 	mediaType, params, err := mime.ParseMediaType(contentType)
 	if err != nil {
 		return nil, err
 	}
-
-	if mediaType[:4] == contentTypeText {
-		con.Log.Infof("extractBody: found text")
+	if mediaType[:len(contentTypeText)] == contentTypeText {
+		con.Log.Debugf("extractBody: found text")
 		return extractTextBody(con, header, bodyReader)
 	}
 
-	if mediaType[:9] == contentTypeMulti {
-		con.Log.Infof("extractBody: multipart")
+	if mediaType[:len(contentTypeMulti)] == contentTypeMulti {
+		con.Log.Debugf("extractBody: multipart")
 		return extractMimeBody(con, params["boundary"], bodyReader)
 	}
 
-	return nil, fmt.Errorf("Unsupported content type: %s", contentType)
+	return nil, fmt.Errorf("Unsupported content type: %s; media type: %v", contentType, mediaType)
 }
 
 // read through the varios multiple parts
-func extractMimeBody(con *data.Context, boundary string, bodyReader io.Reader) (*email, error) {
-	var withError *email // stores an email parse with error
+func extractMimeBody(con *data.Context, boundary string, bodyReader io.Reader) (*body, error) {
+	var withError *body // stores an email parse with error
 
 	mimeReader := multipart.NewReader(bodyReader, boundary)
 
@@ -78,8 +77,8 @@ func extractMimeBody(con *data.Context, boundary string, bodyReader io.Reader) (
 }
 
 // Decode body text and store it in a string
-func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
-	var returnee email
+func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader) (*body, error) {
+	var returnee body
 
 	s, err := ioutil.ReadAll(bodyReader)
 	if err != nil {
@@ -87,7 +86,7 @@ func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader
 	}
 
 	encoding := header.Get("Content-Transfer-Encoding")
-	con.Log.Infof("extractTextBody encoding: %v", encoding)
+	con.Log.Debugf("extractTextBody encoding: %v", encoding)
 
 	if encoding == "base64" {
 		b, err := base64.StdEncoding.DecodeString(string(s))

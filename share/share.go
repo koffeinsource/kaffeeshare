@@ -2,6 +2,9 @@ package share
 
 import (
 	"net/http"
+	"time"
+
+	"golang.org/x/net/context"
 
 	"github.com/koffeinsource/go-URLextract"
 	"github.com/koffeinsource/kaffeeshare/config"
@@ -27,17 +30,27 @@ func URL(shareURL string, namespace string, con *data.Context) error {
 	return nil
 }
 
+// CreateHTTPClient creates an HTTP client that can be used at the GAE
+// TODO move to a different package
+func CreateHTTPClient(con *data.Context) *http.Client {
+	var timeout time.Time
+	timeout = time.Now().Add(60 * time.Second)
+	c, _ := context.WithDeadline(con.C, timeout)
+	s := &urlfetch.Transport{
+		Context: c,
+		//AllowInvalidServerCertificate: true,
+	}
+	h := &http.Client{
+		Transport: s,
+	}
+	return h
+}
+
 // CreateURLExtractClient creates a client for go-URLextract
 func CreateURLExtractClient(con *data.Context) URLextract.Client {
 	var conf URLextract.Client
 
-	s := &urlfetch.Transport{
-		Context: con.C,
-		AllowInvalidServerCertificate: true,
-	}
-	conf.HTTPClient = &http.Client{
-		Transport: s,
-	}
+	conf.HTTPClient = CreateHTTPClient(con)
 
 	conf.Log = con.Log
 	conf.AmazonAdID = config.AmazonAdID

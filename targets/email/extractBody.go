@@ -8,10 +8,9 @@ import (
 	"io/ioutil"
 	"mime"
 	"mime/multipart"
+	"mime/quotedprintable"
 
 	"github.com/koffeinsource/kaffeeshare/data"
-
-	"gopkg.in/alexcesaro/quotedprintable.v3"
 )
 
 // Required to be able to pass different kind of headers in the following functions

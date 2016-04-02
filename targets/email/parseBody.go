@@ -67,10 +67,13 @@ func parseTextBody(con *data.Context, body string) ([]string, error) {
 
 func firstURLFromText(con *data.Context, body string) ([]string, error) {
 	var links []string
-	l := xurls.Relaxed.FindString(body)
+	l := xurls.Relaxed.FindAllString(body, -1)
 	con.Log.Infof("Found urls in body %v,  %v", body, l)
-	if l != "" && !strings.Contains(l, "mailto:") {
-		links = append(links, l)
+	for _, s := range l {
+		if s != "" && !strings.Contains(s, "mailto:") {
+			links = append(links, s)
+			return links, nil
+		}
 	}
 
 	return links, nil

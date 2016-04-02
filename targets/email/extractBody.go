@@ -84,6 +84,7 @@ func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader
 	if err != nil {
 		return nil, err
 	}
+	con.Log.Debugf("header: %v", header)
 
 	encoding := header.Get("Content-Transfer-Encoding")
 	con.Log.Debugf("extractTextBody encoding: %v", encoding)

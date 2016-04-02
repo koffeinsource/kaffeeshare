@@ -3,12 +3,14 @@ package email
 import (
 	"bytes"
 	"io/ioutil"
+	"mime"
 	"net/http"
 	"net/mail"
 
 	"github.com/koffeinsource/go-imgur"
 	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/httpClient"
 	"github.com/koffeinsource/kaffeeshare/share"
 )
 
@@ -19,6 +21,7 @@ type body struct {
 }
 
 // DispatchEmail parses incoming emails
+// TODO refactor. too large!
 func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 	con := data.MakeContext(r)
 
@@ -78,14 +81,20 @@ func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 
 		var imgurclient imgur.Client
 		imgurclient.ImgurClientID = config.ImgurClientID
-		imgurclient.HTTPClient = share.CreateHTTPClient(con)
+		imgurclient.HTTPClient = httpClient.GetWithLongDeadline(con)
 		imgurclient.Log = con.Log
 
 		var urls []string
 
 		// FIXME we may set error code more than once!
 		for _, im := range images {
-			subject := msg.Header.Get("Subject")
+			subject, err := decodeSubject(msg.Header.Get("Subject"))
+			if err != nil {
+				con.Log.Errorf("Error while decoding subject. Error: %v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				continue
+			}
+
 			ii, status, err := imgurclient.UploadImage(im.Body, "", im.Encoding, subject, "")
 			if status > 399 || err != nil {
 				con.Log.Errorf("Error while uploading image. Status: %v Error: %v", status, err)
@@ -109,4 +118,13 @@ func DispatchEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func decodeSubject(subj string) (string, error) {
+	var dec mime.WordDecoder
+	ret, err := dec.DecodeHeader(subj)
+	if err != nil {
+		return "", err
+	}
+	return ret, nil
 }

@@ -1,16 +1,11 @@
 package share
 
 import (
-	"net/http"
-	"time"
-
-	"golang.org/x/net/context"
-
 	"github.com/koffeinsource/go-URLextract"
 	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/httpClient"
 	"github.com/koffeinsource/kaffeeshare/search"
-	"google.golang.org/appengine/urlfetch"
 )
 
 // URL shares an URL, i.e. stores it in the datastore and everything
@@ -30,27 +25,11 @@ func URL(shareURL string, namespace string, con *data.Context) error {
 	return nil
 }
 
-// CreateHTTPClient creates an HTTP client that can be used at the GAE
-// TODO move to a different package
-func CreateHTTPClient(con *data.Context) *http.Client {
-	var timeout time.Time
-	timeout = time.Now().Add(60 * time.Second)
-	c, _ := context.WithDeadline(con.C, timeout)
-	s := &urlfetch.Transport{
-		Context: c,
-		//AllowInvalidServerCertificate: true,
-	}
-	h := &http.Client{
-		Transport: s,
-	}
-	return h
-}
-
 // CreateURLExtractClient creates a client for go-URLextract
 func CreateURLExtractClient(con *data.Context) URLextract.Client {
 	var conf URLextract.Client
 
-	conf.HTTPClient = CreateHTTPClient(con)
+	conf.HTTPClient = httpClient.Get(con)
 
 	conf.Log = con.Log
 	conf.AmazonAdID = config.AmazonAdID

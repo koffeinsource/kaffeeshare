@@ -6,8 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
-
-	"appengine"
 )
 
 // JSON understood by the front page
@@ -19,7 +17,7 @@ var (
 
 // DispatchJSON is called when a json request with an url is posted
 func DispatchJSON(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
+	con := data.MakeContext(r)
 
 	// get namespace
 	namespace := mux.Vars(r)["namespace"]
@@ -28,7 +26,7 @@ func DispatchJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	empty, err := data.NamespaceIsEmpty(c, namespace)
+	empty, err := data.NamespaceIsEmpty(con, namespace)
 
 	if err == nil {
 

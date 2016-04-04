@@ -8,9 +8,9 @@ import (
 	"io/ioutil"
 	"mime"
 	"mime/multipart"
+	"mime/quotedprintable"
 
-	"github.com/koffeinsource/kaffeeshare/request"
-	"gopkg.in/alexcesaro/quotedprintable.v3"
+	"github.com/koffeinsource/kaffeeshare/data"
 )
 
 // Required to be able to pass different kind of headers in the following functions
@@ -19,29 +19,39 @@ type emailHeader interface {
 }
 
 // extracts the body of an email
-func extractBody(c request.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
+func extractBody(con *data.Context, header emailHeader, bodyReader io.Reader) (*body, error) {
 	contentType := header.Get("Content-Type")
 	mediaType, params, err := mime.ParseMediaType(contentType)
 	if err != nil {
 		return nil, err
 	}
 
-	if mediaType[:4] == "text" {
-		c.Infof("extractBody: found text")
-		return extractTextBody(c, header, bodyReader)
+	if len(mediaType) < len(contentTypeText) && mediaType[:len(contentTypeText)] == contentTypeText {
+		con.Log.Debugf("extractBody: found text")
+		return extractTextBody(con, header, bodyReader)
 	}
 
-	if mediaType[:9] == "multipart" {
-		c.Infof("extractBody: multipart")
-		return extractMimeBody(c, params["boundary"], bodyReader)
+	if len(mediaType) < len(contentTypeMulti) && mediaType[:len(contentTypeMulti)] == contentTypeMulti {
+		con.Log.Debugf("extractBody: multipart")
+		return extractMimeBody(con, params["boundary"], bodyReader)
 	}
 
-	return nil, fmt.Errorf("Unsupported content type: %s", contentType)
+	if len(mediaType) < len(contentTypeSMIMESig) && mediaType[:len(contentTypeSMIMESig)] == contentTypeSMIMESig {
+		con.Log.Debugf("extractAttachment: SMIME sig; ignoring; mediaType: %v", mediaType)
+		return nil, nil
+	}
+
+	if len(mediaType) < len(contentTypeImage) && mediaType[:len(contentTypeImage)] == contentTypeImage {
+		con.Log.Debugf("extractBody: image, ignoring")
+		return nil, nil
+	}
+
+	return nil, fmt.Errorf("Unsupported content type: %s; media type: %v", contentType, mediaType)
 }
 
 // read through the varios multiple parts
-func extractMimeBody(c request.Context, boundary string, bodyReader io.Reader) (*email, error) {
-	var withError *email // stores an email parse with error
+func extractMimeBody(con *data.Context, boundary string, bodyReader io.Reader) (*body, error) {
+	var withError *body // stores an email parse with error
 
 	mimeReader := multipart.NewReader(bodyReader, boundary)
 
@@ -55,17 +65,17 @@ func extractMimeBody(c request.Context, boundary string, bodyReader io.Reader) (
 		}
 		defer part.Close()
 
-		result, err := extractBody(c, part.Header, part)
+		result, err := extractBody(con, part.Header, part)
 
 		// this means we tried to decode it, but are not sure
 		// lets save this result and try the other parts before return this result
 		if result != nil && err != nil {
 			withError = result
-			c.Infof("extractMimeBody: email guess with error %v", err)
+			con.Log.Infof("extractMimeBody: email guess with error %v", err)
 			continue
 		}
 
-		if result != nil && result.ContentType[:4] == "text" {
+		if result != nil && result.ContentType[:4] == contentTypeText {
 			return result, nil
 		}
 	}
@@ -78,16 +88,17 @@ func extractMimeBody(c request.Context, boundary string, bodyReader io.Reader) (
 }
 
 // Decode body text and store it in a string
-func extractTextBody(c request.Context, header emailHeader, bodyReader io.Reader) (*email, error) {
-	var returnee email
+func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader) (*body, error) {
+	var returnee body
 
 	s, err := ioutil.ReadAll(bodyReader)
 	if err != nil {
 		return nil, err
 	}
+	con.Log.Debugf("header: %v", header)
 
 	encoding := header.Get("Content-Transfer-Encoding")
-	c.Infof("extractTextBody encoding: %v", encoding)
+	con.Log.Debugf("extractTextBody encoding: %v", encoding)
 
 	if encoding == "base64" {
 		b, err := base64.StdEncoding.DecodeString(string(s))

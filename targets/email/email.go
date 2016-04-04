@@ -1,75 +1,130 @@
 package email
 
 import (
+	"bytes"
+	"io/ioutil"
+	"mime"
 	"net/http"
 	"net/mail"
 
-	"github.com/asaskevich/govalidator"
+	"github.com/koffeinsource/go-imgur"
+	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/extract"
-
-	"appengine"
+	"github.com/koffeinsource/kaffeeshare/httpClient"
+	"github.com/koffeinsource/kaffeeshare/share"
 )
 
 // used as an return value
-type email struct {
+type body struct {
 	Body        string
 	ContentType string
 }
 
 // DispatchEmail parses incoming emails
+// TODO refactor. too large!
 func DispatchEmail(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
-
-	defer r.Body.Close()
+	con := data.MakeContext(r)
 
 	msg, err := mail.ReadMessage(r.Body)
 	if err != nil {
-		c.Errorf("Error at mail.ReadMessage in DispatchEmail. Error: %v", err)
+		con.Log.Errorf("Error at mail.ReadMessage in DispatchEmail. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	c.Infof("header: %v", msg.Header)
+	con.Log.Debugf("header: %v", msg.Header)
 
 	// get namespaces
 	namespaces, err := getNamespaces(msg)
 	if err != nil {
-		c.Errorf("Error at parsing the receiver fields. Error: %v", err)
+		con.Log.Errorf("Error at parsing the receiver fields. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	c.Infof("Detected namespaces: %v", namespaces)
+	con.Log.Infof("Detected namespaces: %v", namespaces)
+
+	bodyCopy, err := ioutil.ReadAll(msg.Body)
+	if err != nil {
+		con.Log.Errorf("Error while reading msg.Body. Error: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// get body
-	body, err := extractBody(c, msg.Header, msg.Body)
+	body, err := extractBody(con, msg.Header, bytes.NewBuffer(bodyCopy))
 	if err != nil {
-		c.Errorf("Error at parsing the body. Error: %v", err)
+		con.Log.Errorf("Error at extracting the body. Error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	c.Infof("Received mail: %v", body)
+	con.Log.Debugf("Received mail: %v", body)
 
-	urls, err := parseBody(c, body)
-	c.Infof("Found urls: %v", urls)
+	urls, err := parseBody(con, body)
+	if err != nil {
+		con.Log.Errorf("Error at parsing the body. Error: %v", err)
+	}
+	con.Log.Debugf("Found urls: %v", urls)
 
-	for _, shareURL := range urls {
-		if !govalidator.IsRequestURL(shareURL) {
-			c.Errorf("Invalid URL. Error: %v", shareURL)
-			continue
+	if len(urls) > 0 {
+		if err := share.URLsNamespaces(urls, namespaces, con); err != nil {
+			con.Log.Errorf("Error while sharing URLs. Error: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	} else {
+		images, err := extractAttachment(con, msg.Header, bytes.NewBuffer(bodyCopy))
+		if err != nil {
+			con.Log.Errorf("Error while extracting attachments. Error: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
-		i := extract.ItemFromURL(shareURL, r, c)
+		var imgurclient imgur.Client
+		imgurclient.ImgurClientID = config.ImgurClientID
+		imgurclient.HTTPClient = httpClient.GetWithLongDeadline(con)
+		imgurclient.Log = con.Log
 
-		for _, namespace := range namespaces {
-			i.Namespace = namespace
-			c.Infof("Item: %v", i)
+		var urls []string
 
-			if err := data.StoreItem(c, i); err != nil {
-				c.Errorf("Error at in StoreItem. Item: %v. Error: %v", i, err)
+		// FIXME we may set error code more than once!
+		for _, im := range images {
+			subject, err := decodeSubject(msg.Header.Get("Subject"))
+			if err != nil {
+				con.Log.Errorf("Error while decoding subject. Error: %v", err)
+				w.WriteHeader(http.StatusInternalServerError)
 				continue
 			}
+
+			ii, status, err := imgurclient.UploadImage(im.Body, "", im.Encoding, subject, "")
+			if status > 399 || err != nil {
+				con.Log.Errorf("Error while uploading image. Status: %v Error: %v", status, err)
+				w.WriteHeader(http.StatusInternalServerError)
+				continue
+			}
+			var iu data.ImageUpload
+			iu.DeleteHash = ii.Deletehash
+			iu.URL = ii.Link
+			if err := iu.Store(con); err != nil {
+				con.Log.Errorf("Error while storing upload in datastore Error: %v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+			urls = append(urls, ii.Link)
+		}
+		if err := share.URLsNamespaces(urls, namespaces, con); err != nil {
+			con.Log.Errorf("Error while sharing URLs. Error: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 	}
 
+	w.WriteHeader(http.StatusOK)
+}
+
+func decodeSubject(subj string) (string, error) {
+	var dec mime.WordDecoder
+	ret, err := dec.DecodeHeader(subj)
+	if err != nil {
+		return "", err
+	}
+	return ret, nil
 }

@@ -15,9 +15,3 @@ indexes:
   - name: Namespace
   - name: CreatedAt
     direction: desc
-
-- kind: item
-  properties:
-  - name: Namespace
-  - name: CreatedAt
-    direction: desc

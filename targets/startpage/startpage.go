@@ -15,6 +15,9 @@ type startpageTemplateValues struct {
 
 // Dispatch executes all commands for the www target
 func Dispatch(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "public, max-age=86400")
+	w.Header().Set("Pragma", "Public")
+
 	var value startpageTemplateValues
 	value.URL = config.URL
 	if err := templateWWW.Execute(w, value); err != nil {

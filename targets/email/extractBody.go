@@ -25,14 +25,25 @@ func extractBody(con *data.Context, header emailHeader, bodyReader io.Reader) (*
 	if err != nil {
 		return nil, err
 	}
-	if mediaType[:len(contentTypeText)] == contentTypeText {
+
+	if len(mediaType) < len(contentTypeText) && mediaType[:len(contentTypeText)] == contentTypeText {
 		con.Log.Debugf("extractBody: found text")
 		return extractTextBody(con, header, bodyReader)
 	}
 
-	if mediaType[:len(contentTypeMulti)] == contentTypeMulti {
+	if len(mediaType) < len(contentTypeMulti) && mediaType[:len(contentTypeMulti)] == contentTypeMulti {
 		con.Log.Debugf("extractBody: multipart")
 		return extractMimeBody(con, params["boundary"], bodyReader)
+	}
+
+	if len(mediaType) < len(contentTypeSMIMESig) && mediaType[:len(contentTypeSMIMESig)] == contentTypeSMIMESig {
+		con.Log.Debugf("extractAttachment: SMIME sig; ignoring; mediaType: %v", mediaType)
+		return nil, nil
+	}
+
+	if len(mediaType) < len(contentTypeImage) && mediaType[:len(contentTypeImage)] == contentTypeImage {
+		con.Log.Debugf("extractBody: image, ignoring")
+		return nil, nil
 	}
 
 	return nil, fmt.Errorf("Unsupported content type: %s; media type: %v", contentType, mediaType)

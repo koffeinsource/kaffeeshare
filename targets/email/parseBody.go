@@ -17,6 +17,9 @@ const (
 )
 
 func parseBody(con *data.Context, mail *body) ([]string, error) {
+	if mail == nil {
+		return nil, nil
+	}
 	if mail.ContentType[:len(contentTypeHTML)] == contentTypeHTML {
 		return parseHTMLBody(con, mail.Body)
 	}
@@ -33,7 +36,11 @@ func parseHTMLBody(con *data.Context, body string) ([]string, error) {
 }
 
 func firstURLFromHTML(con *data.Context, body string) ([]string, error) {
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(body))
+	if body == "" {
+		return nil, nil
+	}
+	strRdr := strings.NewReader(body)
+	doc, err := goquery.NewDocumentFromReader(strRdr)
 	if err != nil {
 		return nil, err
 	}

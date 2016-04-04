@@ -9,6 +9,8 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
+// TODO extract urlfetch.Transport in own function
+
 // Get creates an HTTP client for the GAE
 func Get(con *data.Context) *http.Client {
 	var timeout time.Time
@@ -16,7 +18,7 @@ func Get(con *data.Context) *http.Client {
 	c, _ := context.WithDeadline(con.C, timeout)
 	s := &urlfetch.Transport{
 		Context: c,
-		//AllowInvalidServerCertificate: true,
+		AllowInvalidServerCertificate: true,
 	}
 	h := &http.Client{
 		Transport: s,
@@ -31,7 +33,7 @@ func GetWithLongDeadline(con *data.Context) *http.Client {
 	c, _ := context.WithDeadline(con.C, timeout)
 	s := &urlfetch.Transport{
 		Context: c,
-		//AllowInvalidServerCertificate: true,
+		AllowInvalidServerCertificate: true,
 	}
 	h := &http.Client{
 		Transport: s,

@@ -29,24 +29,24 @@ func extractAttachment(con *data.Context, header emailHeader, bodyReader io.Read
 		return nil, err
 	}
 
-	if len(mediaType) < len(contentTypeText) && mediaType[:len(contentTypeText)] == contentTypeText {
+	if len(mediaType) >= len(contentTypeText) && mediaType[:len(contentTypeText)] == contentTypeText {
 		con.Log.Debugf("extractAttachment: found text; ignoring; mediaType: %v", mediaType)
 		return nil, nil
 	}
 
-	if len(mediaType) < len(contentTypeSMIMESig) && mediaType[:len(contentTypeSMIMESig)] == contentTypeSMIMESig {
+	if len(mediaType) >= len(contentTypeSMIMESig) && mediaType[:len(contentTypeSMIMESig)] == contentTypeSMIMESig {
 		con.Log.Debugf("extractAttachment: SMIME sig; ignoring; mediaType: %v", mediaType)
 		return nil, nil
 	}
 
-	if len(mediaType) < len(contentTypeMulti) && mediaType[:len(contentTypeMulti)] == contentTypeMulti {
+	if len(mediaType) >= len(contentTypeMulti) && mediaType[:len(contentTypeMulti)] == contentTypeMulti {
 		con.Log.Debugf("extractAttachment: found multipart; recursion; mediaType: %v", mediaType)
 		is, err := extractMimeAttachment(con, params["boundary"], bodyReader)
 		images = append(images, is...)
 		return images, err
 	}
 
-	if len(mediaType) < len(contentTypeImage) && mediaType[:len(contentTypeImage)] == contentTypeImage {
+	if len(mediaType) >= len(contentTypeImage) && mediaType[:len(contentTypeImage)] == contentTypeImage {
 		con.Log.Debugf("extractAttachment: image; mediaType: %v", mediaType)
 		i, err := extractImage(con, header, bodyReader)
 		if err != nil {

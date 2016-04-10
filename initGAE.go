@@ -41,6 +41,9 @@ func init() {
 	router.HandleFunc("/c/clear_test/", cron.ClearTest)
 	router.HandleFunc("/c/clear_test", cron.ClearTest)
 
+	router.HandleFunc("/c/imgur_quota/", cron.ImgurQuota)
+	router.HandleFunc("/c/imgur_quota", cron.ImgurQuota)
+
 	router.HandleFunc("/t/search/add_to_index", search.DispatchAddToIndex)
 
 	// TODO move to router

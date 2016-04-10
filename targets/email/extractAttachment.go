@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"mime"
 	"mime/multipart"
+	"strings"
 
 	"github.com/koffeinsource/kaffeeshare/data"
 )
@@ -29,24 +30,24 @@ func extractAttachment(con *data.Context, header emailHeader, bodyReader io.Read
 		return nil, err
 	}
 
-	if len(mediaType) >= len(contentTypeText) && mediaType[:len(contentTypeText)] == contentTypeText {
+	if strings.HasPrefix(mediaType, contentTypeText) {
 		con.Log.Debugf("extractAttachment: found text; ignoring; mediaType: %v", mediaType)
 		return nil, nil
 	}
 
-	if len(mediaType) >= len(contentTypeSMIMESig) && mediaType[:len(contentTypeSMIMESig)] == contentTypeSMIMESig {
+	if strings.HasPrefix(mediaType, contentTypeSMIMESig) {
 		con.Log.Debugf("extractAttachment: SMIME sig; ignoring; mediaType: %v", mediaType)
 		return nil, nil
 	}
 
-	if len(mediaType) >= len(contentTypeMulti) && mediaType[:len(contentTypeMulti)] == contentTypeMulti {
+	if strings.HasPrefix(mediaType, contentTypeMulti) {
 		con.Log.Debugf("extractAttachment: found multipart; recursion; mediaType: %v", mediaType)
 		is, err := extractMimeAttachment(con, params["boundary"], bodyReader)
 		images = append(images, is...)
 		return images, err
 	}
 
-	if len(mediaType) >= len(contentTypeImage) && mediaType[:len(contentTypeImage)] == contentTypeImage {
+	if strings.HasPrefix(mediaType, contentTypeImage) {
 		con.Log.Debugf("extractAttachment: image; mediaType: %v", mediaType)
 		i, err := extractImage(con, header, bodyReader)
 		if err != nil {

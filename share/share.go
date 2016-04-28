@@ -39,6 +39,10 @@ func CreateURLExtractClient(con *data.Context) URLextract.Client {
 
 // URLsNamespaces shares multiple URLs in mutliple namespaces.
 func URLsNamespaces(shareURLs []string, namespaces []string, con *data.Context) error {
+	if len(shareURLs) == 0 || len(namespaces) == 0 {
+		return nil
+	}
+
 	c := CreateURLExtractClient(con)
 
 	var errReturn error

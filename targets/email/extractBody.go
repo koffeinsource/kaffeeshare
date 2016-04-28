@@ -98,6 +98,8 @@ func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader
 	}
 	con.Log.Debugf("header: %v", header)
 
+	returnee.ContentType = header.Get("Content-Type")
+
 	encoding := header.Get("Content-Transfer-Encoding")
 	con.Log.Debugf("extractTextBody encoding: %v", encoding)
 
@@ -107,7 +109,6 @@ func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader
 			return nil, err
 		}
 		returnee.Body = string(b)
-		returnee.ContentType = header.Get("Content-Type")
 		return &returnee, nil
 	}
 
@@ -115,7 +116,6 @@ func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader
 		// that is just US ASCII (7bit)
 		// https://stackoverflow.com/questions/25710599/content-transfer-encoding-7bit-or-8-bit
 		returnee.Body = string(s)
-		returnee.ContentType = header.Get("Content-Type")
 		return &returnee, nil
 	}
 
@@ -127,13 +127,11 @@ func extractTextBody(con *data.Context, header emailHeader, bodyReader io.Reader
 			return nil, err
 		}
 		returnee.Body = string(b)
-		returnee.ContentType = header.Get("Content-Type")
 		return &returnee, nil
 	}
 
 	// ok, let's guess this is just plain text and put it into a string
 	returnee.Body = string(s)
-	returnee.ContentType = header.Get("Content-Type")
 
 	return &returnee, fmt.Errorf("Unsupported Content-Transfer-Encoding: %v", encoding)
 }

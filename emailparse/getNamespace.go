@@ -1,4 +1,4 @@
-package email
+package emailparse
 
 import (
 	"net/mail"
@@ -7,6 +7,7 @@ import (
 	"github.com/koffeinsource/kaffeeshare/config"
 )
 
+// getNamespaces returns the namespaces to which the email was sent
 func getNamespaces(msg *mail.Message) ([]string, error) {
 	// use a 'set' to remove duplicates
 	set := make(map[string]bool)

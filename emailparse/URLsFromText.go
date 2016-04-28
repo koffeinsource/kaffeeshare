@@ -1,4 +1,4 @@
-package email
+package emailparse
 
 import (
 	"fmt"
@@ -10,25 +10,33 @@ import (
 	"github.com/mvdan/xurls"
 )
 
-const (
-	contentTypeText  = "text"
-	contentTypeHTML  = "html"
-	contentTypeMulti = "multipart"
-)
-
-func parseBody(con *data.Context, mail *body) ([]string, error) {
-	if mail == nil {
+// URLsFromText extracts URLs from the email text bodies
+func URLsFromText(con *data.Context, em *Email) ([]string, error) {
+	if em == nil {
 		return nil, nil
 	}
-	if mail.ContentType[:len(contentTypeHTML)] == contentTypeHTML {
-		return parseHTMLBody(con, mail.Body)
+
+	for _, t := range em.Texts {
+		if strings.HasPrefix(t.ContentType, contentTypeHTML) {
+			u, err := parseHTMLBody(con, t.Body)
+			if err != nil {
+				con.Log.Debugf("URLsFromText error while parsing HTML", err)
+				continue
+			}
+			return u, nil
+		}
+
+		if strings.HasPrefix(t.ContentType, contentTypeText) {
+			u, err := parseTextBody(con, t.Body)
+			if err != nil {
+				con.Log.Debugf("URLsFromText error while parsing Text", err)
+				continue
+			}
+			return u, nil
+		}
 	}
 
-	if mail.ContentType[:len(contentTypeText)] == contentTypeText {
-		return parseTextBody(con, mail.Body)
-	}
-
-	return nil, fmt.Errorf("Unsupported content type: %s", mail.ContentType)
+	return nil, fmt.Errorf("Could not find an URL in the body.")
 }
 
 func parseHTMLBody(con *data.Context, body string) ([]string, error) {

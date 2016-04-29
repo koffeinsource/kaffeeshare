@@ -7,10 +7,12 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
+const itemTable = "Item"
+
 // Store stores an item in the datastore
 func (i *Item) Store(con *Context) error {
 	i.Namespace = strings.ToLower(i.Namespace)
-	k := datastore.NewKey(con.C, "Item", i.Namespace+i.URL, 0, nil)
+	k := datastore.NewKey(con.C, itemTable, i.Namespace+i.URL, 0, nil)
 	_, err := datastore.Put(con.C, k, i)
 	if err != nil {
 		con.Log.Errorf("Error while storing item in datastore. Item: %v. Error: %v", i, err)
@@ -29,7 +31,7 @@ func (i *Item) Store(con *Context) error {
 // GetNewestItems returns the latest number elements for a specific namespace
 func GetNewestItems(con *Context, namespace string, limit int, cursor string) ([]Item, string, error) {
 	namespace = strings.ToLower(namespace)
-	q := datastore.NewQuery("Item").
+	q := datastore.NewQuery(itemTable).
 		Filter("Namespace =", namespace).
 		Order("-CreatedAt").
 		Limit(limit)
@@ -41,7 +43,7 @@ func GetNewestItems(con *Context, namespace string, limit int, cursor string) ([
 // give time
 func GetNewestItemsByTime(con *Context, namespace string, limit int, t time.Time, cursor string) ([]Item, string, error) {
 	namespace = strings.ToLower(namespace)
-	q := datastore.NewQuery("Item").
+	q := datastore.NewQuery(itemTable).
 		Filter("Namespace =", namespace).
 		Filter("CreatedAt >=", t).
 		Order("-CreatedAt").
@@ -83,7 +85,7 @@ func executeItemQuery(con *Context, q *datastore.Query, limit int, cursorStr str
 // DeleteAllItems deletes all items from datastore
 func DeleteAllItems(con *Context) error {
 	panic("Are you sure????!!!!")
-	/*q := datastore.NewQuery("Item").KeysOnly()
+	/*q := datastore.NewQuery(itemTable).KeysOnly()
 
 	k, err := q.GetAll(con.C, nil)
 	if err != nil {

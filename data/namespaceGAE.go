@@ -9,7 +9,7 @@ import (
 // NamespaceIsEmpty checks if there is already an item in a namespace
 func NamespaceIsEmpty(con *Context, namespace string) (bool, error) {
 	namespace = strings.ToLower(namespace)
-	q := datastore.NewQuery("Item").
+	q := datastore.NewQuery(itemTable).
 		Filter("Namespace =", namespace).
 		Limit(1).
 		KeysOnly()
@@ -23,7 +23,7 @@ func NamespaceIsEmpty(con *Context, namespace string) (bool, error) {
 // ClearNamespace deletes every entry in a namespace
 func ClearNamespace(con *Context, namespace string) error {
 	namespace = strings.ToLower(namespace)
-	q := datastore.NewQuery("Item").
+	q := datastore.NewQuery(itemTable).
 		Filter("Namespace =", namespace).
 		KeysOnly()
 

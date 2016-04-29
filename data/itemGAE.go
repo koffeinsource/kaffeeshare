@@ -34,7 +34,7 @@ func GetNewestItems(con *Context, namespace string, limit int, cursor string) ([
 		Order("-CreatedAt").
 		Limit(limit)
 
-	return executeQuery(con, q, limit, cursor)
+	return executeItemQuery(con, q, limit, cursor)
 }
 
 // GetNewestItemsByTime returns up to limit numbers of items stored >= the
@@ -47,10 +47,10 @@ func GetNewestItemsByTime(con *Context, namespace string, limit int, t time.Time
 		Order("-CreatedAt").
 		Limit(limit)
 
-	return executeQuery(con, q, limit, cursor)
+	return executeItemQuery(con, q, limit, cursor)
 }
 
-func executeQuery(con *Context, q *datastore.Query, limit int, cursorStr string) ([]Item, string, error) {
+func executeItemQuery(con *Context, q *datastore.Query, limit int, cursorStr string) ([]Item, string, error) {
 	if cursor, err := datastore.DecodeCursor(cursorStr); err == nil {
 		q = q.Start(cursor)
 	}
@@ -78,39 +78,6 @@ func executeQuery(con *Context, q *datastore.Query, limit int, cursorStr string)
 	}
 
 	return nil, "", err
-}
-
-// NamespaceIsEmpty checks if there is already an item in a namespace
-func NamespaceIsEmpty(con *Context, namespace string) (bool, error) {
-	namespace = strings.ToLower(namespace)
-	q := datastore.NewQuery("Item").
-		Filter("Namespace =", namespace).
-		Limit(1).
-		KeysOnly()
-
-	k, err := q.GetAll(con.C, nil)
-	b := len(k) == 0
-
-	return b, err
-}
-
-// ClearNamespace deletes every entry in a namespace
-func ClearNamespace(con *Context, namespace string) error {
-	namespace = strings.ToLower(namespace)
-	q := datastore.NewQuery("Item").
-		Filter("Namespace =", namespace).
-		KeysOnly()
-
-	k, err := q.GetAll(con.C, nil)
-	if err != nil {
-		return err
-	}
-
-	clearCache(con, namespace)
-
-	con.Log.Infof("Going to delete %v items in the namespace %v", len(k), namespace)
-
-	return datastore.DeleteMulti(con.C, k)
 }
 
 // DeleteAllItems deletes all items from datastore

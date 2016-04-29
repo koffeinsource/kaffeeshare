@@ -32,14 +32,14 @@ type ImageBody struct {
 func Get(con *data.Context, m io.Reader) (*Email, error) {
 	msg, err := mail.ReadMessage(m)
 	if err != nil {
-		return nil, fmt.Errorf("Error at mail.ReadMessage in DispatchEmail. Error: %v", err)
+		return nil, fmt.Errorf("Error at mail.ReadMessage while parsing the email. Error: %v", err)
 	}
 	con.Log.Debugf("header: %v", msg.Header)
 
 	// get body
 	email, err := extract(con, msg.Header, msg.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Error at extracting the body. Error: %v", err)
+		return nil, fmt.Errorf("Error at extracting email. Error: %v", err)
 	}
 	//con.Log.Debugf("Received mail: %v", email)
 

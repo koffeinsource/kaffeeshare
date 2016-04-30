@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/koffeinsource/go-imgur"
-	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/emailparse"
-	"github.com/koffeinsource/kaffeeshare/httpClient"
+	"github.com/koffeinsource/kaffeeshare/imgurClient"
 	"github.com/koffeinsource/kaffeeshare/share"
 )
 
@@ -71,10 +69,7 @@ func handleText(con *data.Context, em *emailparse.Email) error {
 }
 
 func handleImages(con *data.Context, em *emailparse.Email) error {
-	var imgurclient imgur.Client
-	imgurclient.ImgurClientID = config.ImgurClientID
-	imgurclient.HTTPClient = httpClient.GetWithLongDeadline(con)
-	imgurclient.Log = con.Log
+	imgurclient := imgurclient.GetWithLongDeadline(con)
 
 	var urls []string
 
@@ -91,7 +86,7 @@ func handleImages(con *data.Context, em *emailparse.Email) error {
 		iu.URL = ii.Link
 		if err := iu.Store(con); err != nil {
 			con.Log.Errorf("Error while storing upload in datastore Error: %v", err)
-			// No important error ...
+			// Not an important error ...
 			// errorHappend = true
 		}
 		urls = append(urls, ii.Link)

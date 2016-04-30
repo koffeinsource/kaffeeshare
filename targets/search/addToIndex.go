@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/koffeinsource/kaffeeshare/URLExtractClient"
 	"github.com/koffeinsource/kaffeeshare/data"
 	"github.com/koffeinsource/kaffeeshare/search"
-	"github.com/koffeinsource/kaffeeshare/share"
 	"google.golang.org/appengine/memcache"
 	gaesearch "google.golang.org/appengine/search"
 )
@@ -65,7 +65,7 @@ func createSearchItem(con *data.Context, values url.Values, namespace string, UR
 	} else {
 		// ok, no data in the memcache.
 		// we need to re-query the URL to get the HTML data
-		c := share.CreateURLExtractClient(con)
+		c := urlextractclient.Get(con)
 		info, err := c.Extract(URL)
 		if err != nil {
 			con.Log.Errorf("Error in URLextract.Extract(). Error: %v", err)

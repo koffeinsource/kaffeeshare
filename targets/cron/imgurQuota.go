@@ -4,20 +4,15 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/koffeinsource/go-imgur"
-	"github.com/koffeinsource/kaffeeshare/config"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/httpClient"
+	"github.com/koffeinsource/kaffeeshare/imgurClient"
 )
 
 // ImgurQuota will query imgur and print the quota to the log
 func ImgurQuota(w http.ResponseWriter, r *http.Request) {
 	con := data.MakeContext(r)
 
-	var imgurclient imgur.Client
-	imgurclient.ImgurClientID = config.ImgurClientID
-	imgurclient.HTTPClient = httpClient.Get(con)
-	imgurclient.Log = con.Log
+	imgurclient := imgurclient.Get(con)
 
 	rl, err := imgurclient.GetRateLimit()
 	if err != nil {

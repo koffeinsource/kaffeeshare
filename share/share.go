@@ -1,10 +1,8 @@
 package share
 
 import (
-	"github.com/koffeinsource/go-URLextract"
-	"github.com/koffeinsource/kaffeeshare/config"
+	"github.com/koffeinsource/kaffeeshare/URLExtractClient"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/httpClient"
 	"github.com/koffeinsource/kaffeeshare/search"
 )
 
@@ -25,25 +23,13 @@ func URL(shareURL string, namespace string, con *data.Context) error {
 	return nil
 }
 
-// CreateURLExtractClient creates a client for go-URLextract
-func CreateURLExtractClient(con *data.Context) URLextract.Client {
-	var conf URLextract.Client
-
-	conf.HTTPClient = httpClient.Get(con)
-
-	conf.Log = con.Log
-	conf.AmazonAdID = config.AmazonAdID
-	conf.ImgurClientID = config.ImgurClientID
-	return conf
-}
-
 // URLsNamespaces shares multiple URLs in mutliple namespaces.
 func URLsNamespaces(shareURLs []string, namespaces []string, con *data.Context) error {
 	if len(shareURLs) == 0 || len(namespaces) == 0 {
 		return nil
 	}
 
-	c := CreateURLExtractClient(con)
+	c := urlextractclient.Get(con)
 
 	var errReturn error
 	errReturn = nil

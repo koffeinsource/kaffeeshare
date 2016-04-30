@@ -110,52 +110,56 @@
 
 	// define a handler
 	function key_shortcuts(e) {
-	    if (e.keyCode == 74) { // j
-	        next();
-	    }
+		if (e.keyCode == 74) { // j
+			next();
+		}
 		if (e.keyCode == 75) { // j
-	        prev();
-	    }
+			prev();
+		}
 	}
 	// register the handler
 	document.addEventListener('keyup', key_shortcuts, false);
 
 	function next() {
-		if (current == counter-1) return;
+		if (current == counter - 1) return;
 
 		++current;
-		$(window).scrollTo($("#"+current.toString()).offset().top-70, {duration:'fast'});
+		$(window).scrollTo($("#" + current.toString()).offset().top - 70, {
+			duration: 'fast'
+		});
 
 		if (current > 0) {
-			$("#"+(current-1).toString()).css("background-color", "");
+			$("#" + (current - 1).toString()).css("background-color", "");
 		}
-		$("#"+current.toString()).css("background-color", "#319de9");
+		$("#" + current.toString()).css("background-color", "#319de9");
 	}
 
 	function prev() {
 		if (current <= 0) return;
 
 		--current;
-		$(window).scrollTo($("#"+current.toString()).offset().top-70, {duration:'fast'});
+		$(window).scrollTo($("#" + current.toString()).offset().top - 70, {
+			duration: 'fast'
+		});
 
 		// TODO refactor the css into a class...
 
-		$("#"+(current+1).toString()).css("background-color", "");
-		$("#"+current.toString()).css("background-color", "#319de9");
+		$("#" + (current + 1).toString()).css("background-color", "");
+		$("#" + current.toString()).css("background-color", "#319de9");
 	}
 
 	$(document).scroll(function() {
-	    var cutoff = $(window).scrollTop() + 150;
+		var cutoff = $(window).scrollTop() + 150;
 
-	    $('#allItems li div').each(function(){
-	        if($(this).offset().top + $(this).height() > cutoff){
+		$('#allItems li div').each(function() {
+			if ($(this).offset().top + $(this).height() > cutoff) {
 
-	            $('div').css("background-color", "");
-	            $(this).css("background-color", "#319de9");
+				$('div').css("background-color", "");
+				$(this).css("background-color", "#319de9");
 				current = parseInt($(this).attr('id'), 10);
-	            return false; // stops the iteration after the first one visible
-	        }
-	    });
+				return false; // stops the iteration after the first one visible
+			}
+		});
 	});
 
 	function createItems(items) {

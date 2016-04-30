@@ -2,15 +2,20 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kaffeeshare</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/combo.css">
     <link href='//fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment-with-locales.min.js"></script>
+    <script src="/static/js/kshare.js"></script>
 
     <script>
         function parseURLParam(val) {
-            var result = "Not found",
+            var result = "Invalid URL",
                 tmp = [];
             location.search
                 .substr(1)
@@ -22,9 +27,15 @@
             return result;
         }
 
+        String.prototype.trunc = String.prototype.trunc ||
+            function(n) {
+                return (this.length > n) ? this.substr(0, n - 1) + '&hellip;' : this;
+            };
+
         function create() {
             var url = parseURLParam("url");
-            $('#url').html("<em>" + url + "</em>");
+            url = url.replace(/.*?:\/\//g, "");
+            $('#button').html("Share <em>" + url.trunc(50) + "</em>");
         }
 
         function share() {
@@ -35,24 +46,21 @@
             url += parseURLParam("url");
             console.log(url);
 
+            $('#button').html("Sharing...");
+
             $.ajax({
                 type: "POST",
                 url: url,
                 dataType: 'json',
             }).done(function(msg) {
                 if (msg.status == "ok") {
-                    $('#url').html("Shared!");
-                    $('#header').html("");
+                    $('#button').html("Shared!");
                     $('#button').disabled = true;
                 } else {
-                    $('#url').html("Sharing failed! Please try again later.");
-                    $('#header').html("");
-                    $('#button').html("Try again?");
+                    $('#button').html("Sharing failed! Try again?");
                 }
             }).fail(function() {
-                $('#url').html("Sharing failed! Please try again later.");
-                $('#header').html("");
-                $('#button').html("Try again?");
+                $('#button').html("Sharing failed! Try again?");
             }).always(function(msg) {});
         }
 
@@ -60,10 +68,26 @@
 </head>
 
 <body onload="create()">
-    <div id="intro" class="section p-intro center" style="padding:0px;">
-        <h3 id="header">Do you want to share</h3>
-        <h3 id="url"></h3>
-        <button id="button" onclick="share()">Share!</button>
+    <div id="main" class="container center" style="width: 100%;">
+
+        <div id="intro" class="section p-intro" style="padding: 0px; min-height: 120px;">
+        </div>
+        <div id="why" class="section p-why" style="min-height: 0px">
+
+            <div class="subtlecircle sectiondivider faicon">
+                <span class="fa-stack">
+        			<i class="fa fa-circle fa-stack-2x"></i>
+    				<i class="fa fa-share-alt fa-stack-1x"></i>
+        		</span>
+                <h5 class="icon-title">Kaffeeshare</h5>
+            </div>
+            <br/>
+            <br/>
+
+            <span class="input-group-btn">
+					<button id="button" onclick="share()" class="btn btn-default" type="button"/>
+			</span>
+        </div>
     </div>
 </body>
 

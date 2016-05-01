@@ -27,15 +27,16 @@
             return result;
         }
 
-        String.prototype.trunc = String.prototype.trunc ||
+        /*String.prototype.trunc = String.prototype.trunc ||
             function(n) {
                 return (this.length > n) ? this.substr(0, n - 1) + '&hellip;' : this;
-            };
+            };*/
 
         function create() {
             var url = parseURLParam("url");
             url = url.replace(/.*?:\/\//g, "");
-            $('#button').html("Share <em>" + url.trunc(50) + "</em>");
+            //$('#button').html("Share <em>" + url.trunc(50) + "</em>");-->
+            $('#button').html("Share <br/><em>" + url + "</em><br/>?");
         }
 
         function share() {
@@ -55,7 +56,7 @@
             }).done(function(msg) {
                 if (msg.status == "ok") {
                     $('#button').html("Shared!");
-                    $('#button').disabled = true;
+                    $('#button').prop('disabled', true);
                 } else {
                     $('#button').html("Sharing failed! Try again?");
                 }
@@ -72,7 +73,7 @@
 
         <div id="intro" class="section p-intro" style="padding: 0px; min-height: 120px;">
         </div>
-        <div id="why" class="section p-why" style="min-height: 0px">
+        <div id="why" class="section p-why" style="height: 50px">
 
             <div class="subtlecircle sectiondivider faicon">
                 <span class="fa-stack">
@@ -84,9 +85,7 @@
             <br/>
             <br/>
 
-            <span class="input-group-btn">
-					<button id="button" onclick="share()" class="btn btn-default" type="button"/>
-			</span>
+            <button id="button" onclick="share()" class="btn btn-default" type="button" style="white-space: normal; width: 400px;" />
         </div>
     </div>
 </body>

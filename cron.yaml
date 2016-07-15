@@ -2,6 +2,3 @@ cron:
 - description: clear the test namespace
   url: /c/clear_test/
   schedule: every 12 hours
-- description: log the imgur quota
-  url: /c/imgur_quota/
-  schedule: every 1 hours

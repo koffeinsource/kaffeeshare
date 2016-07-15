@@ -1,5 +1,6 @@
 package httpClient
 
+//TODO rename to httpclient? chack if camel caps is used in package names
 import (
 	"net/http"
 	"time"

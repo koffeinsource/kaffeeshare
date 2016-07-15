@@ -40,7 +40,9 @@ func extract(con *data.Context, header emailHeader, bodyReader io.Reader) (*Emai
 		if err != nil {
 			con.Log.Errorf("Error while extracting text body: %v", err)
 		}
-		em.Texts = append(em.Texts, *t)
+		if t != nil {
+			em.Texts = append(em.Texts, *t)
+		}
 		return &em, nil
 	}
 
@@ -61,7 +63,9 @@ func extract(con *data.Context, header emailHeader, bodyReader io.Reader) (*Emai
 		if err != nil {
 			con.Log.Errorf("Error while extracting image: %v", err)
 		}
-		em.Images = append(em.Images, *i)
+		if i != nil {
+			em.Images = append(em.Images, *i)
+		}
 		return &em, err
 	}
 
@@ -89,8 +93,10 @@ func extractMime(con *data.Context, boundary string, bodyReader io.Reader) (e Em
 			err = errT
 		}
 
-		e.Texts = append(e.Texts, result.Texts...)
-		e.Images = append(e.Images, result.Images...)
+		if result != nil {
+			e.Texts = append(e.Texts, result.Texts...)
+			e.Images = append(e.Images, result.Images...)
+		}
 	}
 
 	return e, err

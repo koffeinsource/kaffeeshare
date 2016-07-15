@@ -82,14 +82,29 @@ func parseTextBody(con *data.Context, body string) ([]string, error) {
 
 func firstURLFromText(con *data.Context, body string) ([]string, error) {
 	var links []string
-	l := xurls.Relaxed.FindAllString(body, -1)
-	con.Log.Infof("Found urls in body %v,  %v", body, l)
-	for _, s := range l {
-		if s != "" && !strings.Contains(s, "mailto:") {
-			links = append(links, s)
-			return links, nil
+
+	// ok, let's only look for URLs with a protocoll explicitly specfied
+	// this reduces false positives
+	{
+		l := xurls.Strict.FindAllString(body, -1)
+		for _, s := range l {
+			if !strings.Contains(s, "mailto:") {
+				links = append(links, s)
+				return links, nil
+			}
 		}
 	}
 
+	// found no such URL? Ok, lets try a relaxed query.
+	{
+		l := xurls.Relaxed.FindAllString(body, -1)
+		con.Log.Infof("Found urls in body %v,  %v", body, l)
+		for _, s := range l {
+			if s != "" && !strings.Contains(s, "mailto:") {
+				links = append(links, s)
+				return links, nil
+			}
+		}
+	}
 	return links, nil
 }

@@ -101,6 +101,9 @@ func firstURLFromText(con *data.Context, body string) ([]string, error) {
 		con.Log.Infof("Found urls in body %v,  %v", body, l)
 		for _, s := range l {
 			if s != "" && !strings.Contains(s, "mailto:") {
+				if !(strings.Contains(s, "http://") || strings.Contains(s, "https://")) {
+					s = "http://" + s
+				}
 				links = append(links, s)
 				return links, nil
 			}

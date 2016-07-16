@@ -18,7 +18,7 @@ func (i *Item) Store(con *Context) error {
 		con.Log.Errorf("Error while storing item in datastore. Item: %v. Error: %v", i, err)
 		return err
 	}
-	i.DSKey = k.String()
+	i.DSKey = k.Encode()
 	con.Log.Debugf("Stored item %+v", i)
 
 	if err := clearCache(con, i.Namespace); err != nil {

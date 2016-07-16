@@ -7,6 +7,7 @@ import (
 )
 
 // An Item is all the data we store from a website
+// TODO check if URL must be indexed .Namespace?
 type Item struct {
 	Caption       string    `json:"caption" datastore:"Caption,noindex"`
 	URL           string    `json:"url" datastore:"URL,index"`

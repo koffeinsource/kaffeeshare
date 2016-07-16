@@ -9,6 +9,7 @@ import (
 )
 
 // Item is the struct used for the app engine search API
+// TODO unify with data.Item? see https://cloud.google.com/appengine/docs/go/search/reference#hdr-Fields_and_Facets
 type Item struct {
 	DSKey         string
 	Description   string
@@ -16,7 +17,7 @@ type Item struct {
 	CreatedAt     time.Time
 }
 
-// itemToSearchIndexTask converts a sbset of Item i to url.Values
+// itemToSearchIndexTask converts a subset of Item i to url.Values
 func itemToSearchIndexTask(i data.Item) url.Values {
 	v := url.Values{}
 

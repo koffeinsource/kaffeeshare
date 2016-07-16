@@ -34,6 +34,10 @@ func init() {
 
 	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
 
+	router.HandleFunc("/k/search/json/{namespace}", search.DispatchSearchJSON)
+	router.HandleFunc("/a/search/clear/{namespace}", search.DispatchClearIndex)
+	router.HandleFunc("/t/search/clear", search.DispatchClearIndexTask)
+
 	router.HandleFunc("/k/show/json/{namespace}", show.DispatchJSON)
 	router.HandleFunc("/k/show/www/{namespace}", show.DispatchWWW)
 	router.HandleFunc("/k/show/rss/{namespace}", show.DispatchRSS)

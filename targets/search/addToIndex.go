@@ -59,6 +59,7 @@ func createSearchItem(con *data.Context, values url.Values, namespace string, UR
 
 	var searchItem search.Item
 	searchItem.Description = values["Caption"][0] + " " + values["Description"][0]
+	searchItem.DSKey = DSKey
 
 	if err == nil {
 		searchItem.HTMLforSearch = gaesearch.HTML(string(memI.Value))

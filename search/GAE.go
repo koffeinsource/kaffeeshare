@@ -1,14 +1,13 @@
 package search
 
 import (
-	"net/url"
 	"strconv"
 	"strings"
 
 	"github.com/koffeinsource/kaffeeshare/data"
+	"github.com/koffeinsource/kaffeeshare/targets/search"
 	"google.golang.org/appengine/datastore"
-	"google.golang.org/appengine/search"
-	"google.golang.org/appengine/taskqueue"
+	gaesearch "google.golang.org/appengine/search"
 )
 
 // AddToSearchIndexTask is the implementation of the task described above.
@@ -16,13 +15,13 @@ import (
 func AddToSearchIndexTask(con *data.Context, searchItem *Item, namespace string, URL string) error {
 	namespace = strings.ToLower(namespace)
 
-	index, err := search.Open("items_" + namespace)
+	index, err := gaesearch.Open("items_" + namespace)
 	if err != nil {
 		con.Log.Errorf("Error while opening the item search index %v", err)
 		return err
 	}
 
-	searchItem.HTMLforSearch = search.HTML(optimizeSearchInput(string(searchItem.HTMLforSearch)))
+	searchItem.HTMLforSearch = gaesearch.HTML(optimizeSearchInput(string(searchItem.HTMLforSearch)))
 
 	searchItem.Description = optimizeSearchInput(searchItem.Description)
 
@@ -43,13 +42,13 @@ func Search(con *data.Context, namespace string, query string) ([]data.Item, str
 	query = strings.ToLower(query)
 	namespace = strings.ToLower(namespace)
 
-	index, err := search.Open("items_" + namespace)
+	index, err := gaesearch.Open("items_" + namespace)
 	if err != nil {
 		con.Log.Errorf("Error while opening the item search index %v", err)
 		return nil, "", err
 	}
 
-	var opt search.SearchOptions
+	var opt gaesearch.SearchOptions
 	opt.Limit = 20
 	opt.Fields = []string{"DSKey"}
 	iter := index.Search(con.C, query, &opt)
@@ -59,7 +58,7 @@ func Search(con *data.Context, namespace string, query string) ([]data.Item, str
 	for {
 		var i Item
 		_, err = iter.Next(&i)
-		if err == search.Done {
+		if err == gaesearch.Done {
 			break
 		}
 
@@ -94,26 +93,11 @@ func Search(con *data.Context, namespace string, query string) ([]data.Item, str
 	return is, string(iter.Cursor()), nil
 }
 
-// ClearSearchItemIndex removes every entry from an item search index
-func ClearSearchItemIndex(con *data.Context, namespace string) error {
-	v := url.Values{}
-
-	v.Set("Namespace", namespace)
-
-	task := taskqueue.NewPOSTTask("/t/search/clear", v)
-	if _, err := taskqueue.Add(con.C, task, "search-index"); err != nil {
-		con.Log.Errorf("Error while adding a clear search index task: %v", err)
-		return err
-	}
-
-	return nil
-}
-
 // ClearSearchItemIndexTask removes every entry from an item search index
 func ClearSearchItemIndexTask(con *data.Context, namespace string) error {
 	namespace = strings.ToLower(namespace)
 
-	index, err := search.Open("items_" + namespace)
+	index, err := gaesearch.Open("items_" + namespace)
 	if err != nil {
 		con.Log.Errorf("Error while opening the item search index %v", err)
 		return err
@@ -126,7 +110,7 @@ func ClearSearchItemIndexTask(con *data.Context, namespace string) error {
 
 		var id string
 		id, err = iter.Next(nil)
-		if err == search.Done {
+		if err == gaesearch.Done {
 			break
 		}
 		if err != nil {
@@ -146,7 +130,7 @@ func ClearSearchItemIndexTask(con *data.Context, namespace string) error {
 			con.Log.Debugf("Deleted %v entries in the search index for namespace %v", counter, namespace)
 		}
 		if counter == 1000 {
-			ClearSearchItemIndex(con, namespace)
+			search.ClearSearchItemIndex(con, namespace)
 			break
 		}
 	}

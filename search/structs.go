@@ -17,8 +17,8 @@ type Item struct {
 	CreatedAt     time.Time
 }
 
-// itemToSearchIndexTask converts a subset of Item i to url.Values
-func itemToSearchIndexTask(i data.Item) url.Values {
+// ItemToSearchIndexTask converts a subset of Item i to url.Values
+func ItemToSearchIndexTask(i data.Item) url.Values {
 	v := url.Values{}
 
 	v.Set("Caption", i.Caption)

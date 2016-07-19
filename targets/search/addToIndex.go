@@ -33,7 +33,7 @@ func AddToSearchIndex(con *data.Context, i data.Item) {
 
 	// SECOND: Put the search index update task in the queue
 	task := taskqueue.NewPOSTTask("/t/search/add_to_index", search.ItemToSearchIndexTask(i))
-	if _, err := taskqueue.Add(con.C, task, "search-index"); err != nil {
+	if _, err := taskqueue.Add(con.C, task, "search-q"); err != nil {
 		con.Log.Errorf("Error while triggering the add to index: %v", err)
 	}
 }

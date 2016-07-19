@@ -40,7 +40,7 @@ func ClearSearchItemIndex(con *data.Context, namespace string) error {
 	v.Set("Namespace", namespace)
 
 	task := taskqueue.NewPOSTTask("/t/search/clear", v)
-	if _, err := taskqueue.Add(con.C, task, "search-index"); err != nil {
+	if _, err := taskqueue.Add(con.C, task, "search-q"); err != nil {
 		con.Log.Errorf("Error while adding a clear search index task: %v", err)
 		return err
 	}

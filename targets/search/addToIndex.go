@@ -25,8 +25,21 @@ func DispatchAddToIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	namespace := r.Form["Namespace"][0]
-	URL := r.Form["URL"][0]
+	var namespace, URL string
+	if temp, ok := r.Form["Namespace"]; ok {
+		namespace = temp[0]
+	} else {
+		con.Log.Errorf("Invalid input data. Namespace missing")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if temp, ok := r.Form["URL"]; ok {
+		URL = temp[0]
+		} else {
+			con.Log.Errorf("Invalid input data. URL missing")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
 	si, err := createSearchItem(con, r.Form, namespace, URL)
 	if err != nil {

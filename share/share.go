@@ -3,7 +3,6 @@ package share
 import (
 	"github.com/koffeinsource/kaffeeshare/URLExtractClient"
 	"github.com/koffeinsource/kaffeeshare/data"
-	"github.com/koffeinsource/kaffeeshare/search"
 )
 
 // URL shares an URL, i.e. stores it in the datastore and everything
@@ -53,7 +52,6 @@ func URLsNamespaces(shareURLs []string, namespaces []string, con *data.Context) 
 				continue
 			}
 
-			search.AddToSearchIndex(con, i)
 		}
 	}
 

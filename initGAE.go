@@ -34,7 +34,6 @@ func init() {
 
 	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
 
-	router.HandleFunc("/k/search/json/{namespace}", search.DispatchSearchJSON)
 	router.HandleFunc("/a/search/clear/{namespace}", search.DispatchClearIndex)
 	router.HandleFunc("/t/search/clear", search.DispatchClearIndexTask)
 
@@ -44,8 +43,6 @@ func init() {
 
 	router.HandleFunc("/c/clear_test/", cron.ClearTest)
 	router.HandleFunc("/c/clear_test", cron.ClearTest)
-
-	router.HandleFunc("/t/search/add_to_index", search.DispatchAddToIndex)
 
 	// TODO move to router
 	http.HandleFunc("/_ah/mail/", email.DispatchEmail)

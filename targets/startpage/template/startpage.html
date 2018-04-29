@@ -332,41 +332,8 @@
 					<p>
 						<strong>
 							<em>Firefox:</em>
-						</strong> Add as a share service.</p>
-					<script>
-						var event = new CustomEvent("ActivateSocialFeature");
-
-						function firefox_activate(node) {
-							if (!$('#namespace').val()) {
-								alert("please enter namespace first.");
-								return;
-							}
-							var namespace = $('#namespace').val();
-							var baseurl = "{{.URL}}";
-
-							var data = {
-								// required
-								"name": namespace + " - kaffeeshare",
-								"iconURL": baseurl + "/favicon.ico",
-								"icon32URL": baseurl + "/favicon.ico",
-								"icon64URL": baseurl + "/favicon.ico",
-
-								"shareURL": baseurl + "/k/share/firefox/" + namespace + "/?url=%{url}",
-
-								// should be available for display purposes
-								"description": "This is a kaffeeshare namespace",
-								"homepageURL": baseurl,
-
-								// optional
-								"version": "0.1"
-							};
-
-							node.setAttribute("data-service", JSON.stringify(data));
-							node.dispatchEvent(event);
-						}
-
-					</script>
-					<p><a onclick="firefox_activate(this);" class="btn btn-primary">Install</a></p>
+						</strong> Install our extension from Mozilla Add-ons!</p>
+					<p><a href="https://addons.mozilla.org/de/firefox/addon/kshare/" class="btn btn-primary">Install</a></p>
 				</div>
 			</li>
 		</ul>

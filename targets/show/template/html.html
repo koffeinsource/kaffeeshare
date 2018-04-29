@@ -1,37 +1,11 @@
 {{define "content"}}
-<script>
-	var event = new CustomEvent("ActivateSocialFeature");
-
-	function firefox_activate(node) {
-		var namespace = "{{.Namespace}}";
-		var baseurl = "{{.URL}}";
-
-		var data = {
-			// required
-			"name": namespace + " - kaffeeshare",
-			"iconURL": baseurl + "/favicon.ico",
-			"icon32URL": baseurl + "/favicon.ico",
-			"icon64URL": baseurl + "/favicon.ico",
-
-			"shareURL": baseurl + "/k/share/firefox/" + namespace + "/?url=%{url}",
-
-			// should be available for display purposes
-			"description": "This is a kaffeeshare namespace",
-			"homepageURL": baseurl,
-
-			// optional
-			"version": "0.1"
-		};
-		node.setAttribute("data-service", JSON.stringify(data));
-	}
-
-</script>
 <nav>
 	<ul>
 		<li class="p-intro"><a href="/">Kaffeeshare</a></li>
 		<li class="p-why"><a id="rss-link" href="">RSS</a></li>
 		<li class="p-details"><a href='mailto:{{.Namespace}}@kaffeeshare.appspotmail.com'>email</a></li>
-		<li class="p-usage"><a style="cursor: pointer;" onclick="firefox_activate(this);">Firefox</a></li>
+		<li class="p-usage"><a href="https://addons.mozilla.org/de/firefox/addon/kshare/">Firefox</a></li>
+		<li class="p-updating"><a href="https://chrome.google.com/webstore/detail/kaffeeshare/bandplnfdmdhhbnahljgnkdhgailfeod">Chrome</a></li>
 	</ul>
 </nav>
 

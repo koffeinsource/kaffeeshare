@@ -30,7 +30,6 @@ func init() {
 
 	// should actually be share/get as we don't do json here
 	router.HandleFunc("/k/share/json/{namespace}", share.DispatchJSON)
-	router.HandleFunc("/k/share/firefox/{namespace}", share.DispatchFirefox)
 
 	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
 

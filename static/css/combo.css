@@ -1511,3 +1511,21 @@ nav ul li:hover, nav ul li.active {
         column-count: 2;
     }
 }
+
+hr.old {
+    overflow: visible; /* For IE */
+    padding: 0;
+    border: none;
+    border-top: medium double #333;
+    color: #333;
+    text-align: center;
+}
+hr.old:after {
+    content: "⇩ old shares below ⇩";
+    display: inline-block;
+    position: relative;
+    top: +0.1em;
+    font-size: 1.0em;
+    padding: 0 0.25em;
+    background: #49a7e9;
+}

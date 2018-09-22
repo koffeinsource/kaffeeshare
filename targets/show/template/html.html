@@ -45,6 +45,8 @@
 <script type="text/javascript">
 	var d = new Date();
 	var n = d.getTime();
+	var lastVisit = Cookies.get('lastVisit'+"{{.Namespace}}");
+	Cookies.set("lastVisit"+"{{.Namespace}}", n, { expires: 7 });
 
 	var counter = 0;
 	var current = -1;
@@ -136,6 +138,8 @@
 		});
 	});
 
+	var oldFound = false;
+
 	function createItems(items) {
 		returnee = "<ul class='media-list' id='allItems'>";
 
@@ -161,9 +165,15 @@
 				returnee += "'>" + items[i].description + "</blockquote>";
 			}
 			returnee += "<p class='ksharelink'><cite><a href='" + items[i].url + "'";
-			returnee += ">" + items[i].url + "</a></cite><hr/></p>";
+			returnee += ">" + items[i].url + "</a></cite>";
+			if ((typeof items[i+1] !== 'undefined') && (moment(items[i+1].createdat).valueOf() < lastVisit) && oldFound === false) {
+				returnee += "<hr class='old'/>";
+				oldFound = true;
+			} else {
+				returnee += "<hr/>";
+			}
 
-			returnee += "</div>";
+			returnee += "</p></div>";
 			returnee += "</li>";
 		}
 

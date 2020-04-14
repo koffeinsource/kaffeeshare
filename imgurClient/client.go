@@ -11,7 +11,7 @@ import (
 func Get(con *data.Context) *imgur.Client {
 	var imgurclient imgur.Client
 	imgurclient.ImgurClientID = config.ImgurClientID
-	imgurclient.MashapeKey = config.MashapeKey
+	imgurclient.RapidAPIKEY = config.RapidAPIKey
 	imgurclient.HTTPClient = httpClient.Get(con)
 	imgurclient.Log = con.Log
 

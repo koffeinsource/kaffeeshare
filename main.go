@@ -1,4 +1,4 @@
-package kaffeeshare
+package main
 
 import (
 	"net/http"
@@ -11,6 +11,7 @@ import (
 	"github.com/koffeinsource/kaffeeshare/targets/show"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
 	"github.com/koffeinsource/kaffeeshare/targets/update"
+	"google.golang.org/appengine"
 
 	"github.com/gorilla/mux"
 )
@@ -30,6 +31,7 @@ func init() {
 
 	// should actually be share/get as we don't do json here
 	router.HandleFunc("/k/share/json/{namespace}", share.DispatchJSON)
+	router.HandleFunc("/k/share/slack/{namespace}", share.DispatchSlack)
 
 	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
 
@@ -46,4 +48,21 @@ func init() {
 	// TODO move to router
 	http.HandleFunc("/_ah/mail/", email.DispatchEmail)
 	http.Handle("/", router)
+}
+
+func main() {
+	/*	http.HandleFunc("/", indexHandler)
+
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8080"
+			log.Printf("Defaulting to port %s", port)
+		}
+
+		log.Printf("Listening on port %s", port)
+		if err := http.ListenAndServe(":"+port, nil); err != nil {
+			log.Fatal(err)
+		}*/
+
+	appengine.Main()
 }

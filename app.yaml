@@ -1,10 +1,4 @@
-# These are not used by gcloud
-# application:             kaffeeshare
-# version:                 alpha2go
-
-runtime:                   go
-api_version:               go1
-instance_class:            F1
+runtime:                   go111
 automatic_scaling:
   min_idle_instances:      0
   max_idle_instances:      automatic  # default value
@@ -32,27 +26,27 @@ handlers:
   static_dir:              static
   expiration:              "48h"
 
-- url:                     /_ah/mail/
-  script:                  _go_app
+#- url:                     /_ah/mail/
+#  script:                  _go_app
 
 # Cron jobs
-- url:                     /c/.*
-  script:                  _go_app
-  login:                   admin
+#- url:                     /c/.*
+#  script:                  _go_app
+#  login:                   admin
 
 # Task queues
-- url:                     /t/.*
-  script:                  _go_app
-  login:                   admin
-- url:                     /_ah/queue/go/delay
-  script:                  _go_app
-  login:                   admin
+#- url:                     /t/.*
+#  script:                  _go_app
+#  login:                   admin
+#- url:                     /_ah/queue/go/delay
+#  script:                  _go_app
+#  login:                   admin
 
 # Admin URLs
-- url:                     /a/.*
-  script:                  _go_app
-  login:                   admin
+#- url:                     /a/.*
+#  script:                  _go_app
+#  login:                   admin
 
 # Catch the rest
-- url:                     /.*
-  script:                  _go_app
+#- url:                     /.*
+#  script:                  _go_app

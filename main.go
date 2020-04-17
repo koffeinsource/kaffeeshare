@@ -6,7 +6,6 @@ import (
 	"github.com/koffeinsource/kaffeeshare/targets/check"
 	"github.com/koffeinsource/kaffeeshare/targets/cron"
 	"github.com/koffeinsource/kaffeeshare/targets/email"
-	"github.com/koffeinsource/kaffeeshare/targets/search"
 	"github.com/koffeinsource/kaffeeshare/targets/share"
 	"github.com/koffeinsource/kaffeeshare/targets/show"
 	"github.com/koffeinsource/kaffeeshare/targets/startpage"
@@ -34,9 +33,6 @@ func init() {
 	router.HandleFunc("/k/share/slack/{namespace}", share.DispatchSlack)
 
 	router.HandleFunc("/k/update/json/{namespace}", update.DispatchJSON)
-
-	router.HandleFunc("/a/search/clear/{namespace}", search.DispatchClearIndex)
-	router.HandleFunc("/t/search/clear", search.DispatchClearIndexTask)
 
 	router.HandleFunc("/k/show/json/{namespace}", show.DispatchJSON)
 	router.HandleFunc("/k/show/www/{namespace}", show.DispatchWWW)

@@ -11,10 +11,12 @@ import (
 type Item struct {
 	Caption       string    `json:"caption" datastore:"Caption,noindex"`
 	URL           string    `json:"url" datastore:"URL,index"`
+	Via           string    `json:"via" datastore:"Via,noindex"` // Required for DS backward compatibility
 	ImageURL      string    `json:"imageURL" datastore:"ImageURL,noindex"`
 	Description   string    `json:"description" datastore:"Description,noindex"`
 	CreatedAt     time.Time `json:"createdat" datastore:"CreatedAt,index"`
 	Namespace     string    `json:"-" datastore:"Namespace,index"`
+	HTMLforSearch string    `json:"-" datastore:"-"` // Required for DS backward compatibility
 	DSKey         string    `json:"-" datastore:"-"`
 }
 

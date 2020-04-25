@@ -10,6 +10,8 @@ import (
 	"github.com/mvdan/xurls"
 )
 
+var rxRelaxed = xurls.Relaxed()
+
 // URLsFromText extracts URLs from the email text bodies
 func URLsFromText(con *data.Context, em *Email) ([]string, error) {
 	if em == nil {
@@ -86,7 +88,7 @@ func firstURLFromText(con *data.Context, body string) ([]string, error) {
 	// ok, let's only look for URLs with a protocoll explicitly specfied
 	// this reduces false positives
 	{
-		l := xurls.Strict.FindAllString(body, -1)
+		l := rxRelaxed.FindAllString(body, -1)
 		for _, s := range l {
 			if !strings.Contains(s, "mailto:") {
 				links = append(links, s)
@@ -97,7 +99,7 @@ func firstURLFromText(con *data.Context, body string) ([]string, error) {
 
 	// found no such URL? Ok, lets try a relaxed query.
 	{
-		l := xurls.Relaxed.FindAllString(body, -1)
+		l := rxRelaxed.FindAllString(body, -1)
 		con.Log.Infof("Found urls in body %v,  %v", body, l)
 		for _, s := range l {
 			if s != "" && !strings.Contains(s, "mailto:") {
